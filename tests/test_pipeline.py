@@ -31,6 +31,11 @@ class RetrievalTests(unittest.TestCase):
         self.assertEqual(result["answer"], ABSTENTION)
         self.assertEqual(result["evidence"], [])
 
+    def test_unseen_words_do_not_turn_a_partial_overlap_into_evidence(self):
+        result = answer("warranty neutrinos chromodynamics supernovae pulsars", self.retriever)
+        self.assertGreater(result["retrieved"][0]["score"], 0.16)
+        self.assertTrue(result["abstained"])
+
     def test_rejects_missing_or_invented_citations(self):
         for text in ("A warranty is optional.", "A warranty is optional. [99]", "A warranty is optional. [0]"):
             with self.subTest(text=text):

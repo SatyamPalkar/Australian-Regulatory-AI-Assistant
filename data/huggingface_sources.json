@@ -1,0 +1,16 @@
+{
+  "dataset": "cchew/lex-au",
+  "revision": "ce532ddeb514fa477d6466a892fa17e62d21513e",
+  "slug": "competition-and-consumer-act-2010",
+  "index_file": "index.json",
+  "index_sha256": "16b1c9fd7f0e15d98fa79b903ee48d56a815ee67678243aff8b9f05771652779",
+  "xml_file": "xml/competition-and-consumer-act-2010.xml",
+  "xml_sha256": "e31684f924a011e1bff3fd45ebf0bd5498114b1cb66abda810107e2c61432ea3",
+  "schedule": "schedule-2",
+  "sections": ["3", "18", "20", "21", "22", "23", "24", "25", "29", "50", "51", "52", "53", "54", "55", "56", "57", "58", "59", "60", "61", "62", "64", "64A", "259", "260", "261", "262", "263", "264", "267", "268", "269", "270", "271", "272", "273"],
+  "license": "CC-BY-4.0",
+  "license_url": "https://creativecommons.org/licenses/by/4.0/",
+  "label": "Australian Consumer Law · Sydney / NSW coverage",
+  "currency_notice": "Dataset compilation: 27 August 2026. The official register listed a newer Act compilation dated 16 September 2026 when checked on 28 October 2026. Changes to the selected sections have not been compared.",
+  "scope": "Selected Commonwealth Australian Consumer Law provisions, applicable nationally including Sydney and NSW. State-only laws, council rules and practical complaint-handling guidance are outside this collection."
+}

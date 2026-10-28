@@ -1,80 +1,110 @@
 {
+  "collection": {
+    "currency_notice": "Dataset compilation: 27 August 2026. The official register listed a newer Act compilation dated 16 September 2026 when checked on 28 October 2026. Changes to the selected sections have not been compared.",
+    "dataset": "cchew/lex-au",
+    "label": "Australian Consumer Law \u00b7 Sydney / NSW coverage",
+    "license": "CC-BY-4.0",
+    "license_url": "https://creativecommons.org/licenses/by/4.0/",
+    "revision": "ce532ddeb514fa477d6466a892fa17e62d21513e",
+    "scope": "Selected Commonwealth Australian Consumer Law provisions, applicable nationally including Sydney and NSW. State-only laws, council rules and practical complaint-handling guidance are outside this collection."
+  },
+  "corpus_sha256": "ef9c72bec9e12c63d802d7a38389a45ce9bb6c6e457dff3aab4b391197db5b7e",
+  "limitations": "Development set only. Reference syntax, source presence and keywords do not measure factual correctness or entailment. Extractive mode does not judge answerability. Latency includes cold loading on the first applicable question.",
   "metrics": {
-    "questions": 9,
-    "retrieval_hit_at_1": 1.0,
-    "retrieval_hit_at_k": 1.0,
-    "expected_source_cited_rate": 1.0,
-    "unsupported_abstention_rate": 0.6666666666666666,
     "answerable_response_rate": 1.0,
     "citation_format_pass_rate": 1.0,
-    "mean_latency_seconds": 1.8291777777777894e-05
+    "expected_source_cited_rate": 1.0,
+    "mean_latency_seconds": 7.163891666666737e-05,
+    "questions": 12,
+    "retrieval_hit_at_1": 0.7777777777777778,
+    "retrieval_hit_at_k": 1.0,
+    "unsupported_abstention_rate": 0.6666666666666666
   },
-  "limitations": "Development set only. Reference syntax, source presence and keywords do not measure factual correctness or entailment. Extractive mode does not judge answerability. Latency includes cold loading on the first applicable question.",
-  "corpus_sha256": "3851bb5bd5e24c1acdcfda6fa41318acaf43ef1ffdeab478029095a497a9bd07",
-  "questions_sha256": "97f7bb601ac96786908c6d003b374fb065732b93466b11b412a274d94c90d696",
+  "questions_sha256": "a665c1d62ae1215d702914f3c1f4dc579ed8bffbc98b2b862cdd225934413393",
   "results": [
     {
-      "id": "warranty-expiry",
-      "question": "Do consumer guarantee rights end when the manufacturer's warranty expires?",
+      "abstained": false,
       "answerable": true,
-      "retrieval_hit_at_1": true,
-      "abstained": false
-    },
-    {
-      "id": "extended-warranty",
-      "question": "Are extended warranties optional and can they duplicate automatic consumer rights?",
-      "answerable": true,
-      "retrieval_hit_at_1": true,
-      "abstained": false
-    },
-    {
-      "id": "major-product",
-      "question": "What refund or replacement can a consumer choose for a product with a major problem?",
-      "answerable": true,
-      "retrieval_hit_at_1": true,
-      "abstained": false
-    },
-    {
-      "id": "minor-product",
-      "question": "Does the business have to offer a refund immediately for a minor problem?",
-      "answerable": true,
-      "retrieval_hit_at_1": true,
-      "abstained": false
-    },
-    {
       "id": "quality",
-      "question": "What factors help determine acceptable quality and durability of a product?",
-      "answerable": true,
-      "retrieval_hit_at_1": true,
-      "abstained": false
+      "question": "Under section 54, what factors determine whether goods are of acceptable quality?",
+      "retrieval_hit_at_1": true
     },
     {
-      "id": "packaging",
-      "question": "Must I keep the original packaging to return a faulty product?",
+      "abstained": false,
       "answerable": true,
-      "retrieval_hit_at_1": true,
-      "abstained": false
+      "id": "care-skill",
+      "question": "What guarantee applies to services being supplied with due care and skill?",
+      "retrieval_hit_at_1": true
     },
     {
-      "id": "tax",
-      "question": "What income tax deductions can a sole trader claim for cryptocurrency losses?",
+      "abstained": false,
+      "answerable": true,
+      "id": "purpose",
+      "question": "What is the guarantee of fitness for a disclosed purpose under section 55?",
+      "retrieval_hit_at_1": true
+    },
+    {
+      "abstained": false,
+      "answerable": true,
+      "id": "misleading",
+      "question": "What does section 18 say about misleading or deceptive conduct?",
+      "retrieval_hit_at_1": true
+    },
+    {
+      "abstained": false,
+      "answerable": true,
+      "id": "unfair-terms",
+      "question": "What conditions make a consumer contract term unfair under section 24?",
+      "retrieval_hit_at_1": false
+    },
+    {
+      "abstained": false,
+      "answerable": true,
+      "id": "major-goods",
+      "question": "When is a failure to comply with a guarantee a major failure for goods?",
+      "retrieval_hit_at_1": false
+    },
+    {
+      "abstained": false,
+      "answerable": true,
+      "id": "supplier-remedy",
+      "question": "How may a supplier remedy a failure to comply with a guarantee?",
+      "retrieval_hit_at_1": true
+    },
+    {
+      "abstained": false,
+      "answerable": true,
+      "id": "reject-goods",
+      "question": "What are the consequences of rejecting goods, including a refund or replacement?",
+      "retrieval_hit_at_1": true
+    },
+    {
+      "abstained": false,
+      "answerable": true,
+      "id": "exclusions",
+      "question": "Which terms of a contract cannot exclude consumer guarantees?",
+      "retrieval_hit_at_1": true
+    },
+    {
+      "abstained": false,
       "answerable": false,
-      "retrieval_hit_at_1": null,
-      "abstained": true
-    },
-    {
       "id": "visa",
       "question": "What documents are required to renew an Australian student visa?",
-      "answerable": false,
-      "retrieval_hit_at_1": null,
-      "abstained": true
+      "retrieval_hit_at_1": null
     },
     {
-      "id": "unsupported-number",
-      "question": "What is the exact statutory dollar penalty for breaching consumer guarantees?",
+      "abstained": true,
       "answerable": false,
-      "retrieval_hit_at_1": null,
-      "abstained": false
+      "id": "ncat-fees",
+      "question": "What is the current NCAT application fee in Sydney?",
+      "retrieval_hit_at_1": null
+    },
+    {
+      "abstained": true,
+      "answerable": false,
+      "id": "office-hours",
+      "question": "Which Sydney Fair Trading office opens on Saturday?",
+      "retrieval_hit_at_1": null
     }
   ]
 }

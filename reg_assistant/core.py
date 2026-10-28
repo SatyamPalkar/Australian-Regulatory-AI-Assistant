@@ -11,6 +11,7 @@ from pathlib import Path
 EMBEDDING_MODEL = "sentence-transformers/all-MiniLM-L6-v2"
 LLM_MODEL = "mlx-community/Qwen2.5-1.5B-Instruct-4bit"
 ABSTENTION = "I don't have enough evidence in the indexed documents to answer this question."
+MIN_QUERY_COVERAGE = 0.5
 STOP = set("a an the and or but if of to for in on at by with as is are was were be been being do does did can could would should must may might have has had i me my we you your it its this that these those what which who when where why how not no from about under than then into there they their will all any some australian australia consumer consumers product products business businesses rights".split())
 
 
@@ -67,6 +68,12 @@ def vector(text, idf):
               for word, count in counts.items() if word in idf}
     norm = math.sqrt(sum(value * value for value in values.values())) or 1
     return {word: value / norm for word, value in values.items()}
+
+
+def query_coverage(question, idf):
+    """A lexical scope heuristic; unseen query terms must not inflate relevance."""
+    words = set(tokens(question))
+    return sum(word in idf for word in words) / len(words) if words else 0.0
 
 
 def semantic_model(name):
@@ -161,6 +168,8 @@ def answer(question, retriever, generator=None, k=3, min_score=None):
     threshold = min_score if min_score is not None else (0.16 if retriever.index["backend"] == "tfidf" else 0.40)
     hits = retriever.search(question, k)
     evidence = [hit for hit in hits if hit["score"] >= threshold]
+    if retriever.index["backend"] == "tfidf" and query_coverage(question, retriever.index["idf"]) < MIN_QUERY_COVERAGE:
+        evidence = []
     # A relevance score is not evidence of answerability. Extractive mode only
     # offers passages; the model must separately decide whether they answer it.
     if not evidence:

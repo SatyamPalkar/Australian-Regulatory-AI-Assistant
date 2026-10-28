@@ -1,0 +1,12 @@
+{"id":"quality","question":"Under section 54, what factors determine whether goods are of acceptable quality?","answerable":true,"expected_sources":["acl-s54"],"expected_terms":["quality","durable"]}
+{"id":"care-skill","question":"What guarantee applies to services being supplied with due care and skill?","answerable":true,"expected_sources":["acl-s60"],"expected_terms":["care","skill"]}
+{"id":"purpose","question":"What is the guarantee of fitness for a disclosed purpose under section 55?","answerable":true,"expected_sources":["acl-s55"],"expected_terms":["purpose","fit"]}
+{"id":"misleading","question":"What does section 18 say about misleading or deceptive conduct?","answerable":true,"expected_sources":["acl-s18"],"expected_terms":["misleading","deceptive"]}
+{"id":"unfair-terms","question":"What conditions make a consumer contract term unfair under section 24?","answerable":true,"expected_sources":["acl-s24"],"expected_terms":["imbalance","detriment"]}
+{"id":"major-goods","question":"When is a failure to comply with a guarantee a major failure for goods?","answerable":true,"expected_sources":["acl-s260"],"expected_terms":["major","goods"]}
+{"id":"supplier-remedy","question":"How may a supplier remedy a failure to comply with a guarantee?","answerable":true,"expected_sources":["acl-s261"],"expected_terms":["repairing","replacing"]}
+{"id":"reject-goods","question":"What are the consequences of rejecting goods, including a refund or replacement?","answerable":true,"expected_sources":["acl-s263"],"expected_terms":["refund","replace"]}
+{"id":"exclusions","question":"Which terms of a contract cannot exclude consumer guarantees?","answerable":true,"expected_sources":["acl-s64"],"expected_terms":["void","excluding"]}
+{"id":"visa","question":"What documents are required to renew an Australian student visa?","answerable":false,"expected_sources":[],"expected_terms":[]}
+{"id":"ncat-fees","question":"What is the current NCAT application fee in Sydney?","answerable":false,"expected_sources":[],"expected_terms":[]}
+{"id":"office-hours","question":"Which Sydney Fair Trading office opens on Saturday?","answerable":false,"expected_sources":[],"expected_terms":[]}

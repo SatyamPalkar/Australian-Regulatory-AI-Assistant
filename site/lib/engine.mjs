@@ -21,7 +21,9 @@ export function retrieve(question, k = 3) {
 
 export function ask(question) {
   const retrieved = retrieve(question);
-  const evidence = retrieved.filter((hit) => hit.score >= 0.16);
+  const words = [...new Set(terms(question))];
+  const coverage = words.length ? words.filter((word) => Object.hasOwn(corpus.idf, word)).length / words.length : 0;
+  const evidence = coverage >= corpus.min_query_coverage ? retrieved.filter((hit) => hit.score >= 0.16) : [];
   return { answer: evidence.length ? "Relevant passages from the local corpus (answerability has not been verified):\n\n" +
       evidence.map((hit, i) => `${hit.text} [${i + 1}]`).join("\n\n") : ABSTENTION,
     abstained: !evidence.length, evidence, retrieved, citation_format_valid: true, mode: "extractive" };
@@ -29,6 +31,11 @@ export function ask(question) {
 
 export function status() {
   return { status: "ok", mode: "extractive", backend: "tfidf", corpus_sha256: corpus.corpus_sha256,
-    sources: corpus.chunks.map(({ text, ...source }) => ({ ...source, word_count: text.split(/\s+/).length })),
-    limitations: "Three project-authored summaries of ACCC guidance. Related passages may not answer your question. No language model or fine-tuned adapter is running in this deployment." };
+    sources: corpus.sources,
+    collection: corpus.collection,
+    section_count: corpus.sources.length,
+    chunk_count: corpus.chunks.length,
+    law_count: new Set(corpus.sources.map((source) => source.law_id)).size,
+    version_dates: [...new Set(corpus.sources.map((source) => source.version_date))],
+    limitations: "Selected statutory extracts from a pinned Hugging Face dataset. Version dates describe the source compilation, not a guarantee of current law. Related passages may not answer the question. No language model is running in this deployment." };
 }

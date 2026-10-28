@@ -27,7 +27,7 @@ def main(argv=None):
     fetch.add_argument("--output", default="data/documents.jsonl")
     fetch.add_argument("--raw-dir", default="data/raw")
     index = sub.add_parser("index", help="Build a local lexical or semantic index")
-    index.add_argument("--documents", default="data/demo.jsonl")
+    index.add_argument("--documents", default="data/consumer_law.jsonl")
     index.add_argument("--output", default="data/index.json")
     index.add_argument("--backend", choices=["tfidf", "semantic"], default="tfidf")
     index.add_argument("--embedding-model", default=EMBEDDING_MODEL)
@@ -36,8 +36,8 @@ def main(argv=None):
     ask.add_argument("--json", action="store_true")
     model_options(ask)
     evaluate = sub.add_parser("evaluate")
-    evaluate.add_argument("--questions", default="eval/dev.jsonl")
-    evaluate.add_argument("--output", default="reports/dev-baseline.json")
+    evaluate.add_argument("--questions", default="eval/consumer-law-dev.jsonl")
+    evaluate.add_argument("--output", default="reports/consumer-law-baseline.json")
     model_options(evaluate)
     args = parser.parse_args(argv)
     try:
@@ -72,7 +72,7 @@ def main(argv=None):
                 if result["evidence"] and not result["abstained"]:
                     print("\nSources:")
                     for i, source in enumerate(result["evidence"], 1):
-                        date = source.get("retrieved_at", source.get("verified_on", "unknown"))
+                        date = source.get("version_date", source.get("retrieved_at", source.get("verified_on", "unknown")))
                         print(f"[{i}] {source['title']} — {source['url']}")
                         print(f"    {source['source_kind']}; source date: {date}; chunk: {source['chunk_id']}")
             return 0

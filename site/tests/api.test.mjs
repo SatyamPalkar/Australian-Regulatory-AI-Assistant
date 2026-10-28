@@ -15,15 +15,16 @@ const request = (body, headers = {}) => new Request("https://example.test/api/as
 });
 
 test("API returns cited passages and measured latency", async () => {
-  const response = await POST(request({ question: "Are extended warranties optional?" }));
+  const response = await POST(request({ question: "What guarantee applies to services supplied with due care and skill?" }));
   assert.equal(response.status, 200);
   const body = await response.json();
-  assert.equal(body.abstained, false); assert.equal(body.evidence[0].id, "accc-warranties");
+  assert.equal(body.abstained, false); assert.equal(body.evidence[0].id, "acl-s60");
+  assert.equal(body.evidence[0].source_kind, "legislation_extract");
   assert.match(body.answer, /\[1\]/); assert.ok(body.latency_ms >= 0);
   assert.equal(response.headers.get("cache-control"), "no-store");
 });
 test("API declines out-of-scope questions", async () => {
-  const response = await POST(request({ question: "How do I renew a student visa?" }));
+  const response = await POST(request({ question: "What is the current NCAT application fee in Sydney?" }));
   assert.equal((await response.json()).abstained, true);
 });
 test("API validates body shape and question limits", async () => {
@@ -44,5 +45,6 @@ test("API requires JSON content type", async () => {
 });
 test("Health endpoint reports the active corpus", async () => {
   const response = getStatus(); assert.equal(response.status, 200);
-  const body = await response.json(); assert.equal(body.status, "ok"); assert.equal(body.sources.length, 3);
+  const body = await response.json(); assert.equal(body.status, "ok"); assert.equal(body.sources.length, body.section_count);
+  assert.equal(body.collection.dataset, "cchew/lex-au"); assert.equal(body.law_count, 1);
 });

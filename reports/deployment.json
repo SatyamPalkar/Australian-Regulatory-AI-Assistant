@@ -3,18 +3,25 @@
   "status": "succeeded",
   "access": "owner-private",
   "project_id": "appgprj_6ae14b7d564c81918de32146da058da4",
-  "deployment_id": "appgdep_6ae14e9eae3081919d830e8da6247357",
-  "version_id": "appgprj_6ae14b7d564c81918de32146da058da4~appgver_678056353e2081918ce8af65bbf726b6",
-  "sites_source_commit": "b4d99cf8e409fac4cf9a7fff6d1037e2fb164549",
-  "deployed_at_utc": "2026-10-28T01:23:57.707374+00:00",
+  "deployment_id": "appgdep_6ae159ce39d081919b5dbd8d5a3de93b",
+  "version_id": "appgprj_6ae14b7d564c81918de32146da058da4~appgver_affdbf33c9ec8191b930403f9eb22a06",
+  "sites_source_commit": "1b57593b48c77e24d35db536caa47ae1933e0094",
+  "deployed_at_utc": "2026-10-28T02:11:43.858158+00:00",
+  "theme": "Graphite and electric lime chatbot workspace",
   "verification": {
-    "python_tests_passed": 10,
-    "web_tests_passed": 20,
+    "python_tests_passed": 17,
+    "web_tests_passed": 24,
     "typescript": "passed",
     "production_build": "passed",
     "browser_qa": ["desktop", "cited answer", "source dialog", "source library", "evaluation", "new research", "unsupported question", "mobile overflow"],
     "browser_qa_target": "local production Worker runtime",
     "hosted_verification": "Sites deployment service returned succeeded"
   },
-  "limitations": "Three curated ACCC summaries with TF-IDF extraction. No hosted semantic embeddings, LLM, MLX inference or trained adapter. CI checks are configured; GitHub Actions execution is not recorded here."
+  "dataset": "cchew/lex-au",
+  "dataset_revision": "ce532ddeb514fa477d6466a892fa17e62d21513e",
+  "statutory_sections": 37,
+  "retrieval_chunks": 93,
+  "source_compilation": "C2026C00389",
+  "source_version_date": "2026-08-27",
+  "limitations": "Selected national Australian Consumer Law sections relevant to Sydney/NSW; not NSW-only legislation. A newer official Act compilation was listed when checked. TF-IDF extraction; no hosted semantic embeddings, LLM or trained adapter. The development evaluation includes one unsupported-question failure. GitHub Actions execution is not recorded here."
 }

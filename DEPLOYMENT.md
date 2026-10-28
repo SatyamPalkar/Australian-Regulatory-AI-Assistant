@@ -8,7 +8,10 @@ React interface calls same-origin API routes on a Cloudflare Worker. The Worker
 searches an exported copy of the Python TF-IDF index and returns cited passages.
 No third-party LLM API key is needed.
 
-The hosted corpus contains three project-authored ACCC guidance summaries. It is
+The hosted corpus contains 37 real Australian Consumer Law sections from the pinned
+Hugging Face `cchew/lex-au` dataset, indexed as 93 passages. Its source compilation
+is 27 August 2026; a newer official compilation was listed when checked. See
+`data/ATTRIBUTION.md` for provenance, currency and CC BY 4.0 attribution. It is
 an extractive research demo; semantic embeddings, MLX generation and fine-tuning
 are not running on the hosted Worker. MLX requires Apple Silicon and remains in
 the Python CLI workflow described in `README.md`.
@@ -25,7 +28,7 @@ npm run dev
 ```
 
 Open `http://localhost:5173`. The UI includes a question composer, clickable example
-questions, cited evidence, source details, original guidance links, an evaluation
+questions, cited evidence, source details, statutory source and dataset links, an evaluation
 view, copying, and JSON research exports. Questions stay in browser memory and
 reset on refresh; the application does not store a conversation database.
 
@@ -47,7 +50,7 @@ production build; it is a local verification server, not a public hosting comman
 | Endpoint | Purpose |
 | --- | --- |
 | `GET /api/status` | Health, active corpus fingerprint, source metadata and limitations |
-| `POST /api/ask` | Search the corpus; accepts JSON `{"question":"Are extended warranties optional?"}` |
+| `POST /api/ask` | Search the corpus; accepts JSON `{"question":"What guarantee applies to services supplied with due care and skill?"}` |
 | `GET /api/evaluation` | Saved development report shown in the evaluation view |
 
 Question requests are limited to 2,000 characters. Invalid JSON, unsupported content
@@ -67,7 +70,7 @@ npm run build
 ```
 
 The Python suite covers retrieval and ingestion. The web suite tests API contracts
-and exact output parity against Python on the nine development questions. The
+and exact output parity against Python on the twelve development questions. The
 GitHub Actions workflow repeats export consistency, tests, type checking and the
 production build for pushes and pull requests. It does not automatically deploy
 to Sites; publication uses the Sites source/version workflow.
@@ -106,7 +109,8 @@ archive. This application has no database, storage bindings or paid model API ke
 
 ## Updating the corpus
 
-Update and review `data/demo.jsonl`, then rerun the Python development evaluation
+Review the pinned manifest `data/huggingface_sources.json` and reproduce the import
+with `python3 scripts/import_huggingface.py`, then rerun the Python development evaluation
 before exporting the web corpus and fixtures:
 
 ```sh
