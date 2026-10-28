@@ -13,11 +13,17 @@ from .rag import ROOT, load_pipeline, model_manifest
 BASE_PATH = "/Australian-Regulatory-AI-Assistant"
 
 
+class HistoryTurn(BaseModel):
+    question: str = Field(min_length=1, max_length=2000)
+    answer: str = Field(max_length=4000)
+
+
 class Question(BaseModel):
     question: str = Field(min_length=1, max_length=2000)
+    history: list[HistoryTurn] = Field(default_factory=list, max_length=3)
 
 
-def create_app(pipeline=None, index_path=None, adapter=None):
+def create_app(pipeline=None, index_path=None, adapter=None, answer_style="concise"):
     app = FastAPI(title="Australian Regulatory RAG", version="0.2.0")
     app.add_middleware(CORSMiddleware, allow_origins=["https://satyampalkar.github.io",
                        "http://127.0.0.1:4174", "http://localhost:4174"],
@@ -37,7 +43,8 @@ def create_app(pipeline=None, index_path=None, adapter=None):
                 "corpus_sha256": corpus["corpus_sha256"], "collection": corpus["collection"],
                 "section_count": len(corpus["sources"]), "chunk_count": len(corpus["chunks"]),
                 "law_count": 1, "version_dates": sorted({s["version_date"] for s in corpus["sources"]}),
-                "models": model_manifest(), "adapter": bool(adapter)}
+                "models": model_manifest(), "adapter": bool(adapter), "answer_style": answer_style,
+                "conversation": {"max_turns": 3, "max_characters": 6000, "persistent": False}}
 
     @app.get("/api/evaluation")
     def evaluation():
@@ -52,13 +59,18 @@ def create_app(pipeline=None, index_path=None, adapter=None):
     def ask(body: Question):
         if not body.question.strip():
             raise HTTPException(422, "Enter a nonempty question")
+        from .conversation import bounded_history
+        try:
+            history = bounded_history([turn.model_dump() for turn in body.history])
+        except ValueError as exc:
+            raise HTTPException(422, str(exc)) from exc
         # One model request at a time bounds memory and avoids concurrent MLX access.
         if not lock.acquire(blocking=False):
             raise HTTPException(429, "The local model is answering another question. Try again shortly.")
         try:
             if state["pipeline"] is None:
-                state["pipeline"] = load_pipeline(index_path, adapter)
-            result = state["pipeline"].ask(body.question)
+                state["pipeline"] = load_pipeline(index_path, adapter, answer_style=answer_style)
+            result = state["pipeline"].ask(body.question, history=history) if history else state["pipeline"].ask(body.question)
             # Raw rejected text belongs in offline reports, not the user answer.
             result.pop("raw_generation", None)
             return result

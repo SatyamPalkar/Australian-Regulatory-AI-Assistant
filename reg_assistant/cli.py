@@ -44,12 +44,13 @@ def main(argv=None):
     serve.add_argument("--adapter", default="adapters/consumer-law")
     serve.add_argument("--base-model", action="store_true", help="Run the unadapted model for comparison")
     serve.add_argument("--port", type=int, default=8000)
+    serve.add_argument("--answer-style", choices=["concise", "explain"], default="concise")
     args = parser.parse_args(argv)
     try:
         if args.command == "serve":
             import uvicorn
             from .api import create_app
-            uvicorn.run(create_app(index_path=args.index, adapter=None if args.base_model else args.adapter), host="127.0.0.1", port=args.port)
+            uvicorn.run(create_app(index_path=args.index, adapter=None if args.base_model else args.adapter, answer_style=args.answer_style), host="127.0.0.1", port=args.port)
             return 0
         if args.command == "ingest":
             count = ingest(args.manifest, args.output, args.raw_dir)

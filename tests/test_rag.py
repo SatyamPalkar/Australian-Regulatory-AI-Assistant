@@ -148,6 +148,18 @@ class AnswerTests(unittest.TestCase):
         self.assertTrue(result["abstained"])
         self.assertIsNone(result["scope_note"])
 
+    def test_default_followup_quotes_fresh_source_and_does_not_reuse_model_output(self):
+        def fail(*_args, **_kwargs):
+            self.fail("Dependent default follow-ups must quote the source instead of generating qualifications")
+        history = [{"question": "Explain acceptable quality under section 54.", "answer": "Untrusted old claim [99]."}]
+        result = self.pipeline(.9, fail).ask("What are the exceptions?", history=history)
+        original = next(d for d in read_jsonl(ROOT / "data/consumer_law.jsonl") if d["id"] == "acl-s54")
+        self.assertEqual(result["mode"], "source-quotes")
+        self.assertEqual(result["answer"], f"Source wording:\n{original['text']} [1]")
+        self.assertNotIn("[99]", result["answer"])
+        self.assertEqual(result["trace"]["history_turns_used"], 1)
+        self.assertNotIn("generated_tokens", result["trace"])
+
 
 class FrozenSplitTests(unittest.TestCase):
     def test_split_hashes_and_source_disjointness(self):

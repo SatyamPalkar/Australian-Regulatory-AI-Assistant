@@ -35,6 +35,8 @@ jobs:
           git diff --exit-code -- site/lib/corpus.json site/lib/parity-fixtures.json site/lib/evaluation.json
           python3 scripts/export_experiments.py
           git diff --exit-code -- site/lib/experiments.json reports/comparison.md
+          python3 scripts/export_phase2.py
+          git diff --exit-code -- site/lib/phase2.json reports/phase2-comparison.md
       - name: Install locked web dependencies
         working-directory: site
         run: npm run install:ci

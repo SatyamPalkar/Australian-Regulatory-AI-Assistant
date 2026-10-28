@@ -57,3 +57,14 @@ On 24 supported test questions, base RAG returned 17 accepted cited answers and
 adapter RAG returned 20. Both declined the 12 unsupported questions. These results
 are limited to this small test and include the effects of retrieval and structural
 output rejection. See the saved raw reports for counterexamples.
+
+## Second adapter and conversation context
+
+The phase-two adapter is experimental and remains opt-in. It learned longer
+Rule/Meaning/Limits responses from 64 synthetic examples, but source checks found
+misstatements despite better structural scores. It was not promoted to default.
+The local API accepts bounded recent history; default dependent follow-ups quote
+fresh source text because live checks found qualification errors in generative
+follow-ups as well. Standalone concise answers retain the original model's known
+limitations. See [PHASE2.md](PHASE2.md) for data provenance, measurements, review
+findings, exact history limits and reproduction.

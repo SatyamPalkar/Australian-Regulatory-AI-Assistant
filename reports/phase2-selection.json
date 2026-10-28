@@ -1,0 +1,52 @@
+{
+  "selected_mode": "v2-explain",
+  "adapter": "adapters/explanatory-v2-selected",
+  "answer_style": "explain",
+  "created_at": "2026-10-28T08:21:04.089303+00:00",
+  "basis": "Development-only improvement in explanation structure and qualification keywords, without lower source citation or unsupported abstention. These proxies do not establish factual accuracy. Test reports were not consulted.",
+  "development_metrics": {
+    "v1-explain": {
+      "questions": 18,
+      "supported": 13,
+      "unsupported": 5,
+      "supported_response_rate": 0.38461538461538464,
+      "structured_explanation_rate": 0.07692307692307693,
+      "expected_source_cited_rate": 0.3076923076923077,
+      "qualification_term_coverage": 0.08333333333333333,
+      "unsupported_abstention_rate": 1.0,
+      "followup_expected_source_cited_rate": 1.0,
+      "p50_latency_ms": 1506.8020835751668,
+      "p95_latency_ms": 9496.026792097837,
+      "max_prompt_tokens": 1839,
+      "peak_mlx_memory_gb": 2.042643612,
+      "mean_output_tokens_supported": 166.15384615384616,
+      "factual_accuracy": null,
+      "citation_entailment": null
+    },
+    "v2-explain": {
+      "questions": 18,
+      "supported": 13,
+      "unsupported": 5,
+      "supported_response_rate": 0.9230769230769231,
+      "structured_explanation_rate": 0.9230769230769231,
+      "expected_source_cited_rate": 0.8461538461538461,
+      "qualification_term_coverage": 0.5833333333333334,
+      "unsupported_abstention_rate": 1.0,
+      "followup_expected_source_cited_rate": 1.0,
+      "p50_latency_ms": 1684.4730420270935,
+      "p95_latency_ms": 3058.536124881357,
+      "max_prompt_tokens": 1839,
+      "peak_mlx_memory_gb": 2.042643612,
+      "mean_output_tokens_supported": 105.6923076923077,
+      "factual_accuracy": null,
+      "citation_entailment": null
+    }
+  },
+  "automated_proxy_candidate": "v2-explain",
+  "serving_mode": "v1-concise",
+  "serving_adapter": "adapters/consumer-law",
+  "serving_answer_style": "concise",
+  "development_review_veto": "reports/phase2-development-review.json",
+  "serving_decision_at": "2026-10-28T08:23:30.728097+00:00",
+  "serving_decision_basis": "Development source review found substantive errors in expanded answers, and a live original-adapter follow-up also misstated a qualification. Keep original concise standalone answers and use fresh verbatim source wording for dependent follow-ups. Explanatory generation remains experimental."
+}

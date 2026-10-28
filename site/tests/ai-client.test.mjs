@@ -32,3 +32,15 @@ test("AI failure stays visible instead of silently becoming a browser answer", a
     await assert.rejects(apiClient("http://localhost:8000").ask("care?", new AbortController().signal), /Local model unavailable/);
   } finally { globalThis.fetch = original; }
 });
+
+test("AI client forwards bounded conversation turns when provided", async () => {
+  const original = globalThis.fetch;
+  const history = [{ question: "Explain the title guarantee", answer: "A supplier needs the right to dispose of the goods. [1]" }];
+  globalThis.fetch = async (_url, options) => {
+    assert.deepEqual(JSON.parse(options.body), { question: "What are the exceptions?", history });
+    return new Response(JSON.stringify({ mode: "rag", answer: "Limits. [1]" }));
+  };
+  try {
+    await apiClient("http://localhost:8000").ask("What are the exceptions?", new AbortController().signal, history);
+  } finally { globalThis.fetch = original; }
+});

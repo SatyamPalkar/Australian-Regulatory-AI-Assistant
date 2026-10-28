@@ -30,6 +30,8 @@ jobs:
         run: |
           python scripts/export_experiments.py
           git diff --exit-code -- site/lib/experiments.json reports/comparison.md
+          python scripts/export_phase2.py
+          git diff --exit-code -- site/lib/phase2.json reports/phase2-comparison.md
       - name: Test deployed engine against Python fixtures
         run: node --test site/tests/engine.test.mjs
       - name: Install web dependencies

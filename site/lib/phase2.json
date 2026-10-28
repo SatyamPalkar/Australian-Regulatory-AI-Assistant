@@ -1,0 +1,56 @@
+{
+  "runs": [
+    {
+      "mode": "v1-explain",
+      "metrics": {
+        "questions": 16,
+        "supported": 10,
+        "unsupported": 6,
+        "supported_response_rate": 0.4,
+        "structured_explanation_rate": 0.0,
+        "expected_source_cited_rate": 0.4,
+        "qualification_term_coverage": 0.25,
+        "unsupported_abstention_rate": 1.0,
+        "followup_expected_source_cited_rate": 0.5,
+        "p50_latency_ms": 778.8234580075368,
+        "p95_latency_ms": 5579.22275015153,
+        "max_prompt_tokens": 1099,
+        "peak_mlx_memory_gb": 1.965759956,
+        "mean_output_tokens_supported": 197.5,
+        "factual_accuracy": null,
+        "citation_entailment": null
+      },
+      "report": "reports/phase2-test-v1-explain.json"
+    },
+    {
+      "mode": "v2-explain",
+      "metrics": {
+        "questions": 16,
+        "supported": 10,
+        "unsupported": 6,
+        "supported_response_rate": 0.6,
+        "structured_explanation_rate": 0.6,
+        "expected_source_cited_rate": 0.6,
+        "qualification_term_coverage": 0.35,
+        "unsupported_abstention_rate": 1.0,
+        "followup_expected_source_cited_rate": 0.5,
+        "p50_latency_ms": 982.8962498577312,
+        "p95_latency_ms": 3896.5549170970917,
+        "max_prompt_tokens": 1099,
+        "peak_mlx_memory_gb": 1.96067096,
+        "mean_output_tokens_supported": 125.0,
+        "factual_accuracy": null,
+        "citation_entailment": null
+      },
+      "report": "reports/phase2-test-v2-explain.json"
+    }
+  ],
+  "serving_mode": "v1-concise",
+  "serving_decision": "Development source review found substantive errors in expanded answers, and a live original-adapter follow-up also misstated a qualification. Keep original concise standalone answers and use fresh verbatim source wording for dependent follow-ups. Explanatory generation remains experimental.",
+  "training": {
+    "elapsed_seconds": 145.0594975000713,
+    "peak_mlx_memory_gb": 2.466396896,
+    "selected_step": 120
+  },
+  "limitations": "Explanation structure and qualification-keyword scores are proxies, not factual correctness. Development source review found substantive errors; original concise adapter remains the default. New adapter is experimental. Both test and training examples are synthetic; independent review pending."
+}

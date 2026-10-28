@@ -1,0 +1,39 @@
+{
+  "version": 2,
+  "origin": "Synthetic source-authored explanatory and conversational examples. Author source check; independent legal/entailment review pending.",
+  "test_frozen_before_phase2_training": true,
+  "train_examples": 64,
+  "validation_examples": 10,
+  "development_questions": 18,
+  "test_questions": 16,
+  "training_sources": [
+    "acl-s18",
+    "acl-s24",
+    "acl-s260",
+    "acl-s261",
+    "acl-s263",
+    "acl-s54",
+    "acl-s55",
+    "acl-s60",
+    "acl-s61",
+    "acl-s64"
+  ],
+  "test_sources": [
+    "acl-s23",
+    "acl-s25",
+    "acl-s259",
+    "acl-s267",
+    "acl-s268",
+    "acl-s271",
+    "acl-s29",
+    "acl-s64a"
+  ],
+  "files": {
+    "data/training-phase2/train.jsonl": "8f60e19efe61af9efe8e25918f787b42708bd15ef4dd33d53ddf0594754a0ebb",
+    "data/training-phase2/valid.jsonl": "88119d79b04cdffd4d554a0297f21d89d630c905b64f2116c168c7e23b8d4911",
+    "eval/phase2-dev.jsonl": "210e5f5b40d8356a61721bd80486279eb8b3e078f965ff7d08ea72706cbf485c",
+    "eval/phase2-test.jsonl": "54edb8c9eeb382e6e1871b3dbee628eae4992a52d8564195bf1c8a5bb3c99af7"
+  },
+  "corpus_sha256": "ef9c72bec9e12c63d802d7a38389a45ce9bb6c6e457dff3aab4b391197db5b7e",
+  "limitations": "Validation shares source topics and answer targets with training. New test prompts use disjoint training sections, but the corpus and related topics were already inspected; this is not an independent legal benchmark. Automated completeness proxies are not factual accuracy."
+}

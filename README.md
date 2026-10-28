@@ -70,6 +70,23 @@ flowchart LR
     C --> A[Cited answer or abstention]
 ```
 
+## Conversation context and the next experiment
+
+The local AI now accepts up to three recent turns within a 6,000-character history
+budget and retrieves fresh evidence for follow-ups. The default profile quotes
+fresh statutory wording for dependent follow-ups; the original concise adapter
+handles standalone questions. The browser-only demo still handles questions
+independently.
+
+A second adapter trained on 64 explanatory/conversation examples in 145.1 seconds
+with 2.47 GB peak MLX allocation. On its 16-question synthetic test it produced
+three-part cited explanations for 6/10 supported questions, versus 0/10 for the
+original adapter under the same explanatory prompt; both declined 6/6 unsupported
+questions. **Source review found factual errors, so the new adapter was not promoted.**
+Structure/keyword improvements are not verified answer accuracy.
+
+[Phase-two protocol and local commands](PHASE2.md) · [Results and failures](reports/phase2-comparison.md)
+
 ## Real dataset and Sydney coverage
 
 The statutory text comes from [cchew/lex-au on Hugging Face](https://huggingface.co/datasets/cchew/lex-au),

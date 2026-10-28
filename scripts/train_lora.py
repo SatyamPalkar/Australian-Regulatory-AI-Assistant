@@ -23,9 +23,15 @@ from reg_assistant.rag import local_model, model_manifest
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--smoke", action="store_true")
+    parser.add_argument("--phase2", action="store_true", help="Train the frozen explanatory/conversation experiment")
     args = parser.parse_args()
     verify_split()
-    config_path = ROOT / ("configs/lora-smoke.yaml" if args.smoke else "configs/lora-experiment.yaml")
+    if args.phase2 and args.smoke:
+        parser.error("Choose --smoke or --phase2")
+    if args.phase2:
+        from reg_assistant.experiments import verify_phase2
+        verify_phase2()
+    config_path = ROOT / ("configs/lora-phase2.yaml" if args.phase2 else "configs/lora-smoke.yaml" if args.smoke else "configs/lora-experiment.yaml")
     config = yaml.safe_load(config_path.read_text())
     from transformers import AutoTokenizer
     tokenizer = AutoTokenizer.from_pretrained(local_model("generator"), local_files_only=True)
@@ -44,9 +50,10 @@ def main():
             raise ValueError(f"{split} examples would be truncated: {max(lengths[split], default=0)} tokens")
     if (ROOT / config["adapter_path"] / "adapters.safetensors").exists():
         raise ValueError("Adapter already exists; preserve the measured run rather than overwrite it")
-    name = "lora-smoke" if args.smoke else "lora-training"
+    name = "lora-phase2" if args.phase2 else "lora-smoke" if args.smoke else "lora-training"
     log_path = ROOT / f"reports/{name}.log"
     start, peak = time.perf_counter(), 0
+    (ROOT / "reports/training-worker-memory.json").unlink(missing_ok=True)
     with log_path.open("w") as log:
         process = subprocess.Popen([sys.executable, "scripts/mlx_train_worker.py", "--config", str(config_path)],
                                    cwd=ROOT, stdout=log, stderr=subprocess.STDOUT)
@@ -75,6 +82,19 @@ def main():
                            "system_memory_gb": psutil.virtual_memory().total / 1e9},
               "adapter_sha256": hashlib.sha256(adapter.read_bytes()).hexdigest() if adapter.exists() else None,
               "limitations": "Small synthetic training set; loss and successful training do not establish improved answers. Process RSS and MLX allocation are different memory measures. Evaluate the adapter against the same base-RAG test before selecting it."}
+    if args.phase2:
+        report["phase2_manifest"] = verify_phase2()
+        if process.returncode == 0:
+            import shutil
+            available = [r for r in report["validation_losses"] if (adapter.parent / f"{r['step']:07d}_adapters.safetensors").exists()]
+            selected = min(available, key=lambda r: r["loss"])
+            destination = ROOT / "adapters/explanatory-v2-selected"
+            destination.mkdir(exist_ok=False)
+            shutil.copyfile(adapter.parent / f"{selected['step']:07d}_adapters.safetensors", destination / "adapters.safetensors")
+            shutil.copyfile(adapter.parent / "adapter_config.json", destination / "adapter_config.json")
+            report["selected_step"] = selected["step"]
+            report["selected_adapter_path"] = "adapters/explanatory-v2-selected"
+            report["selected_adapter_sha256"] = hashlib.sha256((destination / "adapters.safetensors").read_bytes()).hexdigest()
     write_json(ROOT / f"reports/{name}.json", report)
     print(text[-9000:])
     print(json.dumps({k: report[k] for k in ("completed", "elapsed_seconds", "peak_process_rss_gb", "peak_mlx_memory_gb")}, indent=2))

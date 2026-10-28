@@ -76,6 +76,16 @@ try {
   await screenshot("answer");
   await command("Input.dispatchKeyEvent", { type: "keyDown", key: "Escape", code: "Escape" });
   await waitFor("!document.querySelector('[role=dialog]')");
+  if (ragMode) {
+    await evaluate("document.querySelector('textarea').focus()");
+    await command("Input.insertText", { text: "What are the exceptions?" });
+    await evaluate("document.querySelector('[aria-label=\"Send question\"]').click()");
+    await waitFor("document.querySelectorAll('.turn').length === 2 && document.querySelectorAll('.turn')[1].querySelector('.generated-answer')");
+    assert.ok(await evaluate("document.querySelectorAll('.turn')[1].textContent.includes('abnormal use')"), "Follow-up receives fresh quality qualifications");
+    assert.ok(await evaluate("document.querySelectorAll('.turn')[1].textContent.includes('Source wording')"), "Default follow-up quotes source text");
+    assert.ok(await evaluate("document.querySelectorAll('.turn')[1].querySelector('.generation-trace').textContent.includes('1 recent turns')"), "One real previous turn reaches the server");
+    await screenshot("followup");
+  }
   await clickText("Source library"); await waitFor(`document.querySelectorAll('.library-card').length === ${activeCorpus.section_count}`);
   await evaluate("window.scrollTo(0, 0)");
   await screenshot("sources", false);
@@ -86,7 +96,7 @@ try {
   await clickText("Evaluation"); await waitFor(`document.querySelectorAll('.evaluation-row').length === ${activeEvaluation.metrics.questions}`);
   assert.ok(await evaluate("document.body.innerText.includes('Needs review')"));
   await screenshot("evaluation");
-  if (ragMode) assert.ok(await evaluate("document.querySelector('.experiment-panel')?.textContent.includes('LoRA model + RAG')"), "Measured model comparison is visible");
+  if (ragMode) assert.ok(await evaluate("Array.from(document.querySelectorAll('.experiment-panel')).some(panel => panel.textContent.includes('LoRA model + RAG'))"), "Measured model comparison is visible");
   if (ragMode) {
     await clickText("New research");
     await evaluate("document.querySelector('textarea').focus()");

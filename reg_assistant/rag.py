@@ -149,24 +149,35 @@ def validate_citations(text, count):
 
 
 class MeasuredMLXGenerator(MLXGenerator):
-    def __init__(self, adapter=None, max_tokens=256):
+    def __init__(self, adapter=None, max_tokens=None, answer_style="concise"):
         if adapter and not (Path(adapter) / "adapters.safetensors").exists():
             raise RuntimeError("Adapter missing. Run python scripts/train_lora.py, or serve --base-model.")
         super().__init__(local_model("generator"), adapter)
-        self.max_tokens, self.last_stats = max_tokens, {}
+        if answer_style not in ("concise", "explain"):
+            raise ValueError("Unknown answer style")
+        self.answer_style = answer_style
+        self.max_tokens, self.last_stats = max_tokens or (512 if answer_style == "explain" else 256), {}
 
     def load(self):
         if self.model is None:
             from mlx_lm import load
             self.model, self.tokenizer = load(self.name, adapter_path=self.adapter)
 
-    def __call__(self, question, evidence):
+    def __call__(self, question, evidence, history=None):
         import mlx.core as mx
         from mlx_lm import stream_generate
         from mlx_lm.sample_utils import make_sampler
         self.load()
         mx.reset_peak_memory()
-        prompt = self.tokenizer.apply_chat_template(prompt_messages(question, evidence),
+        if self.answer_style == "explain":
+            from .conversation import explanatory_messages
+            messages = explanatory_messages(question, evidence, history)
+        elif history:
+            from .conversation import concise_conversation_messages
+            messages = concise_conversation_messages(question, evidence, history)
+        else:
+            messages = prompt_messages(question, evidence)
+        prompt = self.tokenizer.apply_chat_template(messages,
                                                     tokenize=False, add_generation_prompt=True)
         pieces, last = [], None
         for response in stream_generate(self.model, self.tokenizer, prompt=prompt,
@@ -185,12 +196,15 @@ class RAGPipeline:
         self.retriever, self.generator = retriever, generator
         self.min_score, self.top_k = min_score, top_k
 
-    def ask(self, question):
+    def ask(self, question, history=None):
+        from .conversation import bounded_history, contextual_question
         start = time.perf_counter()
         question = question.strip()
         if not question or len(question) > 2000:
             raise ValueError("Enter a question between 1 and 2,000 characters")
-        hits = self.retriever.search(question, self.top_k)
+        history = bounded_history(history)
+        retrieval_question = contextual_question(question, history)
+        hits = self.retriever.search(retrieval_question, self.top_k)
         evidence = []
         documents = {d["id"]: d for d in read_jsonl(ROOT / "data/consumer_law.jsonl")}
         seen = set()
@@ -214,9 +228,20 @@ class RAGPipeline:
                 evidence.append({**hit, "evidence_span": "retrieved_chunk"})
         retrieved_ms = (time.perf_counter() - start) * 1000
         text, rejected, raw = ABSTENTION, None, None
+        generated = False
+        source_followup = bool(history and retrieval_question != question
+                               and getattr(self.generator, "answer_style", "concise") == "concise")
+        generation_history = history if retrieval_question != question or getattr(self.generator, "answer_style", "concise") == "explain" else []
         if evidence:
-            if self.generator:
-                raw = self.generator(question, evidence)
+            if source_followup:
+                # Source review found that both small adapters could invert legal
+                # qualifications. Serve fresh verbatim evidence for dependent
+                # follow-ups in the default profile; generative explain is opt-in.
+                evidence = evidence[:1]
+                text = f"Source wording:\n{evidence[0]['text']} [1]"
+            elif self.generator:
+                generated = True
+                raw = self.generator(question, evidence, history=generation_history) if generation_history else self.generator(question, evidence)
                 if validate_citations(raw, len(evidence)):
                     text = raw
                 else:
@@ -225,21 +250,27 @@ class RAGPipeline:
                 text = "Relevant passages (answerability has not been verified):\n\n" + "\n\n".join(
                     f"{c['text']} [{i}]" for i, c in enumerate(evidence, 1))
         return {"answer": text, "abstained": text == ABSTENTION, "evidence": evidence,
-                "scope_note": "This is a general overview of the retrieved statutory provisions. Brand-specific warranty terms and periods are not in this collection." if rewritten and text != ABSTENTION else None,
-                "retrieved": hits, "mode": "rag" if self.generator else "hybrid-extractive",
+                "scope_note": ("Showing the strongest retrieved provision for your follow-up. This source wording may not answer every part of your question."
+                               if source_followup and text != ABSTENTION else
+                               "This is a general overview of the retrieved statutory provisions. Brand-specific warranty terms and periods are not in this collection." if rewritten and text != ABSTENTION else None),
+                "retrieved": hits, "mode": "source-quotes" if source_followup and evidence else "rag" if self.generator else "hybrid-extractive",
                 "citation_format_valid": rejected is None, "rejection_reason": rejected,
                 "raw_generation": raw if rejected else None,
                 "latency_ms": (time.perf_counter() - start) * 1000,
                 "trace": {"retrieval_ms": retrieved_ms,
-                          "retrieval_query": statutory_search_query(question),
+                          "retrieval_query": statutory_search_query(retrieval_question),
+                          "history_turns_used": len(history) if retrieval_question != question or generated and generation_history else 0,
+                          "history_used_for_retrieval": retrieval_question != question,
+                          "answer_style": getattr(self.generator, "answer_style", "concise"),
+                          "response_strategy": "source_quotes" if source_followup and evidence else "generated" if generated else "retrieval",
                           "retriever": self.retriever.index["backend"],
                           "reranker": model_manifest()["reranker"]["repository"],
                           "generator": model_manifest()["generator"]["repository"] if self.generator else None,
                           "adapter": bool(getattr(self.generator, "adapter", None)),
-                          **(getattr(self.generator, "last_stats", {}) if evidence else {})}}
+                          **(getattr(self.generator, "last_stats", {}) if generated else {})}}
 
 
-def load_pipeline(index_path=None, adapter=None, extractive=False):
+def load_pipeline(index_path=None, adapter=None, extractive=False, answer_style="concise"):
     path = Path(index_path or ROOT / "data/index-hybrid.json")
     if not path.exists():
         raise RuntimeError("Build the hybrid index first: python -m reg_assistant.cli index --backend hybrid --output data/index-hybrid.json")
@@ -249,5 +280,5 @@ def load_pipeline(index_path=None, adapter=None, extractive=False):
     if index.get("corpus_sha256") != digest:
         raise ValueError("Hybrid index corpus differs from the active documents; rebuild the index")
     retriever = HybridRetriever(index)
-    generator = None if extractive else MeasuredMLXGenerator(adapter)
+    generator = None if extractive else MeasuredMLXGenerator(adapter, answer_style=answer_style)
     return RAGPipeline(retriever, generator)

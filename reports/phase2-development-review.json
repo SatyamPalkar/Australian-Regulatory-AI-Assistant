@@ -1,0 +1,32 @@
+{
+  "reviewer": "Implementation agent source spot-check; independent legal review pending",
+  "basis": "Development outputs only; test outputs not used for serving decision",
+  "serving_recommendation": "Keep original concise adapter for standalone questions; return fresh verbatim source text for dependent follow-ups. Explanatory generation remains opt-in.",
+  "findings": [
+    {
+      "id": "dev-title-observed",
+      "source": "acl-s51",
+      "observed": "Rule says goods must be guaranteed until title passes and Meaning describes the supplier as also the consumer.",
+      "assessment": "Misstates the right-to-dispose guarantee and the supplier/consumer roles. Expanded output passed structural and keyword proxies."
+    },
+    {
+      "id": "dev-54",
+      "source": "acl-s54",
+      "observed": "Limits describes exceptions as excluding sections about abnormal use and consumer-caused problems.",
+      "assessment": "Vague or misleading paraphrase of conditional qualifications; three paragraphs do not establish factual completeness."
+    },
+    {
+      "id": "dev-61",
+      "source": "acl-s61",
+      "observed": "Includes reliance qualifications and the qualified architect/engineer exception.",
+      "assessment": "This sampled explanation reflects those qualifications, but does not validate all responses."
+    },
+    {
+      "id": "live-v1-followup-title",
+      "source": "acl-s51",
+      "observed": "Original adapter retrieved section 51 for a follow-up but misstated the limited-title qualification.",
+      "assessment": "History transport and source retrieval do not establish answer correctness. Default dependent follow-ups use verbatim source wording."
+    }
+  ],
+  "factual_accuracy_score": null
+}
