@@ -1,0 +1,654 @@
+{
+  "configuration": {
+    "command": "evaluate",
+    "questions": "eval/dev.jsonl",
+    "output": "reports/dev-baseline.json",
+    "index": "data/index.json",
+    "generator": "extractive",
+    "model": "mlx-community/Qwen2.5-1.5B-Instruct-4bit",
+    "adapter": null,
+    "top_k": 3,
+    "min_score": null
+  },
+  "index_sha256": "99f48f694a648d89ff791c6b00089164668f46c10015144c0c3da05235ef4974",
+  "questions_sha256": "97f7bb601ac96786908c6d003b374fb065732b93466b11b412a274d94c90d696",
+  "corpus_sha256": "3851bb5bd5e24c1acdcfda6fa41318acaf43ef1ffdeab478029095a497a9bd07",
+  "limitations": "Development set only. Reference syntax, source presence and keywords do not measure factual correctness or entailment. Extractive mode does not judge answerability. Latency includes cold loading on the first applicable question.",
+  "metrics": {
+    "questions": 9,
+    "retrieval_hit_at_1": 1.0,
+    "retrieval_hit_at_k": 1.0,
+    "expected_source_cited_rate": 1.0,
+    "unsupported_abstention_rate": 0.6666666666666666,
+    "answerable_response_rate": 1.0,
+    "citation_format_pass_rate": 1.0,
+    "mean_latency_seconds": 1.8291777777777894e-05
+  },
+  "results": [
+    {
+      "id": "warranty-expiry",
+      "question": "Do consumer guarantee rights end when the manufacturer's warranty expires?",
+      "answerable": true,
+      "expected_sources": [
+        "accc-warranties"
+      ],
+      "expected_terms": [
+        "warranty",
+        "guarantee"
+      ],
+      "answer": "Relevant passages from the local corpus (answerability has not been verified):\n\nA warranty is an extra promise voluntarily offered when selling goods or services. Once given, the business must honour it. A warranty against defects supplements consumer guarantees rather than replacing them. Expiry of a manufacturer's warranty does not automatically end consumer guarantee rights; acceptable quality rights may continue, depending on the circumstances. Businesses must not suggest that consumer rights end with the warranty period. Extended warranties are optional and usually cost extra. They may provide no additional rights beyond automatic consumer guarantees. Businesses should explain the extra benefits and must not pressure customers or mislead them into buying rights they already have. [1]",
+      "abstained": false,
+      "evidence": [
+        {
+          "id": "accc-warranties",
+          "title": "Warranties",
+          "url": "https://www.accc.gov.au/consumers/buying-products-and-services/warranties",
+          "publisher": "ACCC",
+          "jurisdiction": "Australia",
+          "source_kind": "curated_summary",
+          "verified_on": "2026-10-28",
+          "chunk_id": "accc-warranties:0:495c132803dd",
+          "text": "A warranty is an extra promise voluntarily offered when selling goods or services. Once given, the business must honour it. A warranty against defects supplements consumer guarantees rather than replacing them. Expiry of a manufacturer's warranty does not automatically end consumer guarantee rights; acceptable quality rights may continue, depending on the circumstances. Businesses must not suggest that consumer rights end with the warranty period. Extended warranties are optional and usually cost extra. They may provide no additional rights beyond automatic consumer guarantees. Businesses should explain the extra benefits and must not pressure customers or mislead them into buying rights they already have.",
+          "score": 0.412995
+        }
+      ],
+      "retrieved": [
+        {
+          "id": "accc-warranties",
+          "title": "Warranties",
+          "url": "https://www.accc.gov.au/consumers/buying-products-and-services/warranties",
+          "publisher": "ACCC",
+          "jurisdiction": "Australia",
+          "source_kind": "curated_summary",
+          "verified_on": "2026-10-28",
+          "chunk_id": "accc-warranties:0:495c132803dd",
+          "text": "A warranty is an extra promise voluntarily offered when selling goods or services. Once given, the business must honour it. A warranty against defects supplements consumer guarantees rather than replacing them. Expiry of a manufacturer's warranty does not automatically end consumer guarantee rights; acceptable quality rights may continue, depending on the circumstances. Businesses must not suggest that consumer rights end with the warranty period. Extended warranties are optional and usually cost extra. They may provide no additional rights beyond automatic consumer guarantees. Businesses should explain the extra benefits and must not pressure customers or mislead them into buying rights they already have.",
+          "score": 0.412995
+        },
+        {
+          "id": "accc-remedies",
+          "title": "Repair, replace, refund, cancel",
+          "url": "https://www.accc.gov.au/consumers/problem-with-a-product-or-service-you-bought/repair-replace-refund-cancel",
+          "publisher": "ACCC",
+          "jurisdiction": "Australia",
+          "source_kind": "curated_summary",
+          "verified_on": "2026-10-28",
+          "chunk_id": "accc-remedies:0:7631a6b18f6b",
+          "text": "For a product with a major problem, the consumer can choose a refund or a replacement of the same type. The refund is the amount paid without a deduction for use. Alternatively the consumer can keep the product and seek compensation for its reduced value. The selling business is responsible for resolving problems and must not direct consumers to the manufacturer instead. For a minor problem, the business must fix it free of charge and need not initially offer a refund or replacement. If it cannot or will not fix the problem within a reasonable time, further remedies may apply. A faulty product can be returned without its original packaging, although the business can ask for proof of purchase.",
+          "score": 0.037898
+        },
+        {
+          "id": "accc-guarantees",
+          "title": "Consumer rights and guarantees",
+          "url": "https://www.accc.gov.au/consumers/buying-products-and-services/consumer-rights-and-guarantees",
+          "publisher": "ACCC",
+          "jurisdiction": "Australia",
+          "source_kind": "curated_summary",
+          "verified_on": "2026-10-28",
+          "chunk_id": "accc-guarantees:0:5f07d2f2c55a",
+          "text": "Consumer guarantees apply automatically and cannot be removed by a business. Warranties are additional promises. Acceptable quality includes safety, durability, freedom from defects, satisfactory appearance, and suitability for the normal uses of similar products. There is no universal fixed lifespan: price, materials, claims, age, maintenance and use can matter. A product must match the seller's description. A product must suit a particular purpose communicated to the business or advertised, subject to exceptions such as unreasonable reliance or buying despite a warning that it will not suit that purpose. Services must be performed with reasonable care and skill. When no completion time was agreed, services must be supplied within a reasonable time.",
+          "score": 0.037178
+        }
+      ],
+      "citation_format_valid": true,
+      "mode": "extractive",
+      "latency_seconds": 6.816700000000092e-05,
+      "retrieval_hit_at_1": true,
+      "retrieval_hit": true,
+      "expected_source_cited": true,
+      "abstention_correct": true,
+      "keyword_coverage": 1.0
+    },
+    {
+      "id": "extended-warranty",
+      "question": "Are extended warranties optional and can they duplicate automatic consumer rights?",
+      "answerable": true,
+      "expected_sources": [
+        "accc-warranties"
+      ],
+      "expected_terms": [
+        "optional",
+        "rights"
+      ],
+      "answer": "Relevant passages from the local corpus (answerability has not been verified):\n\nA warranty is an extra promise voluntarily offered when selling goods or services. Once given, the business must honour it. A warranty against defects supplements consumer guarantees rather than replacing them. Expiry of a manufacturer's warranty does not automatically end consumer guarantee rights; acceptable quality rights may continue, depending on the circumstances. Businesses must not suggest that consumer rights end with the warranty period. Extended warranties are optional and usually cost extra. They may provide no additional rights beyond automatic consumer guarantees. Businesses should explain the extra benefits and must not pressure customers or mislead them into buying rights they already have. [1]",
+      "abstained": false,
+      "evidence": [
+        {
+          "id": "accc-warranties",
+          "title": "Warranties",
+          "url": "https://www.accc.gov.au/consumers/buying-products-and-services/warranties",
+          "publisher": "ACCC",
+          "jurisdiction": "Australia",
+          "source_kind": "curated_summary",
+          "verified_on": "2026-10-28",
+          "chunk_id": "accc-warranties:0:495c132803dd",
+          "text": "A warranty is an extra promise voluntarily offered when selling goods or services. Once given, the business must honour it. A warranty against defects supplements consumer guarantees rather than replacing them. Expiry of a manufacturer's warranty does not automatically end consumer guarantee rights; acceptable quality rights may continue, depending on the circumstances. Businesses must not suggest that consumer rights end with the warranty period. Extended warranties are optional and usually cost extra. They may provide no additional rights beyond automatic consumer guarantees. Businesses should explain the extra benefits and must not pressure customers or mislead them into buying rights they already have.",
+          "score": 0.255415
+        }
+      ],
+      "retrieved": [
+        {
+          "id": "accc-warranties",
+          "title": "Warranties",
+          "url": "https://www.accc.gov.au/consumers/buying-products-and-services/warranties",
+          "publisher": "ACCC",
+          "jurisdiction": "Australia",
+          "source_kind": "curated_summary",
+          "verified_on": "2026-10-28",
+          "chunk_id": "accc-warranties:0:495c132803dd",
+          "text": "A warranty is an extra promise voluntarily offered when selling goods or services. Once given, the business must honour it. A warranty against defects supplements consumer guarantees rather than replacing them. Expiry of a manufacturer's warranty does not automatically end consumer guarantee rights; acceptable quality rights may continue, depending on the circumstances. Businesses must not suggest that consumer rights end with the warranty period. Extended warranties are optional and usually cost extra. They may provide no additional rights beyond automatic consumer guarantees. Businesses should explain the extra benefits and must not pressure customers or mislead them into buying rights they already have.",
+          "score": 0.255415
+        },
+        {
+          "id": "accc-guarantees",
+          "title": "Consumer rights and guarantees",
+          "url": "https://www.accc.gov.au/consumers/buying-products-and-services/consumer-rights-and-guarantees",
+          "publisher": "ACCC",
+          "jurisdiction": "Australia",
+          "source_kind": "curated_summary",
+          "verified_on": "2026-10-28",
+          "chunk_id": "accc-guarantees:0:5f07d2f2c55a",
+          "text": "Consumer guarantees apply automatically and cannot be removed by a business. Warranties are additional promises. Acceptable quality includes safety, durability, freedom from defects, satisfactory appearance, and suitability for the normal uses of similar products. There is no universal fixed lifespan: price, materials, claims, age, maintenance and use can matter. A product must match the seller's description. A product must suit a particular purpose communicated to the business or advertised, subject to exceptions such as unreasonable reliance or buying despite a warning that it will not suit that purpose. Services must be performed with reasonable care and skill. When no completion time was agreed, services must be supplied within a reasonable time.",
+          "score": 0.04007
+        },
+        {
+          "id": "accc-remedies",
+          "title": "Repair, replace, refund, cancel",
+          "url": "https://www.accc.gov.au/consumers/problem-with-a-product-or-service-you-bought/repair-replace-refund-cancel",
+          "publisher": "ACCC",
+          "jurisdiction": "Australia",
+          "source_kind": "curated_summary",
+          "verified_on": "2026-10-28",
+          "chunk_id": "accc-remedies:0:7631a6b18f6b",
+          "text": "For a product with a major problem, the consumer can choose a refund or a replacement of the same type. The refund is the amount paid without a deduction for use. Alternatively the consumer can keep the product and seek compensation for its reduced value. The selling business is responsible for resolving problems and must not direct consumers to the manufacturer instead. For a minor problem, the business must fix it free of charge and need not initially offer a refund or replacement. If it cannot or will not fix the problem within a reasonable time, further remedies may apply. A faulty product can be returned without its original packaging, although the business can ask for proof of purchase.",
+          "score": 0.0
+        }
+      ],
+      "citation_format_valid": true,
+      "mode": "extractive",
+      "latency_seconds": 1.691699999999824e-05,
+      "retrieval_hit_at_1": true,
+      "retrieval_hit": true,
+      "expected_source_cited": true,
+      "abstention_correct": true,
+      "keyword_coverage": 1.0
+    },
+    {
+      "id": "major-product",
+      "question": "What refund or replacement can a consumer choose for a product with a major problem?",
+      "answerable": true,
+      "expected_sources": [
+        "accc-remedies"
+      ],
+      "expected_terms": [
+        "refund",
+        "replacement"
+      ],
+      "answer": "Relevant passages from the local corpus (answerability has not been verified):\n\nFor a product with a major problem, the consumer can choose a refund or a replacement of the same type. The refund is the amount paid without a deduction for use. Alternatively the consumer can keep the product and seek compensation for its reduced value. The selling business is responsible for resolving problems and must not direct consumers to the manufacturer instead. For a minor problem, the business must fix it free of charge and need not initially offer a refund or replacement. If it cannot or will not fix the problem within a reasonable time, further remedies may apply. A faulty product can be returned without its original packaging, although the business can ask for proof of purchase. [1]",
+      "abstained": false,
+      "evidence": [
+        {
+          "id": "accc-remedies",
+          "title": "Repair, replace, refund, cancel",
+          "url": "https://www.accc.gov.au/consumers/problem-with-a-product-or-service-you-bought/repair-replace-refund-cancel",
+          "publisher": "ACCC",
+          "jurisdiction": "Australia",
+          "source_kind": "curated_summary",
+          "verified_on": "2026-10-28",
+          "chunk_id": "accc-remedies:0:7631a6b18f6b",
+          "text": "For a product with a major problem, the consumer can choose a refund or a replacement of the same type. The refund is the amount paid without a deduction for use. Alternatively the consumer can keep the product and seek compensation for its reduced value. The selling business is responsible for resolving problems and must not direct consumers to the manufacturer instead. For a minor problem, the business must fix it free of charge and need not initially offer a refund or replacement. If it cannot or will not fix the problem within a reasonable time, further remedies may apply. A faulty product can be returned without its original packaging, although the business can ask for proof of purchase.",
+          "score": 0.471389
+        }
+      ],
+      "retrieved": [
+        {
+          "id": "accc-remedies",
+          "title": "Repair, replace, refund, cancel",
+          "url": "https://www.accc.gov.au/consumers/problem-with-a-product-or-service-you-bought/repair-replace-refund-cancel",
+          "publisher": "ACCC",
+          "jurisdiction": "Australia",
+          "source_kind": "curated_summary",
+          "verified_on": "2026-10-28",
+          "chunk_id": "accc-remedies:0:7631a6b18f6b",
+          "text": "For a product with a major problem, the consumer can choose a refund or a replacement of the same type. The refund is the amount paid without a deduction for use. Alternatively the consumer can keep the product and seek compensation for its reduced value. The selling business is responsible for resolving problems and must not direct consumers to the manufacturer instead. For a minor problem, the business must fix it free of charge and need not initially offer a refund or replacement. If it cannot or will not fix the problem within a reasonable time, further remedies may apply. A faulty product can be returned without its original packaging, although the business can ask for proof of purchase.",
+          "score": 0.471389
+        },
+        {
+          "id": "accc-guarantees",
+          "title": "Consumer rights and guarantees",
+          "url": "https://www.accc.gov.au/consumers/buying-products-and-services/consumer-rights-and-guarantees",
+          "publisher": "ACCC",
+          "jurisdiction": "Australia",
+          "source_kind": "curated_summary",
+          "verified_on": "2026-10-28",
+          "chunk_id": "accc-guarantees:0:5f07d2f2c55a",
+          "text": "Consumer guarantees apply automatically and cannot be removed by a business. Warranties are additional promises. Acceptable quality includes safety, durability, freedom from defects, satisfactory appearance, and suitability for the normal uses of similar products. There is no universal fixed lifespan: price, materials, claims, age, maintenance and use can matter. A product must match the seller's description. A product must suit a particular purpose communicated to the business or advertised, subject to exceptions such as unreasonable reliance or buying despite a warning that it will not suit that purpose. Services must be performed with reasonable care and skill. When no completion time was agreed, services must be supplied within a reasonable time.",
+          "score": 0.0
+        },
+        {
+          "id": "accc-warranties",
+          "title": "Warranties",
+          "url": "https://www.accc.gov.au/consumers/buying-products-and-services/warranties",
+          "publisher": "ACCC",
+          "jurisdiction": "Australia",
+          "source_kind": "curated_summary",
+          "verified_on": "2026-10-28",
+          "chunk_id": "accc-warranties:0:495c132803dd",
+          "text": "A warranty is an extra promise voluntarily offered when selling goods or services. Once given, the business must honour it. A warranty against defects supplements consumer guarantees rather than replacing them. Expiry of a manufacturer's warranty does not automatically end consumer guarantee rights; acceptable quality rights may continue, depending on the circumstances. Businesses must not suggest that consumer rights end with the warranty period. Extended warranties are optional and usually cost extra. They may provide no additional rights beyond automatic consumer guarantees. Businesses should explain the extra benefits and must not pressure customers or mislead them into buying rights they already have.",
+          "score": 0.0
+        }
+      ],
+      "citation_format_valid": true,
+      "mode": "extractive",
+      "latency_seconds": 1.4208000000001664e-05,
+      "retrieval_hit_at_1": true,
+      "retrieval_hit": true,
+      "expected_source_cited": true,
+      "abstention_correct": true,
+      "keyword_coverage": 1.0
+    },
+    {
+      "id": "minor-product",
+      "question": "Does the business have to offer a refund immediately for a minor problem?",
+      "answerable": true,
+      "expected_sources": [
+        "accc-remedies"
+      ],
+      "expected_terms": [
+        "minor",
+        "fix"
+      ],
+      "answer": "Relevant passages from the local corpus (answerability has not been verified):\n\nFor a product with a major problem, the consumer can choose a refund or a replacement of the same type. The refund is the amount paid without a deduction for use. Alternatively the consumer can keep the product and seek compensation for its reduced value. The selling business is responsible for resolving problems and must not direct consumers to the manufacturer instead. For a minor problem, the business must fix it free of charge and need not initially offer a refund or replacement. If it cannot or will not fix the problem within a reasonable time, further remedies may apply. A faulty product can be returned without its original packaging, although the business can ask for proof of purchase. [1]",
+      "abstained": false,
+      "evidence": [
+        {
+          "id": "accc-remedies",
+          "title": "Repair, replace, refund, cancel",
+          "url": "https://www.accc.gov.au/consumers/problem-with-a-product-or-service-you-bought/repair-replace-refund-cancel",
+          "publisher": "ACCC",
+          "jurisdiction": "Australia",
+          "source_kind": "curated_summary",
+          "verified_on": "2026-10-28",
+          "chunk_id": "accc-remedies:0:7631a6b18f6b",
+          "text": "For a product with a major problem, the consumer can choose a refund or a replacement of the same type. The refund is the amount paid without a deduction for use. Alternatively the consumer can keep the product and seek compensation for its reduced value. The selling business is responsible for resolving problems and must not direct consumers to the manufacturer instead. For a minor problem, the business must fix it free of charge and need not initially offer a refund or replacement. If it cannot or will not fix the problem within a reasonable time, further remedies may apply. A faulty product can be returned without its original packaging, although the business can ask for proof of purchase.",
+          "score": 0.413937
+        }
+      ],
+      "retrieved": [
+        {
+          "id": "accc-remedies",
+          "title": "Repair, replace, refund, cancel",
+          "url": "https://www.accc.gov.au/consumers/problem-with-a-product-or-service-you-bought/repair-replace-refund-cancel",
+          "publisher": "ACCC",
+          "jurisdiction": "Australia",
+          "source_kind": "curated_summary",
+          "verified_on": "2026-10-28",
+          "chunk_id": "accc-remedies:0:7631a6b18f6b",
+          "text": "For a product with a major problem, the consumer can choose a refund or a replacement of the same type. The refund is the amount paid without a deduction for use. Alternatively the consumer can keep the product and seek compensation for its reduced value. The selling business is responsible for resolving problems and must not direct consumers to the manufacturer instead. For a minor problem, the business must fix it free of charge and need not initially offer a refund or replacement. If it cannot or will not fix the problem within a reasonable time, further remedies may apply. A faulty product can be returned without its original packaging, although the business can ask for proof of purchase.",
+          "score": 0.413937
+        },
+        {
+          "id": "accc-guarantees",
+          "title": "Consumer rights and guarantees",
+          "url": "https://www.accc.gov.au/consumers/buying-products-and-services/consumer-rights-and-guarantees",
+          "publisher": "ACCC",
+          "jurisdiction": "Australia",
+          "source_kind": "curated_summary",
+          "verified_on": "2026-10-28",
+          "chunk_id": "accc-guarantees:0:5f07d2f2c55a",
+          "text": "Consumer guarantees apply automatically and cannot be removed by a business. Warranties are additional promises. Acceptable quality includes safety, durability, freedom from defects, satisfactory appearance, and suitability for the normal uses of similar products. There is no universal fixed lifespan: price, materials, claims, age, maintenance and use can matter. A product must match the seller's description. A product must suit a particular purpose communicated to the business or advertised, subject to exceptions such as unreasonable reliance or buying despite a warning that it will not suit that purpose. Services must be performed with reasonable care and skill. When no completion time was agreed, services must be supplied within a reasonable time.",
+          "score": 0.0
+        },
+        {
+          "id": "accc-warranties",
+          "title": "Warranties",
+          "url": "https://www.accc.gov.au/consumers/buying-products-and-services/warranties",
+          "publisher": "ACCC",
+          "jurisdiction": "Australia",
+          "source_kind": "curated_summary",
+          "verified_on": "2026-10-28",
+          "chunk_id": "accc-warranties:0:495c132803dd",
+          "text": "A warranty is an extra promise voluntarily offered when selling goods or services. Once given, the business must honour it. A warranty against defects supplements consumer guarantees rather than replacing them. Expiry of a manufacturer's warranty does not automatically end consumer guarantee rights; acceptable quality rights may continue, depending on the circumstances. Businesses must not suggest that consumer rights end with the warranty period. Extended warranties are optional and usually cost extra. They may provide no additional rights beyond automatic consumer guarantees. Businesses should explain the extra benefits and must not pressure customers or mislead them into buying rights they already have.",
+          "score": 0.0
+        }
+      ],
+      "citation_format_valid": true,
+      "mode": "extractive",
+      "latency_seconds": 1.1416999999999677e-05,
+      "retrieval_hit_at_1": true,
+      "retrieval_hit": true,
+      "expected_source_cited": true,
+      "abstention_correct": true,
+      "keyword_coverage": 1.0
+    },
+    {
+      "id": "quality",
+      "question": "What factors help determine acceptable quality and durability of a product?",
+      "answerable": true,
+      "expected_sources": [
+        "accc-guarantees"
+      ],
+      "expected_terms": [
+        "quality",
+        "durability"
+      ],
+      "answer": "Relevant passages from the local corpus (answerability has not been verified):\n\nConsumer guarantees apply automatically and cannot be removed by a business. Warranties are additional promises. Acceptable quality includes safety, durability, freedom from defects, satisfactory appearance, and suitability for the normal uses of similar products. There is no universal fixed lifespan: price, materials, claims, age, maintenance and use can matter. A product must match the seller's description. A product must suit a particular purpose communicated to the business or advertised, subject to exceptions such as unreasonable reliance or buying despite a warning that it will not suit that purpose. Services must be performed with reasonable care and skill. When no completion time was agreed, services must be supplied within a reasonable time. [1]",
+      "abstained": false,
+      "evidence": [
+        {
+          "id": "accc-guarantees",
+          "title": "Consumer rights and guarantees",
+          "url": "https://www.accc.gov.au/consumers/buying-products-and-services/consumer-rights-and-guarantees",
+          "publisher": "ACCC",
+          "jurisdiction": "Australia",
+          "source_kind": "curated_summary",
+          "verified_on": "2026-10-28",
+          "chunk_id": "accc-guarantees:0:5f07d2f2c55a",
+          "text": "Consumer guarantees apply automatically and cannot be removed by a business. Warranties are additional promises. Acceptable quality includes safety, durability, freedom from defects, satisfactory appearance, and suitability for the normal uses of similar products. There is no universal fixed lifespan: price, materials, claims, age, maintenance and use can matter. A product must match the seller's description. A product must suit a particular purpose communicated to the business or advertised, subject to exceptions such as unreasonable reliance or buying despite a warning that it will not suit that purpose. Services must be performed with reasonable care and skill. When no completion time was agreed, services must be supplied within a reasonable time.",
+          "score": 0.192461
+        }
+      ],
+      "retrieved": [
+        {
+          "id": "accc-guarantees",
+          "title": "Consumer rights and guarantees",
+          "url": "https://www.accc.gov.au/consumers/buying-products-and-services/consumer-rights-and-guarantees",
+          "publisher": "ACCC",
+          "jurisdiction": "Australia",
+          "source_kind": "curated_summary",
+          "verified_on": "2026-10-28",
+          "chunk_id": "accc-guarantees:0:5f07d2f2c55a",
+          "text": "Consumer guarantees apply automatically and cannot be removed by a business. Warranties are additional promises. Acceptable quality includes safety, durability, freedom from defects, satisfactory appearance, and suitability for the normal uses of similar products. There is no universal fixed lifespan: price, materials, claims, age, maintenance and use can matter. A product must match the seller's description. A product must suit a particular purpose communicated to the business or advertised, subject to exceptions such as unreasonable reliance or buying despite a warning that it will not suit that purpose. Services must be performed with reasonable care and skill. When no completion time was agreed, services must be supplied within a reasonable time.",
+          "score": 0.192461
+        },
+        {
+          "id": "accc-warranties",
+          "title": "Warranties",
+          "url": "https://www.accc.gov.au/consumers/buying-products-and-services/warranties",
+          "publisher": "ACCC",
+          "jurisdiction": "Australia",
+          "source_kind": "curated_summary",
+          "verified_on": "2026-10-28",
+          "chunk_id": "accc-warranties:0:495c132803dd",
+          "text": "A warranty is an extra promise voluntarily offered when selling goods or services. Once given, the business must honour it. A warranty against defects supplements consumer guarantees rather than replacing them. Expiry of a manufacturer's warranty does not automatically end consumer guarantee rights; acceptable quality rights may continue, depending on the circumstances. Businesses must not suggest that consumer rights end with the warranty period. Extended warranties are optional and usually cost extra. They may provide no additional rights beyond automatic consumer guarantees. Businesses should explain the extra benefits and must not pressure customers or mislead them into buying rights they already have.",
+          "score": 0.106354
+        },
+        {
+          "id": "accc-remedies",
+          "title": "Repair, replace, refund, cancel",
+          "url": "https://www.accc.gov.au/consumers/problem-with-a-product-or-service-you-bought/repair-replace-refund-cancel",
+          "publisher": "ACCC",
+          "jurisdiction": "Australia",
+          "source_kind": "curated_summary",
+          "verified_on": "2026-10-28",
+          "chunk_id": "accc-remedies:0:7631a6b18f6b",
+          "text": "For a product with a major problem, the consumer can choose a refund or a replacement of the same type. The refund is the amount paid without a deduction for use. Alternatively the consumer can keep the product and seek compensation for its reduced value. The selling business is responsible for resolving problems and must not direct consumers to the manufacturer instead. For a minor problem, the business must fix it free of charge and need not initially offer a refund or replacement. If it cannot or will not fix the problem within a reasonable time, further remedies may apply. A faulty product can be returned without its original packaging, although the business can ask for proof of purchase.",
+          "score": 0.0
+        }
+      ],
+      "citation_format_valid": true,
+      "mode": "extractive",
+      "latency_seconds": 1.3541999999998333e-05,
+      "retrieval_hit_at_1": true,
+      "retrieval_hit": true,
+      "expected_source_cited": true,
+      "abstention_correct": true,
+      "keyword_coverage": 1.0
+    },
+    {
+      "id": "packaging",
+      "question": "Must I keep the original packaging to return a faulty product?",
+      "answerable": true,
+      "expected_sources": [
+        "accc-remedies"
+      ],
+      "expected_terms": [
+        "packaging",
+        "purchase"
+      ],
+      "answer": "Relevant passages from the local corpus (answerability has not been verified):\n\nFor a product with a major problem, the consumer can choose a refund or a replacement of the same type. The refund is the amount paid without a deduction for use. Alternatively the consumer can keep the product and seek compensation for its reduced value. The selling business is responsible for resolving problems and must not direct consumers to the manufacturer instead. For a minor problem, the business must fix it free of charge and need not initially offer a refund or replacement. If it cannot or will not fix the problem within a reasonable time, further remedies may apply. A faulty product can be returned without its original packaging, although the business can ask for proof of purchase. [1]",
+      "abstained": false,
+      "evidence": [
+        {
+          "id": "accc-remedies",
+          "title": "Repair, replace, refund, cancel",
+          "url": "https://www.accc.gov.au/consumers/problem-with-a-product-or-service-you-bought/repair-replace-refund-cancel",
+          "publisher": "ACCC",
+          "jurisdiction": "Australia",
+          "source_kind": "curated_summary",
+          "verified_on": "2026-10-28",
+          "chunk_id": "accc-remedies:0:7631a6b18f6b",
+          "text": "For a product with a major problem, the consumer can choose a refund or a replacement of the same type. The refund is the amount paid without a deduction for use. Alternatively the consumer can keep the product and seek compensation for its reduced value. The selling business is responsible for resolving problems and must not direct consumers to the manufacturer instead. For a minor problem, the business must fix it free of charge and need not initially offer a refund or replacement. If it cannot or will not fix the problem within a reasonable time, further remedies may apply. A faulty product can be returned without its original packaging, although the business can ask for proof of purchase.",
+          "score": 0.267176
+        }
+      ],
+      "retrieved": [
+        {
+          "id": "accc-remedies",
+          "title": "Repair, replace, refund, cancel",
+          "url": "https://www.accc.gov.au/consumers/problem-with-a-product-or-service-you-bought/repair-replace-refund-cancel",
+          "publisher": "ACCC",
+          "jurisdiction": "Australia",
+          "source_kind": "curated_summary",
+          "verified_on": "2026-10-28",
+          "chunk_id": "accc-remedies:0:7631a6b18f6b",
+          "text": "For a product with a major problem, the consumer can choose a refund or a replacement of the same type. The refund is the amount paid without a deduction for use. Alternatively the consumer can keep the product and seek compensation for its reduced value. The selling business is responsible for resolving problems and must not direct consumers to the manufacturer instead. For a minor problem, the business must fix it free of charge and need not initially offer a refund or replacement. If it cannot or will not fix the problem within a reasonable time, further remedies may apply. A faulty product can be returned without its original packaging, although the business can ask for proof of purchase.",
+          "score": 0.267176
+        },
+        {
+          "id": "accc-guarantees",
+          "title": "Consumer rights and guarantees",
+          "url": "https://www.accc.gov.au/consumers/buying-products-and-services/consumer-rights-and-guarantees",
+          "publisher": "ACCC",
+          "jurisdiction": "Australia",
+          "source_kind": "curated_summary",
+          "verified_on": "2026-10-28",
+          "chunk_id": "accc-guarantees:0:5f07d2f2c55a",
+          "text": "Consumer guarantees apply automatically and cannot be removed by a business. Warranties are additional promises. Acceptable quality includes safety, durability, freedom from defects, satisfactory appearance, and suitability for the normal uses of similar products. There is no universal fixed lifespan: price, materials, claims, age, maintenance and use can matter. A product must match the seller's description. A product must suit a particular purpose communicated to the business or advertised, subject to exceptions such as unreasonable reliance or buying despite a warning that it will not suit that purpose. Services must be performed with reasonable care and skill. When no completion time was agreed, services must be supplied within a reasonable time.",
+          "score": 0.0
+        },
+        {
+          "id": "accc-warranties",
+          "title": "Warranties",
+          "url": "https://www.accc.gov.au/consumers/buying-products-and-services/warranties",
+          "publisher": "ACCC",
+          "jurisdiction": "Australia",
+          "source_kind": "curated_summary",
+          "verified_on": "2026-10-28",
+          "chunk_id": "accc-warranties:0:495c132803dd",
+          "text": "A warranty is an extra promise voluntarily offered when selling goods or services. Once given, the business must honour it. A warranty against defects supplements consumer guarantees rather than replacing them. Expiry of a manufacturer's warranty does not automatically end consumer guarantee rights; acceptable quality rights may continue, depending on the circumstances. Businesses must not suggest that consumer rights end with the warranty period. Extended warranties are optional and usually cost extra. They may provide no additional rights beyond automatic consumer guarantees. Businesses should explain the extra benefits and must not pressure customers or mislead them into buying rights they already have.",
+          "score": 0.0
+        }
+      ],
+      "citation_format_valid": true,
+      "mode": "extractive",
+      "latency_seconds": 1.308299999999707e-05,
+      "retrieval_hit_at_1": true,
+      "retrieval_hit": true,
+      "expected_source_cited": true,
+      "abstention_correct": true,
+      "keyword_coverage": 1.0
+    },
+    {
+      "id": "tax",
+      "question": "What income tax deductions can a sole trader claim for cryptocurrency losses?",
+      "answerable": false,
+      "expected_sources": [],
+      "expected_terms": [],
+      "answer": "I don't have enough evidence in the indexed documents to answer this question.",
+      "abstained": true,
+      "evidence": [],
+      "retrieved": [
+        {
+          "id": "accc-guarantees",
+          "title": "Consumer rights and guarantees",
+          "url": "https://www.accc.gov.au/consumers/buying-products-and-services/consumer-rights-and-guarantees",
+          "publisher": "ACCC",
+          "jurisdiction": "Australia",
+          "source_kind": "curated_summary",
+          "verified_on": "2026-10-28",
+          "chunk_id": "accc-guarantees:0:5f07d2f2c55a",
+          "text": "Consumer guarantees apply automatically and cannot be removed by a business. Warranties are additional promises. Acceptable quality includes safety, durability, freedom from defects, satisfactory appearance, and suitability for the normal uses of similar products. There is no universal fixed lifespan: price, materials, claims, age, maintenance and use can matter. A product must match the seller's description. A product must suit a particular purpose communicated to the business or advertised, subject to exceptions such as unreasonable reliance or buying despite a warning that it will not suit that purpose. Services must be performed with reasonable care and skill. When no completion time was agreed, services must be supplied within a reasonable time.",
+          "score": 0
+        },
+        {
+          "id": "accc-warranties",
+          "title": "Warranties",
+          "url": "https://www.accc.gov.au/consumers/buying-products-and-services/warranties",
+          "publisher": "ACCC",
+          "jurisdiction": "Australia",
+          "source_kind": "curated_summary",
+          "verified_on": "2026-10-28",
+          "chunk_id": "accc-warranties:0:495c132803dd",
+          "text": "A warranty is an extra promise voluntarily offered when selling goods or services. Once given, the business must honour it. A warranty against defects supplements consumer guarantees rather than replacing them. Expiry of a manufacturer's warranty does not automatically end consumer guarantee rights; acceptable quality rights may continue, depending on the circumstances. Businesses must not suggest that consumer rights end with the warranty period. Extended warranties are optional and usually cost extra. They may provide no additional rights beyond automatic consumer guarantees. Businesses should explain the extra benefits and must not pressure customers or mislead them into buying rights they already have.",
+          "score": 0
+        },
+        {
+          "id": "accc-remedies",
+          "title": "Repair, replace, refund, cancel",
+          "url": "https://www.accc.gov.au/consumers/problem-with-a-product-or-service-you-bought/repair-replace-refund-cancel",
+          "publisher": "ACCC",
+          "jurisdiction": "Australia",
+          "source_kind": "curated_summary",
+          "verified_on": "2026-10-28",
+          "chunk_id": "accc-remedies:0:7631a6b18f6b",
+          "text": "For a product with a major problem, the consumer can choose a refund or a replacement of the same type. The refund is the amount paid without a deduction for use. Alternatively the consumer can keep the product and seek compensation for its reduced value. The selling business is responsible for resolving problems and must not direct consumers to the manufacturer instead. For a minor problem, the business must fix it free of charge and need not initially offer a refund or replacement. If it cannot or will not fix the problem within a reasonable time, further remedies may apply. A faulty product can be returned without its original packaging, although the business can ask for proof of purchase.",
+          "score": 0
+        }
+      ],
+      "citation_format_valid": true,
+      "mode": "extractive",
+      "latency_seconds": 9.833000000000758e-06,
+      "retrieval_hit_at_1": null,
+      "retrieval_hit": null,
+      "expected_source_cited": null,
+      "abstention_correct": true,
+      "keyword_coverage": null
+    },
+    {
+      "id": "visa",
+      "question": "What documents are required to renew an Australian student visa?",
+      "answerable": false,
+      "expected_sources": [],
+      "expected_terms": [],
+      "answer": "I don't have enough evidence in the indexed documents to answer this question.",
+      "abstained": true,
+      "evidence": [],
+      "retrieved": [
+        {
+          "id": "accc-guarantees",
+          "title": "Consumer rights and guarantees",
+          "url": "https://www.accc.gov.au/consumers/buying-products-and-services/consumer-rights-and-guarantees",
+          "publisher": "ACCC",
+          "jurisdiction": "Australia",
+          "source_kind": "curated_summary",
+          "verified_on": "2026-10-28",
+          "chunk_id": "accc-guarantees:0:5f07d2f2c55a",
+          "text": "Consumer guarantees apply automatically and cannot be removed by a business. Warranties are additional promises. Acceptable quality includes safety, durability, freedom from defects, satisfactory appearance, and suitability for the normal uses of similar products. There is no universal fixed lifespan: price, materials, claims, age, maintenance and use can matter. A product must match the seller's description. A product must suit a particular purpose communicated to the business or advertised, subject to exceptions such as unreasonable reliance or buying despite a warning that it will not suit that purpose. Services must be performed with reasonable care and skill. When no completion time was agreed, services must be supplied within a reasonable time.",
+          "score": 0
+        },
+        {
+          "id": "accc-warranties",
+          "title": "Warranties",
+          "url": "https://www.accc.gov.au/consumers/buying-products-and-services/warranties",
+          "publisher": "ACCC",
+          "jurisdiction": "Australia",
+          "source_kind": "curated_summary",
+          "verified_on": "2026-10-28",
+          "chunk_id": "accc-warranties:0:495c132803dd",
+          "text": "A warranty is an extra promise voluntarily offered when selling goods or services. Once given, the business must honour it. A warranty against defects supplements consumer guarantees rather than replacing them. Expiry of a manufacturer's warranty does not automatically end consumer guarantee rights; acceptable quality rights may continue, depending on the circumstances. Businesses must not suggest that consumer rights end with the warranty period. Extended warranties are optional and usually cost extra. They may provide no additional rights beyond automatic consumer guarantees. Businesses should explain the extra benefits and must not pressure customers or mislead them into buying rights they already have.",
+          "score": 0
+        },
+        {
+          "id": "accc-remedies",
+          "title": "Repair, replace, refund, cancel",
+          "url": "https://www.accc.gov.au/consumers/problem-with-a-product-or-service-you-bought/repair-replace-refund-cancel",
+          "publisher": "ACCC",
+          "jurisdiction": "Australia",
+          "source_kind": "curated_summary",
+          "verified_on": "2026-10-28",
+          "chunk_id": "accc-remedies:0:7631a6b18f6b",
+          "text": "For a product with a major problem, the consumer can choose a refund or a replacement of the same type. The refund is the amount paid without a deduction for use. Alternatively the consumer can keep the product and seek compensation for its reduced value. The selling business is responsible for resolving problems and must not direct consumers to the manufacturer instead. For a minor problem, the business must fix it free of charge and need not initially offer a refund or replacement. If it cannot or will not fix the problem within a reasonable time, further remedies may apply. A faulty product can be returned without its original packaging, although the business can ask for proof of purchase.",
+          "score": 0
+        }
+      ],
+      "citation_format_valid": true,
+      "mode": "extractive",
+      "latency_seconds": 7.667000000002866e-06,
+      "retrieval_hit_at_1": null,
+      "retrieval_hit": null,
+      "expected_source_cited": null,
+      "abstention_correct": true,
+      "keyword_coverage": null
+    },
+    {
+      "id": "unsupported-number",
+      "question": "What is the exact statutory dollar penalty for breaching consumer guarantees?",
+      "answerable": false,
+      "expected_sources": [],
+      "expected_terms": [],
+      "answer": "Relevant passages from the local corpus (answerability has not been verified):\n\nA warranty is an extra promise voluntarily offered when selling goods or services. Once given, the business must honour it. A warranty against defects supplements consumer guarantees rather than replacing them. Expiry of a manufacturer's warranty does not automatically end consumer guarantee rights; acceptable quality rights may continue, depending on the circumstances. Businesses must not suggest that consumer rights end with the warranty period. Extended warranties are optional and usually cost extra. They may provide no additional rights beyond automatic consumer guarantees. Businesses should explain the extra benefits and must not pressure customers or mislead them into buying rights they already have. [1]",
+      "abstained": false,
+      "evidence": [
+        {
+          "id": "accc-warranties",
+          "title": "Warranties",
+          "url": "https://www.accc.gov.au/consumers/buying-products-and-services/warranties",
+          "publisher": "ACCC",
+          "jurisdiction": "Australia",
+          "source_kind": "curated_summary",
+          "verified_on": "2026-10-28",
+          "chunk_id": "accc-warranties:0:495c132803dd",
+          "text": "A warranty is an extra promise voluntarily offered when selling goods or services. Once given, the business must honour it. A warranty against defects supplements consumer guarantees rather than replacing them. Expiry of a manufacturer's warranty does not automatically end consumer guarantee rights; acceptable quality rights may continue, depending on the circumstances. Businesses must not suggest that consumer rights end with the warranty period. Extended warranties are optional and usually cost extra. They may provide no additional rights beyond automatic consumer guarantees. Businesses should explain the extra benefits and must not pressure customers or mislead them into buying rights they already have.",
+          "score": 0.173864
+        }
+      ],
+      "retrieved": [
+        {
+          "id": "accc-warranties",
+          "title": "Warranties",
+          "url": "https://www.accc.gov.au/consumers/buying-products-and-services/warranties",
+          "publisher": "ACCC",
+          "jurisdiction": "Australia",
+          "source_kind": "curated_summary",
+          "verified_on": "2026-10-28",
+          "chunk_id": "accc-warranties:0:495c132803dd",
+          "text": "A warranty is an extra promise voluntarily offered when selling goods or services. Once given, the business must honour it. A warranty against defects supplements consumer guarantees rather than replacing them. Expiry of a manufacturer's warranty does not automatically end consumer guarantee rights; acceptable quality rights may continue, depending on the circumstances. Businesses must not suggest that consumer rights end with the warranty period. Extended warranties are optional and usually cost extra. They may provide no additional rights beyond automatic consumer guarantees. Businesses should explain the extra benefits and must not pressure customers or mislead them into buying rights they already have.",
+          "score": 0.173864
+        },
+        {
+          "id": "accc-guarantees",
+          "title": "Consumer rights and guarantees",
+          "url": "https://www.accc.gov.au/consumers/buying-products-and-services/consumer-rights-and-guarantees",
+          "publisher": "ACCC",
+          "jurisdiction": "Australia",
+          "source_kind": "curated_summary",
+          "verified_on": "2026-10-28",
+          "chunk_id": "accc-guarantees:0:5f07d2f2c55a",
+          "text": "Consumer guarantees apply automatically and cannot be removed by a business. Warranties are additional promises. Acceptable quality includes safety, durability, freedom from defects, satisfactory appearance, and suitability for the normal uses of similar products. There is no universal fixed lifespan: price, materials, claims, age, maintenance and use can matter. A product must match the seller's description. A product must suit a particular purpose communicated to the business or advertised, subject to exceptions such as unreasonable reliance or buying despite a warning that it will not suit that purpose. Services must be performed with reasonable care and skill. When no completion time was agreed, services must be supplied within a reasonable time.",
+          "score": 0.099667
+        },
+        {
+          "id": "accc-remedies",
+          "title": "Repair, replace, refund, cancel",
+          "url": "https://www.accc.gov.au/consumers/problem-with-a-product-or-service-you-bought/repair-replace-refund-cancel",
+          "publisher": "ACCC",
+          "jurisdiction": "Australia",
+          "source_kind": "curated_summary",
+          "verified_on": "2026-10-28",
+          "chunk_id": "accc-remedies:0:7631a6b18f6b",
+          "text": "For a product with a major problem, the consumer can choose a refund or a replacement of the same type. The refund is the amount paid without a deduction for use. Alternatively the consumer can keep the product and seek compensation for its reduced value. The selling business is responsible for resolving problems and must not direct consumers to the manufacturer instead. For a minor problem, the business must fix it free of charge and need not initially offer a refund or replacement. If it cannot or will not fix the problem within a reasonable time, further remedies may apply. A faulty product can be returned without its original packaging, although the business can ask for proof of purchase.",
+          "score": 0.0
+        }
+      ],
+      "citation_format_valid": true,
+      "mode": "extractive",
+      "latency_seconds": 9.792000000001522e-06,
+      "retrieval_hit_at_1": null,
+      "retrieval_hit": null,
+      "expected_source_cited": null,
+      "abstention_correct": false,
+      "keyword_coverage": null
+    }
+  ]
+}

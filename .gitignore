@@ -218,3 +218,12 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Local regulatory corpus and model artifacts
+data/raw/
+data/documents.jsonl
+data/index*.json
+adapters/
+models/
+.cache/
+.DS_Store

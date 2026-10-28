@@ -1,0 +1,23 @@
+[
+  {
+    "id": "accc-guarantees",
+    "title": "Consumer rights and guarantees",
+    "url": "https://www.accc.gov.au/consumers/buying-products-and-services/consumer-rights-and-guarantees",
+    "publisher": "ACCC",
+    "jurisdiction": "Australia"
+  },
+  {
+    "id": "accc-warranties",
+    "title": "Warranties",
+    "url": "https://www.accc.gov.au/consumers/buying-products-and-services/warranties",
+    "publisher": "ACCC",
+    "jurisdiction": "Australia"
+  },
+  {
+    "id": "accc-remedies",
+    "title": "Repair, replace, refund, cancel",
+    "url": "https://www.accc.gov.au/consumers/problem-with-a-product-or-service-you-bought/repair-replace-refund-cancel",
+    "publisher": "ACCC",
+    "jurisdiction": "Australia"
+  }
+]

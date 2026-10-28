@@ -1,0 +1,9 @@
+{"id":"warranty-expiry","question":"Do consumer guarantee rights end when the manufacturer's warranty expires?","answerable":true,"expected_sources":["accc-warranties"],"expected_terms":["warranty","guarantee"]}
+{"id":"extended-warranty","question":"Are extended warranties optional and can they duplicate automatic consumer rights?","answerable":true,"expected_sources":["accc-warranties"],"expected_terms":["optional","rights"]}
+{"id":"major-product","question":"What refund or replacement can a consumer choose for a product with a major problem?","answerable":true,"expected_sources":["accc-remedies"],"expected_terms":["refund","replacement"]}
+{"id":"minor-product","question":"Does the business have to offer a refund immediately for a minor problem?","answerable":true,"expected_sources":["accc-remedies"],"expected_terms":["minor","fix"]}
+{"id":"quality","question":"What factors help determine acceptable quality and durability of a product?","answerable":true,"expected_sources":["accc-guarantees"],"expected_terms":["quality","durability"]}
+{"id":"packaging","question":"Must I keep the original packaging to return a faulty product?","answerable":true,"expected_sources":["accc-remedies"],"expected_terms":["packaging","purchase"]}
+{"id":"tax","question":"What income tax deductions can a sole trader claim for cryptocurrency losses?","answerable":false,"expected_sources":[],"expected_terms":[]}
+{"id":"visa","question":"What documents are required to renew an Australian student visa?","answerable":false,"expected_sources":[],"expected_terms":[]}
+{"id":"unsupported-number","question":"What is the exact statutory dollar penalty for breaching consumer guarantees?","answerable":false,"expected_sources":[],"expected_terms":[]}
