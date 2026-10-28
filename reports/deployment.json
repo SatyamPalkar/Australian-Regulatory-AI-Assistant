@@ -1,0 +1,20 @@
+{
+  "url": "https://australian-regulatory-ai-assistant.snowybead1.chatgpt.site",
+  "status": "succeeded",
+  "access": "owner-private",
+  "project_id": "appgprj_6ae14b7d564c81918de32146da058da4",
+  "deployment_id": "appgdep_6ae14e9eae3081919d830e8da6247357",
+  "version_id": "appgprj_6ae14b7d564c81918de32146da058da4~appgver_678056353e2081918ce8af65bbf726b6",
+  "sites_source_commit": "b4d99cf8e409fac4cf9a7fff6d1037e2fb164549",
+  "deployed_at_utc": "2026-10-28T01:23:57.707374+00:00",
+  "verification": {
+    "python_tests_passed": 10,
+    "web_tests_passed": 20,
+    "typescript": "passed",
+    "production_build": "passed",
+    "browser_qa": ["desktop", "cited answer", "source dialog", "source library", "evaluation", "new research", "unsupported question", "mobile overflow"],
+    "browser_qa_target": "local production Worker runtime",
+    "hosted_verification": "Sites deployment service returned succeeded"
+  },
+  "limitations": "Three curated ACCC summaries with TF-IDF extraction. No hosted semantic embeddings, LLM, MLX inference or trained adapter. CI checks are configured; GitHub Actions execution is not recorded here."
+}

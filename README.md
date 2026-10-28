@@ -7,6 +7,26 @@ adapter using the same retrieval index and questions.
 The first slice covers ACCC consumer guarantees, warranties and remedies. This is
 a research prototype for general guidance, not personalised legal advice.
 
+## Web interface and deployment
+
+[Open the deployed demo](https://australian-regulatory-ai-assistant.snowybead1.chatgpt.site)
+(owner-private; sign in with your ChatGPT account).
+
+The `site/` web application includes an assistant, a source library, cited passages,
+copy/export controls and the saved evaluation results. A same-origin backend serves
+the retrieval API. Its search results are tested against the Python baseline.
+See [DEPLOYMENT.md](DEPLOYMENT.md) for local setup, API details, verification,
+the Sites deployment workflow and the distinction between hosted retrieval and
+Apple Silicon model inference.
+
+```sh
+cd site
+npm run install:ci
+npm run dev
+```
+
+Open `http://localhost:5173` (Node.js 24 required).
+
 ## Current status
 
 The dependency-free command-line demo works with three **curated summaries**, not

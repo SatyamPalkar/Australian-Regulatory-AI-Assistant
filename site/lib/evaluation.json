@@ -1,0 +1,80 @@
+{
+  "metrics": {
+    "questions": 9,
+    "retrieval_hit_at_1": 1.0,
+    "retrieval_hit_at_k": 1.0,
+    "expected_source_cited_rate": 1.0,
+    "unsupported_abstention_rate": 0.6666666666666666,
+    "answerable_response_rate": 1.0,
+    "citation_format_pass_rate": 1.0,
+    "mean_latency_seconds": 1.8291777777777894e-05
+  },
+  "limitations": "Development set only. Reference syntax, source presence and keywords do not measure factual correctness or entailment. Extractive mode does not judge answerability. Latency includes cold loading on the first applicable question.",
+  "corpus_sha256": "3851bb5bd5e24c1acdcfda6fa41318acaf43ef1ffdeab478029095a497a9bd07",
+  "questions_sha256": "97f7bb601ac96786908c6d003b374fb065732b93466b11b412a274d94c90d696",
+  "results": [
+    {
+      "id": "warranty-expiry",
+      "question": "Do consumer guarantee rights end when the manufacturer's warranty expires?",
+      "answerable": true,
+      "retrieval_hit_at_1": true,
+      "abstained": false
+    },
+    {
+      "id": "extended-warranty",
+      "question": "Are extended warranties optional and can they duplicate automatic consumer rights?",
+      "answerable": true,
+      "retrieval_hit_at_1": true,
+      "abstained": false
+    },
+    {
+      "id": "major-product",
+      "question": "What refund or replacement can a consumer choose for a product with a major problem?",
+      "answerable": true,
+      "retrieval_hit_at_1": true,
+      "abstained": false
+    },
+    {
+      "id": "minor-product",
+      "question": "Does the business have to offer a refund immediately for a minor problem?",
+      "answerable": true,
+      "retrieval_hit_at_1": true,
+      "abstained": false
+    },
+    {
+      "id": "quality",
+      "question": "What factors help determine acceptable quality and durability of a product?",
+      "answerable": true,
+      "retrieval_hit_at_1": true,
+      "abstained": false
+    },
+    {
+      "id": "packaging",
+      "question": "Must I keep the original packaging to return a faulty product?",
+      "answerable": true,
+      "retrieval_hit_at_1": true,
+      "abstained": false
+    },
+    {
+      "id": "tax",
+      "question": "What income tax deductions can a sole trader claim for cryptocurrency losses?",
+      "answerable": false,
+      "retrieval_hit_at_1": null,
+      "abstained": true
+    },
+    {
+      "id": "visa",
+      "question": "What documents are required to renew an Australian student visa?",
+      "answerable": false,
+      "retrieval_hit_at_1": null,
+      "abstained": true
+    },
+    {
+      "id": "unsupported-number",
+      "question": "What is the exact statutory dollar penalty for breaching consumer guarantees?",
+      "answerable": false,
+      "retrieval_hit_at_1": null,
+      "abstained": false
+    }
+  ]
+}

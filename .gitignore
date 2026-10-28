@@ -227,3 +227,7 @@ adapters/
 models/
 .cache/
 .DS_Store
+
+# The web application is source code, not generated MkDocs output.
+!/site/
+!/site/lib/

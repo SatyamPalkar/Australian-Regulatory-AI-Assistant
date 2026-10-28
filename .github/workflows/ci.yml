@@ -1,0 +1,40 @@
+name: Verify assistant and web application
+on:
+  push:
+    branches: [main]
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: site/package-lock.json
+      - name: Test Python retrieval and ingestion
+        run: python -m unittest discover -s tests -v
+      - name: Verify deterministic web corpus export
+        run: |
+          python scripts/export_site_data.py
+          git diff --exit-code -- site/lib/corpus.json site/lib/parity-fixtures.json site/lib/evaluation.json
+      - name: Test deployed engine against Python fixtures
+        run: node --test site/tests/engine.test.mjs
+      - name: Install web dependencies
+        working-directory: site
+        run: npm run install:ci
+      - name: Type check
+        working-directory: site
+        run: npx tsc --noEmit
+      - name: Test API contracts
+        working-directory: site
+        run: npm run test:api
+      - name: Build production application
+        working-directory: site
+        run: npm run build
