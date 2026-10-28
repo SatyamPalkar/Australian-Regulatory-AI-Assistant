@@ -1,6 +1,65 @@
 # Running and deploying the web application
 
-Live demo: [Australian Regulatory AI Assistant](https://australian-regulatory-ai-assistant.snowybead1.chatgpt.site).
+## GitHub Pages
+
+Public application: [Australian Regulatory AI Assistant](https://satyampalkar.github.io/Australian-Regulatory-AI-Assistant/).
+
+GitHub Pages serves the static build under `/Australian-Regulatory-AI-Assistant/`.
+The same React UI and TF-IDF engine run entirely in the browser, using the bundled
+37 statutory sections, 93 retrieval passages and saved evaluation report. Questions
+stay in browser memory; this variant does not call the Worker API or the private
+Sites deployment. Copying, source details, section search and research export work
+without a separate server. MLX/model inference remains a separate Mac workflow.
+
+### Build and preview
+
+From the repository root:
+
+```sh
+python3 scripts/export_site_data.py
+cd site
+npm run install:ci
+npm run typecheck
+npm test
+npm run build:pages
+npm run preview:pages
+```
+
+Open `http://127.0.0.1:4174/Australian-Regulatory-AI-Assistant/`.
+The static output is ignored `site/pages-dist/`. The alternate Vite entry is in
+`site/github-pages/`, and `vite.pages.config.ts` applies the project URL prefix to
+scripts, styles, the favicon and the home link. The optional `PAGES_BASE_PATH`
+build variable overrides that prefix for another deployment path.
+
+Browser verification of the static build:
+
+```sh
+cd site
+QA_STATIC_MODE=1 QA_BASE_URL=http://127.0.0.1:4174/Australian-Regulatory-AI-Assistant/ node scripts/browser-qa.mjs
+```
+
+This checks citations, source metadata, section search, evaluation, reset and mobile
+layout. It also rejects backend/private-Site requests and checks the home link's
+project prefix. Set `CHROME_PATH` if Chrome is installed elsewhere.
+
+### Automatic deployment
+
+`.github/workflows/pages.yml` runs on pushes to `main` and manual workflow dispatch.
+It verifies Python tests and deterministic data exports, installs locked dependencies,
+checks types and retrieval parity, builds the static app, uploads the Pages artifact
+and deploys it to the `github-pages` environment. The deploy job uses GitHub's Pages
+and OIDC permissions; no personal token is stored in the workflow or application.
+
+The repository's **Settings → Pages → Source** is configured as **GitHub Actions**.
+For administrative status/configuration, `scripts/github_pages.py status` and
+`enable` use an existing Git credential or `GH_TOKEN`/`GITHUB_TOKEN` in process
+memory. The helper never writes or prints credentials. `runs` and `jobs --run-id ID`
+show deployment progress. Pushes to GitHub publish Pages automatically; the private
+Sites deployment has its own separate publication workflow below.
+
+## Optional private Sites / Worker deployment
+
+Private Worker application: [Australian Regulatory AI Assistant](https://australian-regulatory-ai-assistant.snowybead1.chatgpt.site).
 It is deployed with owner-private access through Sites.
 
 The `site/` application provides the full browser-to-server retrieval flow. The

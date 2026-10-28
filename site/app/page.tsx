@@ -4,10 +4,24 @@ import { useEffect, useRef, useState } from "react";
 import { ArrowDownToLine, ArrowRight, ArrowUpRight, AudioLines, BookOpen, Check, ChevronDown, CircleHelp, Copy, ExternalLink, FileText, Fingerprint, GitBranch, Layers, LoaderCircle, MessageSquare, Plus, Scale, Search, ShieldCheck, SlidersHorizontal, X } from "lucide-react";
 
 type Source = { id: string; title: string; url: string; publisher: string; jurisdiction: string; source_kind: string; version_date: string; dataset: string; dataset_revision: string; dataset_file_url: string; section_number: string; section_heading: string; license: string; license_url: string; current_source_url: string; compilation_id: string; text?: string; score?: number; chunk_id?: string; word_count?: number };
-type Result = { answer: string; evidence: Source[]; retrieved: Source[]; abstained: boolean; latency_ms: number };
+export type Result = { answer: string; evidence: Source[]; retrieved: Source[]; abstained: boolean; latency_ms: number };
 type Turn = { question: string; result?: Result; error?: string };
-type Status = { sources: Source[]; corpus_sha256: string; mode: string; backend: string; section_count: number; chunk_count: number; law_count: number; version_dates: string[]; collection: { label: string; scope: string; currency_notice: string; dataset: string; revision: string; license: string; license_url: string } };
-type Evaluation = { corpus_sha256: string; metrics: Record<string, number>; results: { id: string; question: string; answerable: boolean; abstained: boolean; retrieval_hit_at_1: boolean | null }[] };
+export type Status = { sources: Source[]; corpus_sha256: string; mode: string; backend: string; section_count: number; chunk_count: number; law_count: number; version_dates: string[]; collection: { label: string; scope: string; currency_notice: string; dataset: string; revision: string; license: string; license_url: string } };
+export type Evaluation = { corpus_sha256: string; metrics: Record<string, number>; results: { id: string; question: string; answerable: boolean; abstained: boolean; retrieval_hit_at_1: boolean | null }[] };
+export type AssistantClient = { status: () => Promise<Status>; evaluation: () => Promise<Evaluation>; ask: (question: string, signal: AbortSignal) => Promise<Result> };
+
+async function requestJSON<T>(url: string, options?: RequestInit): Promise<T> {
+  const response = await fetch(url, options);
+  const data = await response.json() as T & { error?: string };
+  if (!response.ok) throw new Error(data.error || "Could not load the assistant. Please try again.");
+  return data;
+}
+
+const httpClient: AssistantClient = {
+  status: () => requestJSON<Status>("/api/status"),
+  evaluation: () => requestJSON<Evaluation>("/api/evaluation"),
+  ask: (question, signal) => requestJSON<Result>("/api/ask", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ question }), signal }),
+};
 const suggestions = [
   { title: "Consumer guarantees", question: "Under section 54, what factors determine whether goods are of acceptable quality?", icon: ShieldCheck, detail: "What quality should I expect from goods?", color: "lime" },
   { title: "Repairs & refunds", question: "What are the consequences of rejecting goods, including a refund or replacement?", icon: ArrowDownToLine, detail: "What happens when I reject faulty goods?", color: "lavender" },
@@ -18,7 +32,7 @@ function formatDate(value?: string) {
   return value ? new Date(`${value}T00:00:00Z`).toLocaleDateString("en-AU", { day: "numeric", month: "short", year: "numeric", timeZone: "UTC" }) : "Loading…";
 }
 
-export default function Home() {
+export default function Home({ client = httpClient, homeHref = "/" }: { client?: AssistantClient; homeHref?: string } = {}) {
   const [view, setView] = useState<"assistant" | "sources" | "evaluation">("assistant");
   const [status, setStatus] = useState<Status | null>(null);
   const [evaluation, setEvaluation] = useState<Evaluation | null>(null);
@@ -44,11 +58,10 @@ export default function Home() {
   const librarySources = status?.sources.filter((source) => `${source.section_number} ${source.section_heading}`.toLowerCase().includes(sourceQuery.toLowerCase())) ?? [];
 
   useEffect(() => {
-    Promise.all([fetch("/api/status"), fetch("/api/evaluation")]).then(async ([s, e]) => {
-      if (!s.ok || !e.ok) throw new Error("Could not load the corpus. Refresh to reconnect.");
-      setStatus(await s.json()); setEvaluation(await e.json());
+    Promise.all([client.status(), client.evaluation()]).then(([s, e]) => {
+      setStatus(s); setEvaluation(e);
     }).catch((error) => setLoadError(error.message));
-  }, []);
+  }, [client]);
   useEffect(() => {
     if (!selected) return;
     const trap = (event: KeyboardEvent) => {
@@ -84,9 +97,7 @@ export default function Home() {
     if (!text || busy) return;
     setView("assistant"); setBusy(true); setQuestion(""); setTurns((old) => [...old, { question: text }]);
     try {
-      const response = await fetch("/api/ask", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ question: text }), signal: AbortSignal.timeout(15000) });
-      const data = await response.json() as Result & { error?: string };
-      if (!response.ok) throw new Error(data.error || "The assistant is unavailable. Please try again.");
+      const data = await client.ask(text, AbortSignal.timeout(15000));
       setTurns((old) => [...old.slice(0, -1), { question: text, result: data }]);
     } catch (error) {
       setTurns((old) => [...old.slice(0, -1), { question: text, error: error instanceof Error ? error.message : "Connection failed. Please try again." }]);
@@ -113,7 +124,7 @@ export default function Home() {
 
   return <div className="app-shell">
     <aside className="sidebar">
-      <a className="brand" href="/" aria-label="Australian Regulatory Assistant home"><span className="brand-mark"><AudioLines size={25} strokeWidth={1.6}/></span><span>regulatory<span className="brand-period">.</span></span></a>
+      <a className="brand" href={homeHref} aria-label="Australian Regulatory Assistant home"><span className="brand-mark"><AudioLines size={25} strokeWidth={1.6}/></span><span>regulatory<span className="brand-period">.</span></span></a>
       <div className="workspace-switch"><span className="workspace-avatar">R</span><div>Research workspace<small>PERSONAL PROJECT</small></div><span className="workspace-badge">AU</span></div>
       <button className="new-research" disabled={busy} onClick={reset}><Plus size={17}/> New research <span>⌘ K</span></button>
       <div className="nav-label">EXPLORE</div><nav aria-label="Main navigation">

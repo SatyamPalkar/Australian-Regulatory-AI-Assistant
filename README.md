@@ -4,8 +4,8 @@ A dark chatbot interface and local Python retrieval pipeline over real Australia
 consumer-law text. The active corpus contains **37 statutory sections**, indexed
 as **93 passages**, from Schedule 2 of the Competition and Consumer Act 2010.
 
-[Open the deployed application](https://australian-regulatory-ai-assistant.snowybead1.chatgpt.site)
-(owner-private; sign in with your ChatGPT account).
+[Open the GitHub Pages application](https://satyampalkar.github.io/Australian-Regulatory-AI-Assistant/).
+The public Pages version searches the bundled corpus entirely in your browser.
 
 ## Real dataset and Sydney coverage
 
@@ -67,14 +67,19 @@ Node.js 24 is required:
 ```sh
 cd site
 npm run install:ci
-npm run dev
+npm run build:pages
+npm run preview:pages
 ```
 
-Open `http://localhost:5173`. The interface includes cited passages, a searchable
+Open `http://127.0.0.1:4174/Australian-Regulatory-AI-Assistant/`. The interface includes cited passages, a searchable
 statutory section library, version/licence details, research exports and the saved
-development evaluation. The hosted Worker uses the exported Python TF-IDF index;
-parity tests compare its outputs with Python. It does not run an LLM or adapter.
-See [DEPLOYMENT.md](DEPLOYMENT.md) for API, build, browser QA and publication details.
+development evaluation. GitHub Pages runs the same TF-IDF engine locally in the
+browser; questions require no backend or API keys. Pushes to `main` trigger the
+Pages build and deployment workflow. It does not run an LLM or adapter.
+
+The optional Worker deployment and its API remain supported: `npm run dev` serves
+that variant at `http://localhost:5173`. See [DEPLOYMENT.md](DEPLOYMENT.md) for both
+hosting targets, browser QA and publication details.
 
 ## Evaluation and limits
 

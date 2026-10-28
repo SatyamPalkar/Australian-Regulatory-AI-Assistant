@@ -6,11 +6,13 @@ import path from "node:path";
 import assert from "node:assert/strict";
 
 const base = process.env.QA_BASE_URL || "http://127.0.0.1:8787";
+const staticMode = process.env.QA_STATIC_MODE === "1";
 const chrome = process.env.CHROME_PATH || "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
 const profile = await mkdtemp(path.join(tmpdir(), "regulatory-qa-"));
 const browser = spawn(chrome, ["--headless=new", "--disable-gpu", "--no-first-run", "--no-default-browser-check", "--remote-debugging-port=9224", `--user-data-dir=${profile}`, "about:blank"], { stdio: "ignore" });
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 const errors = [];
+const requests = [];
 let socket;
 try {
   let targets;
@@ -25,6 +27,7 @@ try {
   socket.onmessage = (event) => {
     const message = JSON.parse(event.data);
     if (message.method === "Runtime.exceptionThrown") errors.push(message.params.exceptionDetails.text);
+    if (message.method === "Network.requestWillBeSent") requests.push(message.params.request.url);
     if (message.id && pending.has(message.id)) {
       const { resolve, reject, timer } = pending.get(message.id); clearTimeout(timer); pending.delete(message.id);
       if (message.error) reject(new Error(message.error.message)); else resolve(message.result);
@@ -49,12 +52,12 @@ try {
     await writeFile(`outputs/${name}.png`, Buffer.from(image.data, "base64"));
   };
   await mkdir("outputs", { recursive: true });
-  await command("Runtime.enable"); await command("Page.enable");
+  await command("Runtime.enable"); await command("Page.enable"); await command("Network.enable");
   await command("Emulation.setDeviceMetricsOverride", { width: 1536, height: 1000, deviceScaleFactor: 1, mobile: false });
   await command("Page.navigate", { url: base });
   await waitFor("document.querySelectorAll('.source-card').length === 3");
-  const activeCorpus = await (await fetch(`${base}/api/status`)).json();
-  const activeEvaluation = await (await fetch(`${base}/api/evaluation`)).json();
+  const activeCorpus = staticMode ? (await import("../lib/engine.mjs")).status() : await (await fetch(`${base}/api/status`)).json();
+  const activeEvaluation = staticMode ? (await import("../lib/evaluation.json", { with: { type: "json" } })).default : await (await fetch(`${base}/api/evaluation`)).json();
   assert.ok(await evaluate("document.body.innerText.includes('Complex rules.')"));
   await screenshot("desktop");
   await clickText("Consumer guarantees");
@@ -86,8 +89,12 @@ try {
   await sleep(300);
   assert.ok(await evaluate("document.documentElement.scrollWidth <= window.innerWidth"), "No mobile horizontal overflow");
   await screenshot("mobile");
+  if (staticMode) {
+    assert.equal(await evaluate("document.querySelector('.brand').href"), new URL(base).href, "Home link preserves the repository base path");
+    assert.deepEqual(requests.filter((url) => new URL(url).pathname.startsWith("/api/") || new URL(url).hostname.endsWith("chatgpt.site")), [], "Static retrieval does not depend on an API or the private Site");
+  }
   assert.deepEqual(errors, [], "No browser runtime exceptions");
-  console.log("Browser QA passed: desktop, cited answer, source dialog, library, evaluation, reset, unsupported question, mobile layout; screenshots in outputs/.");
+  console.log(`Browser QA passed (${staticMode ? "static GitHub Pages" : "Worker API"}): desktop, cited answer, source dialog, library search, evaluation, reset, unsupported question, mobile layout; screenshots in outputs/.`);
 } finally {
   socket?.close(); browser.kill("SIGTERM");
 }

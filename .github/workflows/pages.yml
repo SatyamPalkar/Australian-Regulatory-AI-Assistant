@@ -1,0 +1,66 @@
+name: Deploy chatbot to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: github-pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: read
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: site/package-lock.json
+      - name: Verify Python pipeline and exported corpus
+        run: |
+          python3 -m unittest discover -s tests -v
+          python3 scripts/export_site_data.py
+          git diff --exit-code -- site/lib/corpus.json site/lib/parity-fixtures.json site/lib/evaluation.json
+      - name: Install locked web dependencies
+        working-directory: site
+        run: npm run install:ci
+      - name: Check types and retrieval parity
+        working-directory: site
+        run: |
+          npm run typecheck
+          npm test
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+      - name: Build static chatbot
+        working-directory: site
+        run: npm run build:pages
+      - name: Upload static application
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: site/pages-dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
