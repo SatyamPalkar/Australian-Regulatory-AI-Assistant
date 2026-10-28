@@ -126,7 +126,7 @@ def main():
         dest = ROOT / f"reports/{args.suite}-{mode}.json"
         write_json(dest, report)
         with (ROOT / f"reports/{args.suite}-{mode}-review.csv").open("w") as handle:
-            writer = csv.writer(handle)
+            writer = csv.writer(handle, lineterminator="\n")
             writer.writerow(["id", "question", "answer", "evidence", "factual_correctness_0_1", "citation_entailment_0_1", "notes"])
             for r in rows:
                 writer.writerow([r["id"], r["question"], r["answer"], json.dumps(r["evidence"]), "", "", ""])
