@@ -7,6 +7,7 @@ import assert from "node:assert/strict";
 
 const base = process.env.QA_BASE_URL || "http://127.0.0.1:8787";
 const staticMode = process.env.QA_STATIC_MODE === "1";
+const ragMode = process.env.QA_RAG_MODE === "1";
 const chrome = process.env.CHROME_PATH || "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
 const profile = await mkdtemp(path.join(tmpdir(), "regulatory-qa-"));
 const browser = spawn(chrome, ["--headless=new", "--disable-gpu", "--no-first-run", "--no-default-browser-check", "--remote-debugging-port=9224", `--user-data-dir=${profile}`, "about:blank"], { stdio: "ignore" });
@@ -56,12 +57,17 @@ try {
   await command("Emulation.setDeviceMetricsOverride", { width: 1536, height: 1000, deviceScaleFactor: 1, mobile: false });
   await command("Page.navigate", { url: base });
   await waitFor("document.querySelectorAll('.source-card').length === 3");
-  const activeCorpus = staticMode ? (await import("../lib/engine.mjs")).status() : await (await fetch(`${base}/api/status`)).json();
-  const activeEvaluation = staticMode ? (await import("../lib/evaluation.json", { with: { type: "json" } })).default : await (await fetch(`${base}/api/evaluation`)).json();
+  const activeCorpus = staticMode ? (await import("../lib/engine.mjs")).status() : await (await fetch(new URL("/api/status", base))).json();
+  const activeEvaluation = staticMode ? (await import("../lib/evaluation.json", { with: { type: "json" } })).default : await (await fetch(new URL("/api/evaluation", base))).json();
   assert.ok(await evaluate("document.body.innerText.includes('Complex rules.')"));
   await screenshot("desktop");
   await clickText("Consumer guarantees");
   await waitFor("document.querySelectorAll('.evidence-passage').length > 0");
+  if (ragMode) {
+    assert.ok(await evaluate("document.querySelector('.generated-answer')?.textContent.length > 20"), "Real generated answer is visible");
+    assert.ok(await evaluate("Boolean(document.querySelector('.inline-citation'))"), "Generated answer includes interactive citations");
+    assert.ok(await evaluate("document.querySelector('.generation-trace')?.textContent.includes('Qwen')"), "Model trace is inspectable");
+  }
   assert.ok(await evaluate("document.querySelector('.evidence-passage').textContent.includes('acceptable quality')"));
   await screenshot("conversation");
   await evaluate("document.querySelector('.citation').click()");
@@ -80,6 +86,7 @@ try {
   await clickText("Evaluation"); await waitFor(`document.querySelectorAll('.evaluation-row').length === ${activeEvaluation.metrics.questions}`);
   assert.ok(await evaluate("document.body.innerText.includes('Needs review')"));
   await screenshot("evaluation");
+  if (ragMode) assert.ok(await evaluate("document.querySelector('.experiment-panel')?.textContent.includes('LoRA model + RAG')"), "Measured model comparison is visible");
   await clickText("New research");
   await evaluate("document.querySelector('textarea').focus()");
   await command("Input.insertText", { text: "What is the current NCAT application fee in Sydney?" });
@@ -97,7 +104,7 @@ try {
     assert.deepEqual(requests.filter((url) => new URL(url).pathname.startsWith("/api/") || new URL(url).hostname.endsWith("chatgpt.site")), [], "Static retrieval does not depend on an API or the private Site");
   }
   assert.deepEqual(errors, [], "No browser runtime exceptions");
-  console.log(`Browser QA passed (${staticMode ? "static GitHub Pages" : "Worker API"}): desktop, cited answer, source dialog, library search, evaluation, reset, unsupported question, mobile layout; screenshots in outputs/.`);
+  console.log(`Browser QA passed (${staticMode ? "static GitHub Pages" : ragMode ? "local MLX RAG" : "Worker API"}): desktop, cited answer, source dialog, library search, evaluation, reset, unsupported question, mobile layout; screenshots in outputs/.`);
 } finally {
   socket?.close(); browser.kill("SIGTERM");
 }

@@ -18,12 +18,18 @@ jobs:
           node-version: '24'
           cache: npm
           cache-dependency-path: site/package-lock.json
-      - name: Test Python retrieval and ingestion
+      - name: Install lightweight API dependencies (model downloads excluded)
+        run: python -m pip install -e '.[api]'
+      - name: Test Python retrieval, ingestion, RAG contracts and API
         run: python -m unittest discover -s tests -v
       - name: Verify deterministic web corpus export
         run: |
           python scripts/export_site_data.py
           git diff --exit-code -- site/lib/corpus.json site/lib/parity-fixtures.json site/lib/evaluation.json
+      - name: Verify frozen model reports and experiment export
+        run: |
+          python scripts/export_experiments.py
+          git diff --exit-code -- site/lib/experiments.json reports/comparison.md
       - name: Test deployed engine against Python fixtures
         run: node --test site/tests/engine.test.mjs
       - name: Install web dependencies

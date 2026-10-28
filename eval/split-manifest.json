@@ -1,0 +1,45 @@
+{
+  "version": 1,
+  "created_before_model_evaluation": true,
+  "origin": "Synthetic examples authored from the pinned statutory snapshot; no external legal expert review or independent sampling.",
+  "split": "Test source sections are disjoint from train/validation sections. Train and validation share topics; this is not topic-independent or legal accuracy validation.",
+  "test_questions": 36,
+  "training_source_ids": [
+    "acl-s18",
+    "acl-s24",
+    "acl-s260",
+    "acl-s261",
+    "acl-s263",
+    "acl-s54",
+    "acl-s55",
+    "acl-s60",
+    "acl-s61",
+    "acl-s64"
+  ],
+  "test_source_ids": [
+    "acl-s20",
+    "acl-s21",
+    "acl-s264",
+    "acl-s269",
+    "acl-s270",
+    "acl-s272",
+    "acl-s273",
+    "acl-s50",
+    "acl-s51",
+    "acl-s52",
+    "acl-s53",
+    "acl-s56",
+    "acl-s57",
+    "acl-s58",
+    "acl-s59",
+    "acl-s62"
+  ],
+  "files": {
+    "eval/benchmark-v1.jsonl": "c4081e39d346c4c23309bd1e5eac6e064fb0bb0f1ea12d90b9f43aed7c340414",
+    "data/training/train.jsonl": "28e852c10589d0b27d2151a61ed20a989543977c5178bc8e9c4e7322c9cc13c7",
+    "data/training/valid.jsonl": "8a9b1dfcd5c4c9e1013c9aecd12bd8b800342a153e7e3a65fe1d3313df9d7bda"
+  },
+  "corpus_sha256": "ef9c72bec9e12c63d802d7a38389a45ce9bb6c6e457dff3aab4b391197db5b7e",
+  "review_status": "Author checked targets against the snapshot; independent legal and entailment review pending.",
+  "training_review_note": "Before any training, corrected one target to remove an unsupported deduction-for-use statement; replaced with the section 263(5) refund/store-credit rule. Frozen test unchanged."
+}

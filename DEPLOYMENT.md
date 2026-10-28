@@ -1,5 +1,44 @@
 # Running and deploying the web application
 
+## Local model-backed application
+
+The Python API serves the built React application and runs real hybrid retrieval,
+reranking and MLX generation with the trained LoRA adapter. Follow the Mac setup in
+`README.md` (pinned dependencies, model downloads, hybrid index and training), then:
+
+```sh
+cd site
+npm run build:pages
+cd ..
+python -m reg_assistant.cli serve
+```
+
+Open `http://127.0.0.1:8000/Australian-Regulatory-AI-Assistant/`. Use `serve
+--base-model` for the unadapted model. The API overrides `runtime-config.js` so the
+same UI selects the same-origin local API. It binds to loopback, accepts at most
+2,000 characters per question, and serialises model requests. API errors do not
+silently fall back to lexical answers. No API key is embedded in frontend code.
+
+The API exposes `/api/health`, `/api/status`, `/api/ask`, `/api/evaluation` (the saved
+lexical development baseline) and `/api/experiments` (the four frozen model runs).
+The UI shows generated prose, clickable references, underlying statutory evidence,
+timing/token/memory details, and a separate model-comparison table. Its model request
+timeout is three minutes to allow first-load latency.
+
+Automated model-backed browser verification, after the API is running:
+
+```sh
+cd site
+QA_RAG_MODE=1 QA_BASE_URL=http://127.0.0.1:8000/Australian-Regulatory-AI-Assistant/ node scripts/browser-qa.mjs
+```
+
+The Pages mode control can connect an explicitly entered API origin. Allowed CORS
+origins are listed in `reg_assistant/api.py`. Browser private-network policies may
+prevent an HTTPS Pages website from contacting a localhost API; the same-origin
+local app is the supported path. This local server is not a public hosting service.
+Public model hosting requires a separate authenticated inference deployment;
+GitHub Pages does not run Python, MLX or model weights.
+
 ## GitHub Pages
 
 Public application: [Australian Regulatory AI Assistant](https://satyampalkar.github.io/Australian-Regulatory-AI-Assistant/).
@@ -9,7 +48,10 @@ The same React UI and TF-IDF engine run entirely in the browser, using the bundl
 37 statutory sections, 93 retrieval passages and saved evaluation report. Questions
 stay in browser memory; this variant does not call the Worker API or the private
 Sites deployment. Copying, source details, section search and research export work
-without a separate server. MLX/model inference remains a separate Mac workflow.
+without a separate server. The mode control can explicitly connect an API; that
+sends questions to the entered server instead. Actual MLX inference runs in the
+local Mac API described above. The Evaluation page includes the saved model
+comparison even when no model server is connected.
 
 ### Build and preview
 
@@ -17,6 +59,7 @@ From the repository root:
 
 ```sh
 python3 scripts/export_site_data.py
+python3 scripts/export_experiments.py
 cd site
 npm run install:ci
 npm run typecheck

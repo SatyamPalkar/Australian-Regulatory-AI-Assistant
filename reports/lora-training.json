@@ -1,0 +1,130 @@
+{
+  "completed": true,
+  "exit_code": 0,
+  "created_at": "2026-10-28T03:32:42.530826+00:00",
+  "config": {
+    "model": "models/generator",
+    "train": true,
+    "fine_tune_type": "lora",
+    "data": "data/training",
+    "mask_prompt": true,
+    "seed": 42,
+    "num_layers": 4,
+    "batch_size": 1,
+    "iters": 60,
+    "val_batches": 5,
+    "max_seq_length": 1024,
+    "learning_rate": 0.0001,
+    "grad_checkpoint": true,
+    "steps_per_report": 5,
+    "steps_per_eval": 30,
+    "save_every": 30,
+    "adapter_path": "adapters/consumer-law",
+    "lora_parameters": {
+      "rank": 4,
+      "scale": 8.0,
+      "dropout": 0.0
+    }
+  },
+  "configuration_sha256": "b7a5e537f5aa014e12be4f776bb3062718f2c76c240fb609f99a29ee77d4a806",
+  "model_manifest": {
+    "embedding": {
+      "repository": "sentence-transformers/all-MiniLM-L6-v2",
+      "revision": "1110a243fdf4706b3f48f1d95db1a4f5529b4d41",
+      "path": "models/embedding",
+      "license": "apache-2.0"
+    },
+    "reranker": {
+      "repository": "cross-encoder/ms-marco-MiniLM-L6-v2",
+      "revision": "233902d25c440f23af6f7d6e94d2946bac0bee0a",
+      "path": "models/reranker",
+      "license": "apache-2.0"
+    },
+    "generator": {
+      "repository": "mlx-community/Qwen2.5-1.5B-Instruct-4bit",
+      "revision": "8b403126fc14f14cfc99bb4cfa72ecbc129ea677",
+      "path": "models/generator",
+      "license": "apache-2.0"
+    }
+  },
+  "split_manifest": {
+    "version": 1,
+    "created_before_model_evaluation": true,
+    "origin": "Synthetic examples authored from the pinned statutory snapshot; no external legal expert review or independent sampling.",
+    "split": "Test source sections are disjoint from train/validation sections. Train and validation share topics; this is not topic-independent or legal accuracy validation.",
+    "test_questions": 36,
+    "training_source_ids": [
+      "acl-s18",
+      "acl-s24",
+      "acl-s260",
+      "acl-s261",
+      "acl-s263",
+      "acl-s54",
+      "acl-s55",
+      "acl-s60",
+      "acl-s61",
+      "acl-s64"
+    ],
+    "test_source_ids": [
+      "acl-s20",
+      "acl-s21",
+      "acl-s264",
+      "acl-s269",
+      "acl-s270",
+      "acl-s272",
+      "acl-s273",
+      "acl-s50",
+      "acl-s51",
+      "acl-s52",
+      "acl-s53",
+      "acl-s56",
+      "acl-s57",
+      "acl-s58",
+      "acl-s59",
+      "acl-s62"
+    ],
+    "files": {
+      "eval/benchmark-v1.jsonl": "c4081e39d346c4c23309bd1e5eac6e064fb0bb0f1ea12d90b9f43aed7c340414",
+      "data/training/train.jsonl": "28e852c10589d0b27d2151a61ed20a989543977c5178bc8e9c4e7322c9cc13c7",
+      "data/training/valid.jsonl": "8a9b1dfcd5c4c9e1013c9aecd12bd8b800342a153e7e3a65fe1d3313df9d7bda"
+    },
+    "corpus_sha256": "ef9c72bec9e12c63d802d7a38389a45ce9bb6c6e457dff3aab4b391197db5b7e",
+    "review_status": "Author checked targets against the snapshot; independent legal and entailment review pending.",
+    "training_review_note": "Before any training, corrected one target to remove an unsupported deduction-for-use statement; replaced with the section 263(5) refund/store-credit rule. Frozen test unchanged."
+  },
+  "sequence_lengths": {
+    "train": {
+      "examples": 28,
+      "max_tokens": 725
+    },
+    "valid": {
+      "examples": 5,
+      "max_tokens": 706
+    }
+  },
+  "elapsed_seconds": 49.56483812490478,
+  "peak_process_rss_gb": 1.291665408,
+  "peak_mlx_memory_gb": 2.317718016,
+  "hardware": {
+    "machine": "arm64",
+    "platform": "macOS-15.6.1-arm64-arm-64bit-Mach-O",
+    "system_memory_gb": 19.327352832
+  },
+  "adapter_sha256": "28b8fa704edf9e522e53ec425499afd2a2ac6e1594475818f5f42df082d0baf6",
+  "limitations": "Small synthetic training set; loss and successful training do not establish improved answers. Process RSS and MLX allocation are different memory measures. Evaluate the adapter against the same base-RAG test before selecting it.",
+  "sequence_length_audit": "Lengths independently re-counted with return_dict=False; all examples fit the configured maximum, so no example was truncated.",
+  "validation_losses": [
+    {
+      "step": 1,
+      "loss": 2.063
+    },
+    {
+      "step": 30,
+      "loss": 0.725
+    },
+    {
+      "step": 60,
+      "loss": 0.847
+    }
+  ]
+}

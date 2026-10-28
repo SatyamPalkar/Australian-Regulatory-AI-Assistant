@@ -1,0 +1,32 @@
+Loading configuration file configs/lora-experiment.yaml
+Loading pretrained model
+Loading datasets
+Training
+╭─ mlx_lm.lora ────────────────────────────────────────────────────────────────╮
+│    model           models/generator                                          │
+│    type            lora · 4 layers · rank 4                                  │
+│    dataset         data/training                                             │
+│    optimizer       adam · lr 1.0e-04                                         │
+│    batch · iters   1 · 60                                                    │
+│    max seq         1,024                                                     │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Trainable parameters: 0.043% (0.659M/1543.714M)
+  iter   train_loss     tok/s     tokens
+     1    val 2.063    2.27s
+     5    0.917 ▼       48      0.2k
+    10    0.882 ▼       57      0.3k
+    15    0.913 ▲       47      0.5k
+    20    0.276 ▼       33      0.6k
+    25    0.674 ▲       48      0.8k
+    30    val 0.725    2.26s
+    30    0.522 ▼       53      0.9k
+  save  0000030_adapters.safetensors
+    35    0.126 ▼       36      1.0k
+    40    0.279 ▲       64      1.2k
+    45    0.363 ▲       48      1.4k
+    50    0.436 ▲       60      1.6k
+    55    0.227 ▼       36      1.7k
+    60    val 0.847    2.26s
+    60    0.127 ▼       38      1.9k
+  save  0000060_adapters.safetensors
+train ██████████████████████████████ 100% ·    60/60

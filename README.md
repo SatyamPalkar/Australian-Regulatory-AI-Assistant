@@ -1,11 +1,74 @@
 # Australian Regulatory AI Assistant
 
-A dark chatbot interface and local Python retrieval pipeline over real Australian
-consumer-law text. The active corpus contains **37 statutory sections**, indexed
+A local, model-backed research assistant with hybrid retrieval, reranking, cited
+MLX answers, a measured LoRA experiment, and a dark chatbot interface. The active corpus contains **37 statutory sections**, indexed
 as **93 passages**, from Schedule 2 of the Competition and Consumer Act 2010.
 
 [Open the GitHub Pages application](https://satyampalkar.github.io/Australian-Regulatory-AI-Assistant/).
-The public Pages version searches the bundled corpus entirely in your browser.
+The public Pages version searches the bundled corpus entirely in your browser and
+shows the saved model experiment. Run the local API for actual LLM generation.
+
+## Measured on an M3 Pro
+
+The frozen synthetic test contains 24 supported and 12 unsupported questions. Its
+source sections are disjoint from the training sections; it is not an independently
+reviewed legal benchmark.
+
+| Pipeline | Expected source in top 3 | Supported questions answered | Unsupported questions declined |
+| --- | --- | --- | --- |
+| TF-IDF passages | 22/24 | 24/24 passages returned | 11/12 |
+| Hybrid + reranker passages | 23/24 | 21/24 passages returned | 12/12 |
+| Base Qwen + RAG | 23/24 | 17/24 cited answers | 12/12 |
+| LoRA Qwen + RAG | 23/24 | 20/24 cited answers | 12/12 |
+
+A response passing citation checks is **not a verified correct answer**. The small
+LoRA experiment improved response acceptance on this test; factual correctness and
+citation entailment remain ungraded. Median LoRA RAG latency was 0.97 seconds and
+peak MLX allocation was 1.94 GB. The 60-step training run took 49.6 seconds with
+2.32 GB peak MLX allocation. These figures describe one machine and experiment.
+
+[Full comparison and failures](reports/comparison.md) · [Experiment protocol](EXPERIMENTS.md) · [Model card](MODEL_CARD.md)
+
+## Run the model-backed app on your Mac
+
+Tested with Python 3.13, macOS 15.6.1, Apple M3 Pro and 18 GB unified memory.
+Model downloads total approximately 1 GB. No paid API or API key is needed.
+
+```sh
+python3.13 -m venv .venv
+source .venv/bin/activate
+python -m pip install -r requirements-macos.lock
+python scripts/download_models.py
+python -m reg_assistant.cli index --backend hybrid --output data/index-hybrid.json
+python scripts/train_lora.py --smoke
+python scripts/train_lora.py
+cd site
+npm run install:ci
+npm run build:pages
+cd ..
+python -m reg_assistant.cli serve
+```
+
+Open **http://127.0.0.1:8000/Australian-Regulatory-AI-Assistant/**. The local server
+selects hybrid retrieval and the trained adapter automatically. Use `serve
+--base-model` to compare the unadapted model. The server binds to loopback and
+processes one question at a time; it is a local research service.
+
+The trained adapter and model weights stay outside Git. Anyone cloning the repo
+can reproduce them with the commands above. Existing adapters are protected from
+accidental overwrite. The dependency snapshot is specific to the tested Mac stack;
+the lightweight TF-IDF baseline below still runs with Python 3.9 and no packages.
+
+```mermaid
+flowchart LR
+    Q[Question] --> H[Lexical + dense retrieval]
+    H --> F[Reciprocal rank fusion]
+    F --> R[Cross-encoder reranker]
+    R --> E[Full short sections + provenance]
+    E --> M[Qwen 1.5B four-bit + LoRA]
+    M --> C[Per-paragraph citation checks]
+    C --> A[Cited answer or abstention]
+```
 
 ## Real dataset and Sydney coverage
 
@@ -75,7 +138,10 @@ Open `http://127.0.0.1:4174/Australian-Regulatory-AI-Assistant/`. The interface 
 statutory section library, version/licence details, research exports and the saved
 development evaluation. GitHub Pages runs the same TF-IDF engine locally in the
 browser; questions require no backend or API keys. Pushes to `main` trigger the
-Pages build and deployment workflow. It does not run an LLM or adapter.
+Pages build and deployment workflow. GitHub Pages itself does not run an LLM or adapter.
+The mode control can connect a running API; the same-origin local URL above is the
+recommended model-backed experience. Browser security policies may restrict remote
+Pages-to-localhost connections.
 
 The optional Worker deployment and its API remain supported: `npm run dev` serves
 that variant at `http://localhost:5173`. See [DEPLOYMENT.md](DEPLOYMENT.md) for both
@@ -104,29 +170,33 @@ The exporter refuses a mismatched corpus, changed questions, or an evaluation wi
 answers that differ from the current retrieval behavior. The GitHub CI workflow
 checks deterministic exports, Python/web tests, types and the production build.
 
-## Optional local models and later fine-tuning
+## Model stack and reproducibility
 
-Use Python 3.11+ on Apple Silicon for the optional model stack:
+The new hybrid pipeline uses the pinned models in `configs/models.json`:
+
+- `sentence-transformers/all-MiniLM-L6-v2` for dense retrieval, combined with TF-IDF
+  through reciprocal rank fusion over 12 candidates.
+- `cross-encoder/ms-marco-MiniLM-L6-v2` for relevance reranking and a 0.5 sigmoid
+  threshold. This threshold is a development setting, not answer confidence.
+- `mlx-community/Qwen2.5-1.5B-Instruct-4bit` for greedy generation, capped at 256
+  output tokens, with optional four-layer rank-four LoRA adapters.
+
+CPU embedding/reranking uses float64 and eager attention because float32 CPU
+reranker inference produced NaNs on the tested setup. Non-finite embeddings or
+reranker scores cause an error. Short source sections are expanded in full to
+preserve qualifications; long sections remain visibly partial evidence. Each
+answer paragraph must end with valid supplied reference numbers. This structural
+check cannot establish entailment or prevent every hallucination.
 
 ```sh
-python3.11 -m venv .venv
-source .venv/bin/activate
-python -m pip install -e '.[semantic,mlx]'
-python -m reg_assistant.cli index --backend semantic --output data/index-semantic.json
-python -m reg_assistant.cli ask "What does the law say about acceptable quality?" --index data/index-semantic.json --generator mlx
+python scripts/run_experiment.py --suite test --modes tfidf hybrid base-rag adapter-rag
+python scripts/export_experiments.py
+python -m unittest discover -s tests -v
 ```
 
-The configured models are `sentence-transformers/all-MiniLM-L6-v2` and
-`mlx-community/Qwen2.5-1.5B-Instruct-4bit`. Model downloads, semantic inference and
-MLX inference remain unverified here. The optional dependency ranges are not a
-validated lockfile. No fine-tuning or memory benchmark has been performed.
-
-`configs/lora-smoke.yaml` is a template for ten QLoRA steps with batch size one,
-sequence length 256, four adapted layers and rank four. It requires reviewed
-`data/training/train.jsonl` and `valid.jsonl`. Build training examples from evidence,
-keep question families separated, and freeze an independent held-out set before
-training. Compare base RAG and adapter RAG on identical retrieval and decoding
-settings, with human evidence-support review plus latency and memory measurements.
+The checked-in 36-question test is now observed. Further tuning must use development
+data; future independent claims need a new frozen test. See `EXPERIMENTS.md` for
+split hashes, training logs, failure analysis and the pending human-review rubric.
 
 For the historical summary baseline, explicitly select `data/demo.jsonl`,
 `eval/dev.jsonl` and a separate report path. `reports/dev-baseline.json` records the

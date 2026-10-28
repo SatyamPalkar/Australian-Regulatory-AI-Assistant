@@ -33,6 +33,8 @@ jobs:
           python3 -m unittest discover -s tests -v
           python3 scripts/export_site_data.py
           git diff --exit-code -- site/lib/corpus.json site/lib/parity-fixtures.json site/lib/evaluation.json
+          python3 scripts/export_experiments.py
+          git diff --exit-code -- site/lib/experiments.json reports/comparison.md
       - name: Install locked web dependencies
         working-directory: site
         run: npm run install:ci

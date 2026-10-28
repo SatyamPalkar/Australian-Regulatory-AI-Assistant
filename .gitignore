@@ -226,6 +226,7 @@ data/index*.json
 adapters/
 models/
 .cache/
+reports/training-worker-memory.json
 .DS_Store
 
 # The web application is source code, not generated MkDocs output.

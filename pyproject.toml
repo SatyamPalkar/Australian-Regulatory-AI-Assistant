@@ -12,6 +12,8 @@ dependencies = []
 [project.optional-dependencies]
 semantic = ["sentence-transformers>=3,<6"]
 mlx = ["mlx-lm>=0.26,<1; sys_platform == 'darwin' and platform_machine == 'arm64'"]
+api = ["fastapi>=0.115,<1", "uvicorn>=0.30,<1", "httpx>=0.27,<1"]
+benchmark = ["psutil>=6,<8"]
 
 [project.scripts]
 reg-assistant = "reg_assistant.cli:main"

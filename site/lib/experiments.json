@@ -1,0 +1,95 @@
+{
+  "runs": [
+    {
+      "mode": "tfidf",
+      "metrics": {
+        "questions": 36,
+        "supported_questions": 24,
+        "unsupported_questions": 12,
+        "retrieval_hit_at_1": 0.875,
+        "retrieval_hit_at_3": 0.9166666666666666,
+        "mean_reciprocal_rank": 0.8958333333333334,
+        "expected_source_cited_rate": 0.9166666666666666,
+        "answerable_response_rate": 1.0,
+        "unsupported_abstention_rate": 0.9166666666666666,
+        "reference_keyword_coverage": 0.9583333333333334,
+        "citation_format_pass_rate": 1.0,
+        "p50_latency_ms": 0.07227098103612661,
+        "p95_latency_ms": 0.25041704066097736,
+        "peak_mlx_memory_gb": 0,
+        "factual_correctness": null,
+        "citation_entailment": null
+      },
+      "report": "reports/test-tfidf.json"
+    },
+    {
+      "mode": "hybrid",
+      "metrics": {
+        "questions": 36,
+        "supported_questions": 24,
+        "unsupported_questions": 12,
+        "retrieval_hit_at_1": 0.9166666666666666,
+        "retrieval_hit_at_3": 0.9583333333333334,
+        "mean_reciprocal_rank": 0.9375,
+        "expected_source_cited_rate": 0.875,
+        "answerable_response_rate": 0.875,
+        "unsupported_abstention_rate": 1.0,
+        "reference_keyword_coverage": 0.8541666666666666,
+        "citation_format_pass_rate": 1.0,
+        "p50_latency_ms": 395.2065205667168,
+        "p95_latency_ms": 1154.0047079324722,
+        "peak_mlx_memory_gb": 0,
+        "factual_correctness": null,
+        "citation_entailment": null
+      },
+      "report": "reports/test-hybrid.json"
+    },
+    {
+      "mode": "base-rag",
+      "metrics": {
+        "questions": 36,
+        "supported_questions": 24,
+        "unsupported_questions": 12,
+        "retrieval_hit_at_1": 0.9166666666666666,
+        "retrieval_hit_at_3": 0.9583333333333334,
+        "mean_reciprocal_rank": 0.9375,
+        "expected_source_cited_rate": 0.7083333333333334,
+        "answerable_response_rate": 0.7083333333333334,
+        "unsupported_abstention_rate": 1.0,
+        "reference_keyword_coverage": 0.6875,
+        "citation_format_pass_rate": 0.8888888888888888,
+        "p50_latency_ms": 937.2678749496117,
+        "p95_latency_ms": 2287.902625044808,
+        "peak_mlx_memory_gb": 1.771240436,
+        "factual_correctness": null,
+        "citation_entailment": null
+      },
+      "report": "reports/test-base-rag.json"
+    },
+    {
+      "mode": "adapter-rag",
+      "metrics": {
+        "questions": 36,
+        "supported_questions": 24,
+        "unsupported_questions": 12,
+        "retrieval_hit_at_1": 0.9166666666666666,
+        "retrieval_hit_at_3": 0.9583333333333334,
+        "mean_reciprocal_rank": 0.9375,
+        "expected_source_cited_rate": 0.8333333333333334,
+        "answerable_response_rate": 0.8333333333333334,
+        "unsupported_abstention_rate": 1.0,
+        "reference_keyword_coverage": 0.7083333333333334,
+        "citation_format_pass_rate": 0.9722222222222222,
+        "p50_latency_ms": 965.8252078806981,
+        "p95_latency_ms": 1802.62566707097,
+        "peak_mlx_memory_gb": 1.942012056,
+        "factual_correctness": null,
+        "citation_entailment": null
+      },
+      "report": "reports/test-adapter-rag.json"
+    }
+  ],
+  "questions_sha256": "c4081e39d346c4c23309bd1e5eac6e064fb0bb0f1ea12d90b9f43aed7c340414",
+  "corpus_sha256": "ef9c72bec9e12c63d802d7a38389a45ce9bb6c6e457dff3aab4b391197db5b7e",
+  "limitations": "Synthetic section-disjoint questions. Source and citation checks do not measure factual correctness. Human factual/entailment review pending. End-to-end latency on one M3 Pro; first request includes cold loading."
+}

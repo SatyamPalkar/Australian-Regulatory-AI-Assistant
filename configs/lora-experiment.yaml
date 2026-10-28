@@ -1,0 +1,22 @@
+# Fixed before test evaluation. Small proof-of-work experiment, not production training.
+model: models/generator
+train: true
+fine_tune_type: lora
+data: data/training
+mask_prompt: true
+seed: 42
+num_layers: 4
+batch_size: 1
+iters: 60
+val_batches: 5
+max_seq_length: 1024
+learning_rate: 0.0001
+grad_checkpoint: true
+steps_per_report: 5
+steps_per_eval: 30
+save_every: 30
+adapter_path: adapters/consumer-law
+lora_parameters:
+  rank: 4
+  scale: 8.0
+  dropout: 0.0

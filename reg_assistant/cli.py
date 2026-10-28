@@ -29,7 +29,7 @@ def main(argv=None):
     index = sub.add_parser("index", help="Build a local lexical or semantic index")
     index.add_argument("--documents", default="data/consumer_law.jsonl")
     index.add_argument("--output", default="data/index.json")
-    index.add_argument("--backend", choices=["tfidf", "semantic"], default="tfidf")
+    index.add_argument("--backend", choices=["tfidf", "semantic", "hybrid"], default="tfidf")
     index.add_argument("--embedding-model", default=EMBEDDING_MODEL)
     ask = sub.add_parser("ask")
     ask.add_argument("question")
@@ -39,14 +39,28 @@ def main(argv=None):
     evaluate.add_argument("--questions", default="eval/consumer-law-dev.jsonl")
     evaluate.add_argument("--output", default="reports/consumer-law-baseline.json")
     model_options(evaluate)
+    serve = sub.add_parser("serve", help="Serve local hybrid + MLX RAG and the built UI")
+    serve.add_argument("--index", default="data/index-hybrid.json")
+    serve.add_argument("--adapter", default="adapters/consumer-law")
+    serve.add_argument("--base-model", action="store_true", help="Run the unadapted model for comparison")
+    serve.add_argument("--port", type=int, default=8000)
     args = parser.parse_args(argv)
     try:
+        if args.command == "serve":
+            import uvicorn
+            from .api import create_app
+            uvicorn.run(create_app(index_path=args.index, adapter=None if args.base_model else args.adapter), host="127.0.0.1", port=args.port)
+            return 0
         if args.command == "ingest":
             count = ingest(args.manifest, args.output, args.raw_dir)
             print(f"Saved {count} official pages to {args.output}")
             return 0
         if args.command == "index":
-            data = build_index(read_jsonl(args.documents), args.backend, args.embedding_model)
+            if args.backend == "hybrid":
+                from .rag import build_hybrid_index
+                data = build_hybrid_index(read_jsonl(args.documents))
+            else:
+                data = build_index(read_jsonl(args.documents), args.backend, args.embedding_model)
             write_json(args.output, data)
             print(f"Indexed {len(data['chunks'])} chunks with {args.backend} into {args.output}")
             return 0
@@ -57,10 +71,22 @@ def main(argv=None):
         if args.min_score is not None and not 0 <= args.min_score <= 1:
             raise ValueError("--min-score must be between 0 and 1")
         index_bytes = Path(args.index).read_bytes()
-        retriever = Retriever(json.loads(index_bytes))
-        generator = MLXGenerator(args.model, args.adapter) if args.generator == "mlx" else None
+        index_data = json.loads(index_bytes)
+        pipeline = None
+        if index_data.get("backend") == "hybrid":
+            from .rag import HybridRetriever, MeasuredMLXGenerator, RAGPipeline
+            if args.model != LLM_MODEL:
+                raise ValueError("Hybrid generation uses the pinned local model in configs/models.json")
+            retriever = HybridRetriever(index_data)
+            generator = MeasuredMLXGenerator(args.adapter) if args.generator == "mlx" else None
+            pipeline = RAGPipeline(retriever, generator, .5 if args.min_score is None else args.min_score, args.top_k)
+        else:
+            retriever = Retriever(index_data)
+            generator = MLXGenerator(args.model, args.adapter) if args.generator == "mlx" else None
 
         def run(question):
+            if pipeline:
+                return pipeline.ask(question)
             return answer(question, retriever, generator, args.top_k, args.min_score)
 
         if args.command == "ask":

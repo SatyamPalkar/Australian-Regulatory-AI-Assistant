@@ -1,0 +1,28 @@
+Loading configuration file configs/lora-smoke.yaml
+Loading pretrained model
+Loading datasets
+Training
+╭─ mlx_lm.lora ────────────────────────────────────────────────────────────────╮
+│    model           models/generator                                          │
+│    type            lora · 4 layers · rank 4                                  │
+│    dataset         data/training-smoke                                       │
+│    optimizer       adam · lr 1.0e-05                                         │
+│    batch · iters   1 · 10                                                    │
+│    max seq         768                                                       │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Trainable parameters: 0.043% (0.659M/1543.714M)
+  iter   train_loss     tok/s     tokens
+     1    val 2.031    0.85s
+     1    2.961 ▼        7      0.0k
+     2    1.735 ▼       50      0.1k
+     3    1.110 ▼       39      0.1k
+     4    2.137 ▲       57      0.1k
+     5    1.664 ▼       52      0.2k
+     6    1.041 ▼       40      0.2k
+     7    2.736 ▲       28      0.2k
+     8    2.013 ▼       56      0.3k
+     9    2.606 ▲       27      0.3k
+    10    val 1.564    0.56s
+    10    0.883 ▼       40      0.3k
+  save  0000010_adapters.safetensors
+train ██████████████████████████████ 100% ·    10/10

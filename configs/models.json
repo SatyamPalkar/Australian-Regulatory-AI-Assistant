@@ -1,0 +1,20 @@
+{
+  "embedding": {
+    "repository": "sentence-transformers/all-MiniLM-L6-v2",
+    "revision": "1110a243fdf4706b3f48f1d95db1a4f5529b4d41",
+    "path": "models/embedding",
+    "license": "apache-2.0"
+  },
+  "reranker": {
+    "repository": "cross-encoder/ms-marco-MiniLM-L6-v2",
+    "revision": "233902d25c440f23af6f7d6e94d2946bac0bee0a",
+    "path": "models/reranker",
+    "license": "apache-2.0"
+  },
+  "generator": {
+    "repository": "mlx-community/Qwen2.5-1.5B-Instruct-4bit",
+    "revision": "8b403126fc14f14cfc99bb4cfa72ecbc129ea677",
+    "path": "models/generator",
+    "license": "apache-2.0"
+  }
+}
