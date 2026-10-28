@@ -47,8 +47,8 @@ try {
     throw new Error(`Timed out waiting for ${expression}`);
   };
   const clickText = (text) => evaluate(`Array.from(document.querySelectorAll('button')).find(b => b.textContent.includes(${JSON.stringify(text)})).click()`);
-  const screenshot = async (name) => {
-    const image = await command("Page.captureScreenshot", { format: "png", captureBeyondViewport: true });
+  const screenshot = async (name, fullPage = true) => {
+    const image = await command("Page.captureScreenshot", { format: "png", captureBeyondViewport: fullPage });
     await writeFile(`outputs/${name}.png`, Buffer.from(image.data, "base64"));
   };
   await mkdir("outputs", { recursive: true });
@@ -71,6 +71,8 @@ try {
   await command("Input.dispatchKeyEvent", { type: "keyDown", key: "Escape", code: "Escape" });
   await waitFor("!document.querySelector('[role=dialog]')");
   await clickText("Source library"); await waitFor(`document.querySelectorAll('.library-card').length === ${activeCorpus.section_count}`);
+  await evaluate("window.scrollTo(0, 0)");
+  await screenshot("sources", false);
   await evaluate("document.querySelector('[aria-label=\"Search statutory sections\"]').focus()");
   await command("Input.insertText", { text: "spare parts" });
   await waitFor("document.querySelectorAll('.library-card').length === 1");
@@ -88,6 +90,7 @@ try {
   await command("Emulation.setDeviceMetricsOverride", { width: 390, height: 844, deviceScaleFactor: 1, mobile: true });
   await sleep(300);
   assert.ok(await evaluate("document.documentElement.scrollWidth <= window.innerWidth"), "No mobile horizontal overflow");
+  assert.ok(await evaluate("document.documentElement.scrollWidth <= 390"), "Mobile content fits the requested 390 px viewport");
   await screenshot("mobile");
   if (staticMode) {
     assert.equal(await evaluate("document.querySelector('.brand').href"), new URL(base).href, "Home link preserves the repository base path");
