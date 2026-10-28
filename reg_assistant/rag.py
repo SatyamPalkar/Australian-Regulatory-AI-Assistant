@@ -197,7 +197,7 @@ class RAGPipeline:
         self.min_score, self.top_k = min_score, top_k
 
     def ask(self, question, history=None):
-        from .conversation import bounded_history, contextual_question
+        from .conversation import bounded_history, contextual_question, is_simplification_request
         start = time.perf_counter()
         question = question.strip()
         if not question or len(question) > 2000:
@@ -229,8 +229,10 @@ class RAGPipeline:
         retrieved_ms = (time.perf_counter() - start) * 1000
         text, rejected, raw = ABSTENTION, None, None
         generated = False
+        prepared_summary = False
+        simplify_followup = bool(history and is_simplification_request(question) and retrieval_question != question)
         source_followup = bool(history and retrieval_question != question
-                               and getattr(self.generator, "answer_style", "concise") == "concise")
+                               and (getattr(self.generator, "answer_style", "concise") == "concise" or simplify_followup))
         generation_history = history if retrieval_question != question or getattr(self.generator, "answer_style", "concise") == "explain" else []
         if evidence:
             if source_followup:
@@ -238,7 +240,13 @@ class RAGPipeline:
                 # qualifications. Serve fresh verbatim evidence for dependent
                 # follow-ups in the default profile; generative explain is opt-in.
                 evidence = evidence[:1]
-                text = f"Source wording:\n{evidence[0]['text']} [1]"
+                if simplify_followup:
+                    from .plain_language import plain_language_summary
+                    summary = plain_language_summary(documents[evidence[0]["id"]])
+                    if summary:
+                        text, prepared_summary = summary, True
+                if not prepared_summary:
+                    text = f"Source wording:\n{evidence[0]['text']} [1]"
             elif self.generator:
                 generated = True
                 raw = self.generator(question, evidence, history=generation_history) if generation_history else self.generator(question, evidence)
@@ -250,10 +258,14 @@ class RAGPipeline:
                 text = "Relevant passages (answerability has not been verified):\n\n" + "\n\n".join(
                     f"{c['text']} [{i}]" for i, c in enumerate(evidence, 1))
         return {"answer": text, "abstained": text == ABSTENTION, "evidence": evidence,
-                "scope_note": ("Showing the strongest retrieved provision for your follow-up. This source wording may not answer every part of your question."
+                "scope_note": ("Prepared plain-language guide to this source snapshot. Read the complete provision for its conditions and check the current law before relying on it."
+                               if prepared_summary else
+                               "A prepared plain-language guide is not available for this source snapshot. Showing the source wording instead."
+                               if simplify_followup and evidence else
+                               "Showing the strongest retrieved provision for your follow-up. This source wording may not answer every part of your question."
                                if source_followup and text != ABSTENTION else
                                "This is a general overview of the retrieved statutory provisions. Brand-specific warranty terms and periods are not in this collection." if rewritten and text != ABSTENTION else None),
-                "retrieved": hits, "mode": "source-quotes" if source_followup and evidence else "rag" if self.generator else "hybrid-extractive",
+                "retrieved": hits, "mode": "plain-language" if prepared_summary else "source-quotes" if source_followup and evidence else "rag" if self.generator else "hybrid-extractive",
                 "citation_format_valid": rejected is None, "rejection_reason": rejected,
                 "raw_generation": raw if rejected else None,
                 "latency_ms": (time.perf_counter() - start) * 1000,
@@ -262,11 +274,11 @@ class RAGPipeline:
                           "history_turns_used": len(history) if retrieval_question != question or generated and generation_history else 0,
                           "history_used_for_retrieval": retrieval_question != question,
                           "answer_style": getattr(self.generator, "answer_style", "concise"),
-                          "response_strategy": "source_quotes" if source_followup and evidence else "generated" if generated else "retrieval",
+                          "response_strategy": "prepared_summary" if prepared_summary else "source_quotes" if source_followup and evidence else "generated" if generated else "retrieval",
                           "retriever": self.retriever.index["backend"],
                           "reranker": model_manifest()["reranker"]["repository"],
-                          "generator": model_manifest()["generator"]["repository"] if self.generator else None,
-                          "adapter": bool(getattr(self.generator, "adapter", None)),
+                          "generator": model_manifest()["generator"]["repository"] if generated else None,
+                          "adapter": bool(getattr(self.generator, "adapter", None)) if generated else False,
                           **(getattr(self.generator, "last_stats", {}) if generated else {})}}
 
 

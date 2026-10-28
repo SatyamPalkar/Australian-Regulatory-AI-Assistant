@@ -85,6 +85,21 @@ try {
     assert.ok(await evaluate("document.querySelectorAll('.turn')[1].textContent.includes('Source wording')"), "Default follow-up quotes source text");
     assert.ok(await evaluate("document.querySelectorAll('.turn')[1].querySelector('.generation-trace').textContent.includes('1 recent turns')"), "One real previous turn reaches the server");
     await screenshot("followup");
+    await clickText("New research");
+    await evaluate("document.querySelector('textarea').focus()");
+    await command("Input.insertText", { text: "What does the supplier guarantee about the right to sell goods?" });
+    await evaluate("document.querySelector('[aria-label=\"Send question\"]').click()");
+    await waitFor("document.querySelector('.generated-answer')");
+    await evaluate("document.querySelector('textarea').focus()");
+    await command("Input.insertText", { text: "i still want to undersatnd it but in normal language sumarise it for mr" });
+    await evaluate("document.querySelector('[aria-label=\"Send question\"]').click()");
+    await waitFor("document.querySelectorAll('.turn').length === 2 && document.querySelectorAll('.turn')[1].querySelector('.generated-answer')");
+    assert.ok(await evaluate("document.querySelectorAll('.turn')[1].querySelector('.generated-answer').textContent.includes('legal right to sell')"), "Exact reported simplification request returns plain language");
+    assert.ok(await evaluate("document.querySelectorAll('.turn')[1].textContent.includes('hiring or leasing')"), "Summary retains source qualifications");
+    assert.ok(await evaluate("document.querySelectorAll('.turn')[1].querySelector('.answer-heading').textContent.includes('Plain-language guide')"), "Prepared summary is labelled truthfully");
+    assert.ok(await evaluate("document.querySelectorAll('.turn')[1].querySelector('.generation-trace').textContent.includes('Model generation was not used')"), "Guide is distinguished from LoRA output");
+    await evaluate("document.querySelectorAll('.turn')[1].scrollIntoView({block:'start'})");
+    await screenshot("plain-language", false);
   }
   await clickText("Source library"); await waitFor(`document.querySelectorAll('.library-card').length === ${activeCorpus.section_count}`);
   await evaluate("window.scrollTo(0, 0)");

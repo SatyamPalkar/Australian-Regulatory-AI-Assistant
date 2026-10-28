@@ -1,6 +1,6 @@
 import unittest
 
-from reg_assistant.conversation import bounded_history, contextual_question, explanatory_messages
+from reg_assistant.conversation import bounded_history, contextual_question, explanatory_messages, is_simplification_request
 from reg_assistant.core import read_jsonl
 from reg_assistant.experiments import verify_phase2
 from reg_assistant.rag import ROOT
@@ -44,6 +44,24 @@ class ConversationTests(unittest.TestCase):
         self.assertFalse(set(manifest["training_sources"]) & set(manifest["test_sources"]))
         self.assertEqual(manifest["train_examples"], 64)
         self.assertEqual(manifest["test_questions"], 16)
+
+    def test_typo_filled_simplification_searches_the_original_topic(self):
+        original = "What does the supplier guarantee about the right to sell goods?"
+        question = "i still want to undersatnd it but in normal language sumarise it for mr"
+        history = [{"question": original, "answer": "Untrusted prior answer."}]
+        self.assertTrue(is_simplification_request(question))
+        self.assertEqual(contextual_question(question, history), original)
+
+    def test_simplification_skips_failed_retries_and_retains_exception_topic(self):
+        original = "What is the guarantee as to title under section 51?"
+        history = [{"question": original, "answer": "Rule."}, {"question": "summarise it", "answer": "No evidence."}]
+        self.assertEqual(contextual_question("Explain that in simple words", history), original)
+        history[1] = {"question": "What are the exceptions?", "answer": "Source text."}
+        self.assertIn("section 51", contextual_question("Summarise it please", history))
+
+    def test_simplification_does_not_erase_new_topics_brands_or_amounts(self):
+        for question in ["Summarise my visa renewal requirements", "Summarise it and tell me the NCAT fee", "Explain it for Samsung's 24 month warranty", "Summarise section 59 instead"]:
+            self.assertFalse(is_simplification_request(question), question)
 
 
 if __name__ == "__main__":

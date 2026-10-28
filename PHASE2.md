@@ -32,6 +32,27 @@ untrusted context, separate from newly retrieved evidence. Prior answers and the
 reference numbers are never authoritative sources. This prompt instruction is not
 a guarantee against prompt injection or semantic mistakes.
 
+### Plain-language follow-ups
+
+Wording-only follow-ups such as "summarise it in normal language" reuse the last
+legal topic instead of searching for the request's writing instructions. Observed
+spelling mistakes and failed summary retries are covered. New topic words, brands,
+amounts and section references keep their own question meaning.
+
+For sections 51, 54, 55, 59, 60, 61, 64 and 263, the default app can return a
+**prepared plain-language guide** with source citations and relevant qualifications.
+These are project-authored summaries, not LoRA-generated explanations or an
+independent legal review. Each guide is pinned to the law, compilation, version
+and text hash, and checks supporting source phrases. A changed source or missing
+guide falls back to labelled source text. Fresh qualifying retrieval evidence is
+still required; old assistant answers are never used as the summary's evidence.
+
+`data/plain_language_guides.json` holds the notes and provenance.
+`reports/plain-language-regression.json` records observed-user development checks;
+these are not a new held-out benchmark. Run `python scripts/check_plain_language.py`
+to repeat them. This feature does not change the frozen training or benchmark
+files, or promote the experimental adapter.
+
 GitHub Pages' browser-only retrieval demo remains stateless. Conversation-aware
 behaviour requires the local API.
 

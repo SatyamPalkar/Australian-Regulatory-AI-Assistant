@@ -1,0 +1,133 @@
+{
+  "version": 1,
+  "origin": "Project-authored summaries of the bundled statutory snapshot; checked against source wording during implementation. Independent legal review pending. These are prepared guides, not model-generated interpretations.",
+  "guides": {
+    "acl-s51": {
+      "source_text_sha256": "e98ad56e671555404abefb9941cbb638e099249c159e4a1dabfc2a90f09b15f3",
+      "source_version": "2026-08-27",
+      "paragraphs": [
+        "In everyday language, the seller must have the legal right to sell you the goods when ownership passes to you.",
+        "There is an exception when the deal makes clear, through the contract or its circumstances, that only whatever ownership rights the seller or another person has are being transferred. This particular guarantee also does not apply to hiring or leasing goods."
+      ],
+      "source_anchors": [
+        "right to dispose of the property in the goods",
+        "a supply of limited title",
+        "hire or lease"
+      ],
+      "compilation_id": "C2026C00389",
+      "law_id": "C2004A00109"
+    },
+    "acl-s54": {
+      "source_text_sha256": "2ebd175c69eab84d045b565e9d2c9f68cd4dbf83aed78955a82cd760a76d46f5",
+      "source_version": "2026-08-27",
+      "paragraphs": [
+        "Goods should do the things that goods of that kind are normally used for, have an acceptable appearance and finish, be free from defects, and be safe and durable. What is acceptable depends on what a reasonable consumer would expect after knowing their condition.",
+        "The assessment considers the kind of goods, the relevant price, packaging and label statements, supplier or manufacturer claims, and other supply circumstances.",
+        "The section excludes auction sales and qualifies the rule for problems disclosed before you agreed to buy, damage from abnormal use in the stated circumstances, and problems an examination before purchase ought to have revealed. It does not give every product a fixed lifespan."
+      ],
+      "source_anchors": [
+        "fit for all the purposes",
+        "safe; and e durable",
+        "sale by auction",
+        "abnormal use",
+        "examination ought reasonably to have revealed"
+      ],
+      "compilation_id": "C2026C00389",
+      "law_id": "C2004A00109"
+    },
+    "acl-s55": {
+      "source_text_sha256": "f5557a271acf82e705933a8e05d0ed94e261c265740444e9214da17d5ff9a184",
+      "source_version": "2026-08-27",
+      "paragraphs": [
+        "If you make a particular use known, the goods should be reasonably suitable for that use. This also covers a use the supplier says they are suitable for. A purpose can be made known directly or by implication through the people described in the section.",
+        "This guarantee concerns goods supplied to a consumer in trade or commerce and excludes auction supplies. It does not apply if you did not rely on the relevant person's skill or judgment, or it was unreasonable for you to rely on it."
+      ],
+      "source_anchors": [
+        "reasonably fit for any disclosed purpose",
+        "sale by auction",
+        "did not rely on",
+        "unreasonable for the consumer to rely"
+      ],
+      "compilation_id": "C2026C00389",
+      "law_id": "C2004A00109"
+    },
+    "acl-s59": {
+      "source_text_sha256": "411076e42aedd85ce176f7745b3a8bd243102cbc868b271cbba7759142e1573f",
+      "source_version": "2026-08-27",
+      "paragraphs": [
+        "A manufacturer must keep the express warranty promises it makes about the goods. A supplier must also keep any express warranty promises it makes.",
+        "This provision concerns goods supplied to a consumer in trade or commerce, outside auction sales. It does not state the particular warranty terms or warranty period for your device."
+      ],
+      "source_anchors": [
+        "manufacturer of the goods will comply with any express warranty",
+        "supplier will comply with any express warranty",
+        "sale by auction"
+      ],
+      "compilation_id": "C2026C00389",
+      "law_id": "C2004A00109"
+    },
+    "acl-s60": {
+      "source_text_sha256": "41e686e6600888682cbb9a1bf9efc7591d074b57e807035ad5b2eb8fc42aa96c",
+      "source_version": "2026-08-27",
+      "paragraphs": [
+        "A business supplying services to a consumer must do the work with due care and skill. In plain language, this rule is about how carefully and skilfully the service is performed.",
+        "This short section applies to services supplied in trade or commerce to a consumer. It does not state a fixed completion date or decide whether a particular job met the standard."
+      ],
+      "source_anchors": [
+        "services to a consumer",
+        "rendered with due care and skill"
+      ],
+      "compilation_id": "C2026C00389",
+      "law_id": "C2004A00109"
+    },
+    "acl-s61": {
+      "source_text_sha256": "a0fc64d56415724ad4ff1375984eb1f63d093cd10975877f4911cf9632ca6663",
+      "source_version": "2026-08-27",
+      "paragraphs": [
+        "If you tell the supplier what you need a service for, the service and any resulting product should be reasonably fit for that purpose. If you make a desired result known, the section also sets a standard for what the service and resulting product can reasonably be expected to achieve.",
+        "The section does not apply if you did not rely on the supplier's skill or judgment, or it was unreasonable to rely on it. It also excludes professional services supplied by a qualified architect or engineer."
+      ],
+      "source_anchors": [
+        "reasonably fit for that purpose",
+        "result that the consumer wishes the services to achieve",
+        "did not rely on",
+        "qualified architect or engineer"
+      ],
+      "compilation_id": "C2026C00389",
+      "law_id": "C2004A00109"
+    },
+    "acl-s64": {
+      "source_text_sha256": "56517eeb3f826c1ec5b9be5f8088023ba417cd2532689f7b5cc5ab73b3be81f9",
+      "source_version": "2026-08-27",
+      "paragraphs": [
+        "A contract term is ineffective to the extent that it removes, limits or changes the consumer guarantees, the rights they provide, or liability for failing to comply with them. This includes terms incorporated into the contract from elsewhere.",
+        "This provision deals with the offending part of a term, rather than saying the whole contract is void. Its second subsection says a term is not treated this way unless it expressly excludes, restricts or modifies the provision, or is inconsistent with it."
+      ],
+      "source_anchors": [
+        "void to the extent",
+        "incorporated in the contract",
+        "unless the term does so expressly or is inconsistent"
+      ],
+      "compilation_id": "C2026C00389",
+      "law_id": "C2004A00109"
+    },
+    "acl-s263": {
+      "source_text_sha256": "62b7e8a1710717161036c3877bd8f99f890fdab668d47289346337fb9f755913",
+      "source_version": "2026-08-27",
+      "paragraphs": [
+        "If you validly reject goods under the cross-referenced section, the supplier must follow your choice of a refund of what you paid and any other consideration, or replacement goods of the same type and similar value if reasonably available.",
+        "You normally return the goods. If returning, removing or transporting them would cost significantly because of the problem or their size, height or attachment, the supplier must collect them at its expense within a reasonable time.",
+        "The supplier cannot satisfy the refund requirement by letting you acquire other goods from it. This section assumes a rejection under section 259; it does not say you can reject goods in every situation."
+      ],
+      "source_anchors": [
+        "under section 259",
+        "if such goods are reasonably available",
+        "without significant cost",
+        "at the supplier’s expense",
+        "cannot satisfy subsection (4)(a)"
+      ],
+      "compilation_id": "C2026C00389",
+      "law_id": "C2004A00109"
+    }
+  }
+}

@@ -4,6 +4,19 @@ import re
 
 MAX_TURNS = 3
 HISTORY_CHAR_BUDGET = 6000
+STYLE_WORDS = set("i still want to understand undersatnd it but in normal language summarise summarize sumarise sumarize summary simplify simplified simpler simply rephrase rewrite reword explain explanation elaborate say put make give get for me mr my you can could would please that this the previous above answer response more less detail detailed short shorter brief briefly plain simple english words terms what does do did mean means meaning again just dont don t not using use and of a an is im m like five layman laymans s".split())
+STYLE_WORDS.update("clarify clarification context easier easy everyday beginner layperson tldr".split())
+
+
+def is_simplification_request(question):
+    """Recognise wording-only requests without discarding a new legal topic.
+
+    Unknown topic words, brands, amounts and explicit section numbers prevent
+    this shortcut. The spelling variants cover observed user input, not law terms.
+    """
+    wording = re.search(r"\b(?:summ?ari[sz]e|summary|simpl(?:ify|ified|er)|rephrase|reword|rewrite|understand|undersatnd|mean|explain|explanation|clarify|easier|easy|tldr)\b|\b(?:plain|simple|normal|everyday)\s+(?:english|language|words|terms)\b", question, re.I)
+    words = set(re.findall(r"[a-z]+", question.lower()))
+    return bool(wording and words and not words - STYLE_WORDS and not re.search(r"\d", question))
 
 
 def bounded_history(history=None):
@@ -37,6 +50,14 @@ def contextual_question(question, history=None):
     """
     history = bounded_history(history)
     if not history or re.search(r"\b(?:section|s\.)\s*\d+", question, re.I):
+        return question
+    if is_simplification_request(question):
+        # Ask the retriever about the legal topic, not how to phrase an answer.
+        # Skip earlier wording-only retries so a failed summary does not replace it.
+        for index in range(len(history) - 1, -1, -1):
+            turn = history[index]
+            if not is_simplification_request(turn["question"]):
+                return contextual_question(turn["question"], history[:index])
         return question
     dependent = (re.search(r"\b(?:that|it|this|they|them|those|these|previous)\b", question, re.I)
                  or re.fullmatch(r"\s*(?:and\s+)?(?:what|are there(?: any)?|what are(?: the)?)\s+(?:the\s+)?(?:exceptions|limits|limitations|conditions)\s*[?.!]*\s*", question, re.I)

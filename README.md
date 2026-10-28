@@ -74,7 +74,9 @@ flowchart LR
 
 The local AI now accepts up to three recent turns within a 6,000-character history
 budget and retrieves fresh evidence for follow-ups. The default profile quotes
-fresh statutory wording for dependent follow-ups; the original concise adapter
+fresh statutory wording for dependent follow-ups. Requests to simplify a previous
+answer can use prepared, source-version-pinned plain-language guides for eight
+common sections; these are labelled guides rather than model-generated text. The original concise adapter
 handles standalone questions. The browser-only demo still handles questions
 independently.
 
