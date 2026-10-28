@@ -87,6 +87,17 @@ try {
   assert.ok(await evaluate("document.body.innerText.includes('Needs review')"));
   await screenshot("evaluation");
   if (ragMode) assert.ok(await evaluate("document.querySelector('.experiment-panel')?.textContent.includes('LoRA model + RAG')"), "Measured model comparison is visible");
+  if (ragMode) {
+    await clickText("New research");
+    await evaluate("document.querySelector('textarea').focus()");
+    await command("Input.insertText", { text: "what are the warranties on electronics products" });
+    await evaluate("document.querySelector('[aria-label=\"Send question\"]').click()");
+    await waitFor("document.querySelector('.generated-answer')");
+    assert.ok(await evaluate("document.querySelector('.generated-answer').textContent.includes('comply')"), "Warranty answer states the supported compliance rule");
+    assert.ok(await evaluate("document.querySelector('.answer-scope')?.textContent.includes('Brand-specific')"), "Warranty scope is visible");
+    await evaluate("window.scrollTo(0, 0)");
+    await screenshot("warranty", false);
+  }
   await clickText("New research");
   await evaluate("document.querySelector('textarea').focus()");
   await command("Input.insertText", { text: "What is the current NCAT application fee in Sydney?" });

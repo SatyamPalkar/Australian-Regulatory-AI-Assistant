@@ -114,6 +114,27 @@ frozen benchmark. Use committed splits. Training refuses to overwrite existing
 adapters. Model weights and adapter binaries are ignored by Git; reproduction
 recreates them locally. Do not put them into a Pages deployment.
 
+## Everyday warranty wording regression
+
+An observed user question, "what are the warranties on electronics products",
+initially ranked section 59 first but below the 0.5 relevance gate, leaving no
+evidence for generation. Search now maps everyday warranty terminology to express
+warranties and common product nouns to goods, preserving brands, dates, amounts,
+fees and other qualifications. The threshold remains 0.5. For rewritten queries,
+evidence more than three reranker logit units below the strongest hit is omitted
+to reduce mixing of unrelated statutory provisions. Generation receives the
+original question plus the search interpretation, and the UI labels the answer
+as a general statutory overview without brand-specific warranty terms.
+
+`eval/product-warranty-dev.jsonl` and `reports/warranty-query-regression.json`
+record three general-warranty cases and five unsupported cases. The real-model
+check requires a cited warranty-compliance answer for supported questions and
+abstention for brand-specific periods, fees and visa questions. These observed
+development regressions are not a new independent test or factual-accuracy score.
+Run `python scripts/check_warranty_queries.py` to repeat them. Existing frozen
+benchmark files and reports are unchanged; a unit check verifies that every frozen
+question keeps identical search wording and follows the original prompt path.
+
 ## Independent review still required
 
 Each run has a `reports/*-review.csv` with blank factual-correctness and

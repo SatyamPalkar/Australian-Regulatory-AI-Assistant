@@ -1,0 +1,8 @@
+{"id":"electronics-original","question":"what are the warranties on electronics products","answerable":true,"expected_sources":["acl-s59"]}
+{"id":"electronics-variant","question":"What warranties apply to electronic goods?","answerable":true,"expected_sources":["acl-s59"]}
+{"id":"laptop-general","question":"What warranties apply to a laptop?","answerable":true,"expected_sources":["acl-s59"]}
+{"id":"brand-duration","question":"What is the warranty period for Samsung televisions?","answerable":false,"expected_sources":[]}
+{"id":"brand-current","question":"What is Apple's current manufacturer warranty period for a MacBook?","answerable":false,"expected_sources":[]}
+{"id":"warranty-ncat-fee","question":"What is the current NCAT fee for an electronics warranty complaint?","answerable":false,"expected_sources":[]}
+{"id":"visa","question":"What documents do I need to renew an Australian student visa?","answerable":false,"expected_sources":[]}
+{"id":"ncat-fee","question":"What is the current NCAT application fee in Sydney?","answerable":false,"expected_sources":[]}

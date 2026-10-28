@@ -5,7 +5,7 @@ from pathlib import Path
 
 from reg_assistant.core import ABSTENTION, build_index, read_jsonl
 from reg_assistant.rag import (HybridRetriever, RAGPipeline, model_manifest,
-                               validate_citations)
+                               statutory_search_query, validate_citations)
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -56,6 +56,25 @@ class HybridTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "revisions"):
             HybridRetriever(index, Encoder(), Reranker([1]))
 
+    def test_everyday_warranty_words_reach_the_reranker_as_statutory_terms(self):
+        reranker = Reranker([5, 4])
+        retriever = HybridRetriever(self.index(), Encoder(), reranker)
+        retriever.search("what are the warranties on electronics products")
+        self.assertTrue(all(q == "what are the express warranties on goods" for q, _ in reranker.pairs))
+
+    def test_query_rewrite_preserves_brand_duration_and_missing_information(self):
+        query = statutory_search_query("What is Samsung's 24 month warranty on electronics products in NSW?")
+        for detail in ["Samsung", "24 month", "NSW"]:
+            self.assertIn(detail, query)
+        self.assertIn("current NCAT fee", statutory_search_query("What is the current NCAT fee for an electronics warranty complaint?"))
+        self.assertEqual(statutory_search_query("What does section 18 say?"), "What does section 18 say?")
+        original = "Does a supplier have to comply with an express warranty?"
+        self.assertEqual(statutory_search_query(original), original)
+
+    def test_frozen_benchmark_questions_keep_identical_search_wording(self):
+        for row in read_jsonl(ROOT / "eval/benchmark-v1.jsonl"):
+            self.assertEqual(statutory_search_query(row["question"]), row["question"], row["id"])
+
 
 class AnswerTests(unittest.TestCase):
     def test_every_paragraph_requires_existing_reference(self):
@@ -96,6 +115,38 @@ class AnswerTests(unittest.TestCase):
         self.assertEqual(result["answer"], ABSTENTION)
         self.assertFalse(result["citation_format_valid"])
         self.assertEqual(result["raw_generation"], "Invented claim without references")
+
+    def test_generator_receives_original_question_not_the_search_rewrite(self):
+        original = "what are the warranties on electronics products"
+        def generate(question, _evidence):
+            self.assertEqual(question, original)
+            return "Goods must be durable. [1]"
+        result = self.pipeline(.9, generate).ask(original)
+        self.assertEqual(result["trace"]["retrieval_query"], "what are the express warranties on goods")
+
+    def test_rewritten_warranty_query_does_not_mix_in_weakly_related_provisions(self):
+        documents = read_jsonl(ROOT / "data/consumer_law.jsonl")
+        index = build_index([d for d in documents if d["id"] in ["acl-s59", "acl-s57"]])
+        hits = [{**next(c for c in index["chunks"] if c["id"] == source), "score": score, "rerank_logit": logit}
+                for source, score, logit in [("acl-s59", .998, 6), ("acl-s57", .73, 1)]]
+        class Retrieved:
+            def __init__(self):
+                self.index = {**index, "backend": "hybrid"}
+            def search(self, *_args):
+                return hits
+        def generate(_question, evidence):
+            self.assertEqual([e["id"] for e in evidence], ["acl-s59"])
+            return "The manufacturer must comply with its express warranty. [1]"
+        result = RAGPipeline(Retrieved(), generate).ask("What warranties apply to a laptop?")
+        self.assertFalse(result["abstained"])
+        self.assertIn("Brand-specific", result["scope_note"])
+
+    def test_rewritten_question_still_requires_the_original_evidence_threshold(self):
+        def fail(*_args):
+            self.fail("A rewrite must not force generation on weak evidence")
+        result = self.pipeline(.01, fail).ask("What warranties apply to electronics products?")
+        self.assertTrue(result["abstained"])
+        self.assertIsNone(result["scope_note"])
 
 
 class FrozenSplitTests(unittest.TestCase):

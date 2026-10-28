@@ -237,6 +237,7 @@ svg { flex-shrink: 0; }
 .connection-panel code { white-space: normal; overflow-wrap: anywhere; }
 .generated-answer { padding: 4px 0 18px; font-size: 1rem; line-height: 1.85; color: #e4eadd; }
 .generated-answer p { margin: 0 0 16px; }
+.answer-scope { border-left: 2px solid #8ea36e; padding: 9px 14px; margin: 12px 0 20px; color: #b3c3a4; font-size: .875rem; line-height: 1.7; }
 .retrieved-text summary { cursor: pointer; padding: 18px; color: #c8dfac; font-size: .875rem; }
 .retrieved-text > p { padding: 0 18px 18px; margin: 0; line-height: 1.9; color: #c3cdb7; font-size: 1rem; }
 .inline-citation { display: inline; margin: 0 3px; color: #d5f79d; font-size: .875rem; border-radius: 4px; padding: 0 4px; background: #2a3522; }
