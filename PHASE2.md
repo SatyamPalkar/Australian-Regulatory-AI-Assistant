@@ -10,11 +10,13 @@ wording. The explanatory adapter is opt-in and is not a legal-accuracy upgrade.
 
 The browser sends up to three completed question/answer turns to the local API.
 Each prior question is limited to 2,000 characters and each answer to 4,000. The
-server keeps recent complete turns within a 6,000-character total budget. It does
-not store sessions or conversation files. Resetting the chat or refreshing clears
-the frontend history. Research exports remain explicit downloads.
+server keeps recent complete turns within a 6,000-character total budget. The current
+local API also keeps bounded topic state in memory for up to one idle hour (128
+sessions); it does not write conversation files. Resetting the chat or refreshing
+starts a new frontend session. See README controller selection for the subsequent
+routing/state fixes; the adapter results below are the original phase-two experiment. Research exports remain explicit downloads.
 
-The resolver uses prior **user questions** to add topic words to dependent
+For direct pipeline calls without controller state, the legacy resolver uses prior **user questions** to add topic words to dependent
 follow-ups such as "What are the exceptions?" or "Does that apply to hire or
 lease?". Earlier assistant claims are not retrieval evidence. Explicit new section
 requests and standalone topic changes retain their own retrieval. This is a

@@ -1,0 +1,78 @@
+{
+  "eligible": true,
+  "applied": true,
+  "checks": {
+    "frozen_cases_unchanged": true,
+    "same_evaluation_protocol": true,
+    "same_cases_for_all_models": true,
+    "same_turns_for_all_models": true,
+    "current_workflow_evaluated": true,
+    "minimum_turn_pass_rate": true,
+    "strictly_better_than_both_baselines": true,
+    "no_wrong_policy_tools": true,
+    "no_repeated_clarifications": true,
+    "latency_within_limit": true,
+    "mlx_memory_within_limit": true
+  },
+  "selected_model": {
+    "repository": "mlx-community/Qwen3-4B-Instruct-2507-4bit",
+    "revision": "50d427756c6b1b2fe0c0a10f67fbda1fc8e82c1b",
+    "path": "models/controller-candidate",
+    "license": "apache-2.0"
+  },
+  "comparison": {
+    "candidate": {
+      "turns": 22,
+      "passed": 21,
+      "accuracy": 0.9545454545454546,
+      "invalid_plans": 1,
+      "wrong_policy_tool_calls": 0,
+      "repeated_clarifications": 0,
+      "warm_median_ms": 3476.12,
+      "warm_p95_ms": 3585.1,
+      "first_turn_ms": 6300.54,
+      "peak_mlx_gib": 3.0269967056810856,
+      "peak_rss_gib": 1.9907684326171875
+    },
+    "same-architecture-1.5b": {
+      "turns": 22,
+      "passed": 13,
+      "accuracy": 0.5909090909090909,
+      "invalid_plans": 0,
+      "wrong_policy_tool_calls": 0,
+      "repeated_clarifications": 0,
+      "warm_median_ms": 1296.87,
+      "warm_p95_ms": 1322.69,
+      "first_turn_ms": 3368.47,
+      "peak_mlx_gib": 1.5817258320748806,
+      "peak_rss_gib": 1.23602294921875
+    },
+    "before-fix": {
+      "turns": 22,
+      "passed": 10,
+      "accuracy": 0.45454545454545453,
+      "invalid_plans": 0,
+      "wrong_policy_tool_calls": 0,
+      "repeated_clarifications": 6,
+      "warm_median_ms": 754.59,
+      "warm_p95_ms": 1164.03,
+      "first_turn_ms": 1935.37,
+      "peak_mlx_gib": 1.645902894437313,
+      "peak_rss_gib": 1.215606689453125
+    }
+  },
+  "selection_set": "eval/controller-conversations-verification-v2.jsonl",
+  "cases_sha256": "d80b9e51de7623ac0d1eac5fe687c6668847e835e93bc8d015b6ec2d5a6e0cb2",
+  "scope": "Small routing verification set; not a legal factual-support or production-readiness assessment",
+  "known_misses": [
+    {
+      "question": "Tell me about extended warranties",
+      "intent": "overview",
+      "checks": {
+        "intent": false,
+        "no_wrong_policy_tool": true,
+        "no_repeated_clarification": true
+      }
+    }
+  ]
+}

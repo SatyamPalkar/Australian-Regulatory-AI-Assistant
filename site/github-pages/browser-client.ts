@@ -1,3 +1,4 @@
+import { policyAnswer } from "../lib/retailer-policy.mjs";
 import { ask, status } from "../lib/engine.mjs";
 import evaluation from "../lib/evaluation.json" with { type: "json" };
 import type { AssistantClient, Evaluation, Result, Status } from "../app/page";
@@ -7,10 +8,10 @@ import type { AssistantClient, Evaluation, Result, Status } from "../app/page";
 export const browserClient: AssistantClient = {
   status: async () => status() as Status,
   evaluation: async () => evaluation as Evaluation,
-  ask: async (question, signal) => {
+  ask: async (question, signal, history) => {
     signal.throwIfAborted();
     const start = performance.now();
-    const result = ask(question);
+    const result = await policyAnswer(question, history) ?? ask(question);
     return { ...result, latency_ms: Math.round((performance.now() - start) * 100) / 100 } as Result;
   },
 };

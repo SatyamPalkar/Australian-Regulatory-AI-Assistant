@@ -1,0 +1,9 @@
+{"id":"observed-models","question":"which model are being used","runtime":true,"groups":["MODELS"]}
+{"id":"observed-capabilities","question":"app’s capabilities","runtime":true,"groups":["OVERVIEW"]}
+{"id":"observed-models-after-clarification","question":"i mean your models","history":[{"question":"which model are being used","answer":"Could you clarify app capabilities or external source?"},{"question":"app’s capabilities","answer":"Could you clarify app capabilities or external source?"}],"runtime":true,"groups":["MODELS"]}
+{"id":"observed-retailer-availability","question":"hey have we loaded jb hifi related query","runtime":true,"groups":["TOOLS","DATA","OVERVIEW"]}
+{"id":"policy-tools","question":"Which policy tools are available in this app?","runtime":true,"groups":["TOOLS","OVERVIEW"]}
+{"id":"data-coverage","question":"Which documents have been indexed in this assistant?","runtime":true,"groups":["DATA","OVERVIEW"]}
+{"id":"legal-control","question":"Consequences of rejecting goods","runtime":false}
+{"id":"retailer-terms-control","question":"What is JB Hi-Fi warranty coverage?","runtime":false}
+{"id":"product-model-control","question":"Which model of TV should I buy?","runtime":false}

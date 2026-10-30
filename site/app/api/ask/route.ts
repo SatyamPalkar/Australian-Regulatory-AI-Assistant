@@ -1,3 +1,4 @@
+import { policyAnswer } from "@/lib/retailer-policy.mjs";
 import { ask } from "@/lib/engine.mjs";
 
 export async function POST(request: Request) {
@@ -11,8 +12,11 @@ export async function POST(request: Request) {
     if (body === null || typeof body !== "object" || typeof body.question !== "string" || !body.question.trim() || body.question.trim().length > 2000) {
       return Response.json({ error: "Enter a question between 1 and 2,000 characters." }, { status: 400 });
     }
+    const history = body.history ?? [];
+    if (!Array.isArray(history) || history.length > 3 || history.some(turn => typeof turn?.question !== "string" || turn.question.length > 2000 || typeof turn?.answer !== "string" || turn.answer.length > 4000)) return Response.json({ error: "Invalid conversation history." }, { status: 400 });
     const start = performance.now();
-    return Response.json({ ...ask(body.question.trim()), latency_ms: Math.round((performance.now() - start) * 100) / 100 }, { headers: { "Cache-Control": "no-store" } });
+    const result = await policyAnswer(body.question.trim(), history, { online: true }) ?? ask(body.question.trim());
+    return Response.json({ ...result, latency_ms: Math.round((performance.now() - start) * 100) / 100 }, { headers: { "Cache-Control": "no-store" } });
   } catch (error) {
     if (error instanceof SyntaxError) return Response.json({ error: "Invalid JSON." }, { status: 400 });
     console.error("Retrieval request failed");

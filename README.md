@@ -72,8 +72,8 @@ flowchart LR
 
 ## Conversation context and the next experiment
 
-The local AI now accepts up to three recent turns within a 6,000-character history
-budget and retrieves fresh evidence for follow-ups. The default profile quotes
+The local AI accepts up to three recent turns within a 6,000-character history
+budget, plus bounded server-side topic state, and retrieves fresh evidence for follow-ups. The default profile quotes
 fresh statutory wording for dependent follow-ups. Requests to simplify a previous
 answer can use prepared, source-version-pinned plain-language guides for eight
 common sections; these are labelled guides rather than model-generated text. The original concise adapter
@@ -220,3 +220,48 @@ split hashes, training logs, failure analysis and the pending human-review rubri
 For the historical summary baseline, explicitly select `data/demo.jsonl`,
 `eval/dev.jsonl` and a separate report path. `reports/dev-baseline.json` records the
 earlier summary run and should not be read as current statutory-corpus performance.
+
+### Official retailer-policy context
+
+The local API uses the local instruction model to interpret each question and recent conversation before choosing conversation, clarification, statutory retrieval, or an available policy tool. It no longer uses retailer keywords as its local API intent gate. The policy tool currently supports JB Hi-Fi returns, refunds and warranties. It reads the official help centre’s public article endpoint and returns dated, cited policy excerpts, preserving Marketplace exclusions and category-specific table conditions. It asks whether the product is faulty or a change-of-mind return and requests purchase details. The policy fetch itself requires no API key; the local conversation controller uses the installed instruction model. Questions/history are not sent to the retailer.
+
+Try: **“What is JB Hi-Fi’s return policy?”**, then **“I opened it; can I return it?”**. The retailer registry currently supports JB Hi-Fi only. Lookup failure produces an explicit unverified-policy message with the official link and a useful clarification. The statutory corpus and saved evaluations are unchanged.
+
+GitHub Pages alone cannot fetch the retailer’s cross-origin-restricted content: connect the local API using the existing connection settings for live lookup. The server-hosted web API also supports online lookup. Restart the local server after updating (`.venv/bin/python -m reg_assistant.cli serve`) and rebuild its UI with `cd site && npm run build:pages`.
+
+The conversation controller uses the unadapted instruction model; the legal LoRA remains on the evidence-grounded answer path. Capability replies use runtime metadata, while ambiguous questions produce a clarification. The controller cannot confirm policy changes because historical policy comparison is not implemented. Invalid plans ask for clarification and cannot execute arbitrary tools. The additional interpretation pass and model instance increase latency and memory use.
+
+Model-directed conversation requires the local Python API. Browser-only Pages and the lightweight web API retain their existing retrieval/policy paths. Unit tests cover routing contracts; selected local model smoke checks do not establish general intent accuracy.
+
+App-information questions now use a runtime-facts path: the local model selects models, tools, data or an overview, and the server formats real configuration values. `/api/status` exposes the same snapshot. Model configuration and load state, answer-adapter selection, statutory index coverage, and retailer-tool availability are separate facts. Successful policy-fetch timestamps are recorded for this server session only; a failed later lookup does not erase the previous success. These timestamps do not establish that a policy changed.
+
+Check this first conversational milestone with `.venv/bin/python scripts/check_runtime_queries.py --report tmp/runtime-controller-dev.json`. The nine development cases cover reported app-information failures and non-app controls. This is a scoped development regression check, not held-out controller accuracy or evidence that conversation-state/clarification-loop issues are resolved. The new app-information classification adds an inference pass before the existing routing path.
+
+## Controller sessions and measured selection
+
+The local API now classifies the current message before consulting topic state. Only dependent messages inherit a known task. A short policy-topic fragment can move from retailer support information to official policy lookup; a clear new app or legal question resets the old topic. Model decisions are validated and cannot supply free-form legal or policy answers. Retrieval and citation checks remain responsible for source answers.
+
+Each response includes a `conversation_id`; clients send it on the next request. The server retains only a bounded user topic, retailer and clarification state (128 sessions, one-hour idle expiry, no disk persistence). Previous assistant answers are excluded from controller routing. One unresolved clarification leads to concrete task buttons rather than another clarification loop. New research clears the browser session ID. An expired or restarted session returns HTTP 409 and requires a new conversation.
+
+The selected controller is pinned separately in `configs/controller.json`: Qwen3-4B-Instruct-2507, four-bit MLX. The evidence-answer Qwen2.5 1.5B model, its LoRA, corpus and frozen legal reports are unchanged. Download its files with `.venv/bin/python scripts/download_controller.py`, then restart the server and refresh the built UI.
+
+| Controller replay on the same 22 verification turns | Turn checks passed | Warm median | Peak MLX allocation |
+| --- | --- | --- | --- |
+| Saved pre-fix controller | 10/22 | 0.75 s | 1.65 GiB |
+| New workflow, original 1.5B model | 13/22 | 1.30 s | 1.58 GiB |
+| New workflow, selected 4B model | 21/22 | 3.48 s | 3.03 GiB |
+
+These are **routing and state checks, not legal-answer accuracy**. Legal/policy execution was stubbed consistently for controller replay; the pre-fix pipeline is credited for its existing retrieval-query resolver. The verification set was later replayed after an integration correction and should now be treated as a regression set, not newly unseen test data. The selected run had no wrong retailer-tool calls or repeated-clarification violations in this small set. One generic extended-warranty question incorrectly selected an app overview. It remains a documented miss, not a question-specific patch. The first held-out replay failed and became diagnostic data; its results are retained. Verification v2 was frozen before evaluating the revised workflow. Dataset/code hashes, the selection gates, and known misses are in `eval/controller-evaluation-manifest.json` and `reports/controller-selection.json`.
+
+Reproduce the new-workflow comparison in separate processes:
+
+```sh
+.venv/bin/python scripts/evaluate_controller.py --cases eval/controller-conversations-verification-v2.jsonl --model configs/controller-baseline.json --output reports/controller-same-architecture-1.5b-verification-v2.json
+.venv/bin/python scripts/evaluate_controller.py --cases eval/controller-conversations-verification-v2.jsonl --model configs/controller-candidate.json --output reports/controller-candidate-verification-v2.json
+.venv/bin/python scripts/evaluate_controller.py --cases eval/controller-conversations-verification-v2.jsonl --model configs/controller-baseline.json --legacy eval/baselines/controller_before.py --output reports/controller-before-fix-verification-v2.json
+.venv/bin/python scripts/select_controller.py --check
+```
+
+The saved pre-fix run identifies its archived local source by hash; its versioned replay module is `eval/baselines/controller_before.py`. It is historical evidence, not the current controller. Do not infer broad intent accuracy or legal safety from these small, hand-authored conversation checks. MLX allocation measures the controller process, not the complete serving stack or total Mac memory.
+
+Vector storage and S3 are later phases. A vector backend should preserve retrieval/citation and version-filtering contracts; S3 would hold versioned source and evaluation artifacts, with manifests/checksums linking them to the index. No cloud resources are needed for this conversation fix. Multi-process/cloud serving will also require shared, authenticated session storage rather than this local process's in-memory sessions.

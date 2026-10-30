@@ -196,14 +196,16 @@ class RAGPipeline:
         self.retriever, self.generator = retriever, generator
         self.min_score, self.top_k = min_score, top_k
 
-    def ask(self, question, history=None):
+    def ask(self, question, history=None, search_question=None):
         from .conversation import bounded_history, contextual_question, is_simplification_request
         start = time.perf_counter()
         question = question.strip()
         if not question or len(question) > 2000:
             raise ValueError("Enter a question between 1 and 2,000 characters")
         history = bounded_history(history)
-        retrieval_question = contextual_question(question, history)
+        if search_question is not None and (not isinstance(search_question, str) or not search_question.strip() or len(search_question) > 4050):
+            raise ValueError("Invalid conversation search question")
+        retrieval_question = search_question.strip() if search_question is not None else contextual_question(question, history)
         hits = self.retriever.search(retrieval_question, self.top_k)
         evidence = []
         documents = {d["id"]: d for d in read_jsonl(ROOT / "data/consumer_law.jsonl")}
@@ -230,8 +232,8 @@ class RAGPipeline:
         text, rejected, raw = ABSTENTION, None, None
         generated = False
         prepared_summary = False
-        simplify_followup = bool(history and is_simplification_request(question) and retrieval_question != question)
-        source_followup = bool(history and retrieval_question != question
+        simplify_followup = bool((history or search_question is not None) and is_simplification_request(question) and retrieval_question != question)
+        source_followup = bool((history or search_question is not None) and retrieval_question != question
                                and (getattr(self.generator, "answer_style", "concise") == "concise" or simplify_followup))
         generation_history = history if retrieval_question != question or getattr(self.generator, "answer_style", "concise") == "explain" else []
         if evidence:
@@ -273,6 +275,7 @@ class RAGPipeline:
                           "retrieval_query": statutory_search_query(retrieval_question),
                           "history_turns_used": len(history) if retrieval_question != question or generated and generation_history else 0,
                           "history_used_for_retrieval": retrieval_question != question,
+                          "topic_state_used": search_question is not None and retrieval_question != question,
                           "answer_style": getattr(self.generator, "answer_style", "concise"),
                           "response_strategy": "prepared_summary" if prepared_summary else "source_quotes" if source_followup and evidence else "generated" if generated else "retrieval",
                           "retriever": self.retriever.index["backend"],

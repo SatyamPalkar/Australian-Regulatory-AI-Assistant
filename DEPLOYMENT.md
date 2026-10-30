@@ -19,6 +19,10 @@ same UI selects the same-origin local API. It binds to loopback, accepts at most
 2,000 characters per question, and serialises model requests. API errors do not
 silently fall back to lexical answers. No API key is embedded in frontend code.
 
+Download the independently pinned controller with `.venv/bin/python scripts/download_controller.py` before starting the updated server.
+
+Requests should carry the previous response’s `conversation_id` to retain bounded topic state. New research omits that ID. Sessions expire after one idle hour; HTTP 409 means restart the conversation. The store is in-memory and single-process (128 sessions), with no disk chat persistence.
+
 Requests may include up to three prior `{question, answer}` turns; the server bounds their combined text to 6,000 characters. Dependent default follow-ups return fresh source wording. Use `--answer-style explain --adapter adapters/explanatory-v2-selected` only for the experimental explanation profile described in `PHASE2.md`.
 
 The API exposes `/api/health`, `/api/status`, `/api/ask`, `/api/evaluation` (the saved

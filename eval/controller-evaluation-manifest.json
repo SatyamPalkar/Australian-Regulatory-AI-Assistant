@@ -1,0 +1,22 @@
+{
+  "datasets": {
+    "eval/controller-conversations-dev.jsonl": "74f256786f166221c36c42b2c31256c8fc30f32cf60e907cf63a52f8c08a3431",
+    "eval/controller-conversations-heldout.jsonl": "e96633f7ecca48320e6d2acc6f283534f56f89b69c808b24643a90bfb5a87095",
+    "eval/controller-conversations-verification-v2.jsonl": "d80b9e51de7623ac0d1eac5fe687c6668847e835e93bc8d015b6ec2d5a6e0cb2"
+  },
+  "scope": "controller routing only, not legal factual accuracy",
+  "selection_gates": {
+    "minimum_heldout_turn_pass_rate": 0.9,
+    "strictly_better_than_legacy_and_same_architecture_1_5b": true,
+    "wrong_policy_tool_calls": 0,
+    "repeated_clarifications": 0,
+    "warm_p95_limit_ms": 10000,
+    "peak_mlx_limit_gib": 4
+  },
+  "diagnostic_sets": [
+    "eval/controller-conversations-dev.jsonl",
+    "eval/controller-conversations-heldout.jsonl"
+  ],
+  "selection_set": "eval/controller-conversations-verification-v2.jsonl",
+  "notes": "The first held-out replay failed and was used to diagnose context inertia; its results are retained. Verification v2 was frozen before testing the revised current-message-first workflow. No verification v2 cases are prompt examples."
+}

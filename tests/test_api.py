@@ -9,6 +9,10 @@ except ImportError:
 
 @unittest.skipIf(TestClient is None, "Install the API extra to test the local API")
 class APITests(unittest.TestCase):
+    class StatutoryController:
+        def plan(self, question, history, state=None):
+            return {"action": "statutory", "provider": None, "answer": ""}
+
     def client(self, failure=False):
         class Pipeline:
             def ask(self, question):
@@ -17,7 +21,7 @@ class APITests(unittest.TestCase):
                 return {"answer": "Services must be supplied with due care and skill. [1]",
                         "abstained": False, "evidence": [], "retrieved": [], "mode": "rag",
                         "raw_generation": "private rejected output", "latency_ms": 123}
-        return TestClient(create_app(Pipeline()))
+        return TestClient(create_app(Pipeline(), controller=self.StatutoryController()))
 
     def test_health_and_status_expose_mode_and_provenance(self):
         with self.client() as client:
@@ -55,7 +59,7 @@ class APITests(unittest.TestCase):
                 seen.update(question=question, history=history)
                 return {"answer": "A fresh cited answer. [1]"}
         history = [{"question": "Explain title.", "answer": "A title guarantee applies. [1]"}]
-        with TestClient(create_app(Pipeline())) as client:
+        with TestClient(create_app(Pipeline(), controller=self.StatutoryController())) as client:
             response = client.post("/api/ask", json={"question": "What are the exceptions?", "history": history})
         self.assertEqual(response.status_code, 200)
         self.assertEqual(seen["history"], history)

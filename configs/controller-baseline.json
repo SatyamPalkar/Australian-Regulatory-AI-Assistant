@@ -1,0 +1,6 @@
+{
+  "repository": "mlx-community/Qwen2.5-1.5B-Instruct-4bit",
+  "revision": "8b403126fc14f14cfc99bb4cfa72ecbc129ea677",
+  "path": "models/generator",
+  "license": "apache-2.0"
+}

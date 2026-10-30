@@ -44,3 +44,20 @@ test("AI client forwards bounded conversation turns when provided", async () => 
     await apiClient("http://localhost:8000").ask("What are the exceptions?", new AbortController().signal, history);
   } finally { globalThis.fetch = original; }
 });
+
+test("session IDs are explicit per conversation, with no client-global topic leakage", async () => {
+  const original = globalThis.fetch;
+  const requests = [];
+  globalThis.fetch = async (_url, options) => {
+    requests.push(JSON.parse(options.body));
+    return Response.json({ conversation_id: "c1", mode: "conversation", answer: "A reply" });
+  };
+  try {
+    const client = apiClient("http://localhost:8000");
+    const signal = new AbortController().signal;
+    await client.ask("first", signal);
+    await client.ask("followup", signal, [], "c1");
+    await client.ask("new conversation", signal);
+    assert.deepEqual(requests, [{question:"first"}, {question:"followup", conversation_id:"c1"}, {question:"new conversation"}]);
+  } finally { globalThis.fetch = original; }
+});

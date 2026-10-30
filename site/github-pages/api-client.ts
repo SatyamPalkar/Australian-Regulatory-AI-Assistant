@@ -20,6 +20,6 @@ export function apiClient(endpoint: string): AssistantClient {
   return {
     status: () => request<Status>("/api/status"),
     evaluation: () => request<Evaluation>("/api/evaluation"),
-    ask: (question, signal, history) => request<Result>("/api/ask", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ question, ...(history?.length ? { history } : {}) }), signal }),
+    ask: (question, signal, history, conversationId) => request<Result>("/api/ask", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ question, ...(history?.length ? { history } : {}), ...(conversationId ? { conversation_id: conversationId } : {}) }), signal }),
   };
 }

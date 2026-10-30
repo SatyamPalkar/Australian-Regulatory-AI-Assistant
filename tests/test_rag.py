@@ -92,6 +92,24 @@ class AnswerTests(unittest.TestCase):
                 return [{**c, "score": score} for c in self.index["chunks"][:3]]
         return RAGPipeline(Retrieved(), generator)
 
+    def test_session_topic_followup_without_client_history_uses_fresh_quotes(self):
+        seen=[]
+        def fail(*_args, **_kwargs):
+            self.fail("Default dependent follow-up should quote evidence, not generate")
+        pipeline=self.pipeline(.95,fail)
+        search=pipeline.retriever.search
+        def capture(question,k):
+            seen.append(question)
+            return search(question,k)
+        pipeline.retriever.search=capture
+        query="What does section 54 say about acceptable quality?\nCurrent follow-up: What are the conditions?"
+        result=pipeline.ask("What are the conditions?",search_question=query)
+        self.assertEqual(seen,[query])
+        self.assertEqual(result["mode"],"source-quotes")
+        self.assertTrue(result["trace"]["topic_state_used"])
+        self.assertIn("[1]",result["answer"])
+        self.assertEqual(result["evidence"][0]["id"],"acl-s54")
+
     def test_no_evidence_skips_generation(self):
         def fail(*_args):
             self.fail("No generation should happen without evidence")

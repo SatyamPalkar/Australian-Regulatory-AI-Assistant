@@ -48,3 +48,16 @@ test("Health endpoint reports the active corpus", async () => {
   const body = await response.json(); assert.equal(body.status, "ok"); assert.equal(body.sources.length, body.section_count);
   assert.equal(body.collection.dataset, "cchew/lex-au"); assert.equal(body.law_count, 1);
 });
+
+test("API retailer route uses official policy content and rejects malformed history", async () => {
+  const original = globalThis.fetch;
+  globalThis.fetch = async () => { throw Error("offline"); };
+  try {
+    const response = await POST(request({ question: "JB Hi-Fi return policy?" }));
+    assert.equal(response.status, 200);
+    const body = await response.json();
+    assert.equal(body.mode, "retailer-policy"); assert.equal(body.policy_lookup.status, "unavailable");
+    assert.equal(body.abstained, false); assert.match(body.answer, /faulty/);
+    assert.equal((await POST(request({ question: "JB Hi-Fi returns?", history: [{ question: 42 }] }))).status, 400);
+  } finally { globalThis.fetch = original; }
+});

@@ -14,9 +14,11 @@ present in the evidence.
 | --- | --- | --- |
 | Embeddings | [all-MiniLM-L6-v2](https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2) | Apache 2.0 |
 | Reranker | [ms-marco-MiniLM-L6-v2](https://huggingface.co/cross-encoder/ms-marco-MiniLM-L6-v2) | Apache 2.0 |
+| Controller | [Qwen3-4B-Instruct-2507, MLX four-bit conversion](https://huggingface.co/mlx-community/Qwen3-4B-Instruct-2507-4bit) | Apache 2.0 |
 | Generator | [Qwen2.5-1.5B-Instruct, MLX four-bit conversion](https://huggingface.co/mlx-community/Qwen2.5-1.5B-Instruct-4bit) | Apache 2.0 |
 
-Immutable revisions are in `configs/models.json`; model cards/licences are retained
+Immutable retrieval/answer revisions are in `configs/models.json`; the separately
+selected controller revision is in `configs/controller.json`. model cards/licences are retained
 with downloaded snapshots. Statutory data attribution and CC BY 4.0 transformation
 details are separate in `data/ATTRIBUTION.md`. Training examples are synthetic
 derivatives of that corpus and keep the same attribution requirements.
@@ -68,3 +70,5 @@ fresh source text because live checks found qualification errors in generative
 follow-ups as well. Standalone concise answers retain the original model's known
 limitations. See [PHASE2.md](PHASE2.md) for data provenance, measurements, review
 findings, exact history limits and reproduction.
+
+The controller was selected on a frozen 22-turn routing/state verification set: 21/22 turn checks passed versus 13/22 for the same workflow with 1.5B. This is not a legal factual-support score. Generic extended-warranty intent remains a known miss. See `reports/controller-selection.json` for the gates, baselines, latency, memory and scope.

@@ -232,3 +232,19 @@ reports/training-worker-memory.json
 # The web application is source code, not generated MkDocs output.
 !/site/
 !/site/lib/
+
+# Local media projects, publication exports and scratch inspections
+/architecture-video/
+/brag-output/
+/composition_*.mp4
+/output/
+/tmp/
+/docs/technical-handbook.md
+/scripts/audit_documentation.py
+/scripts/build_technical_pdf.py
+
+# Local credentials; keep a deliberately sanitised example if supplied
+/.env.*
+!/.env.example
+*.pem
+*.key

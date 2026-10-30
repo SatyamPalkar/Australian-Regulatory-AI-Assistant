@@ -1,0 +1,478 @@
+{
+  "kind": "controller-only routing replay; no legal factual-support assessment",
+  "legacy": false,
+  "evaluation_protocol": "v2: legacy retrieval resolver credited; retailer target checked on actual policy calls",
+  "cases_sha256": "d80b9e51de7623ac0d1eac5fe687c6668847e835e93bc8d015b6ec2d5a6e0cb2",
+  "controller_code_sha256": "4d8e2150baaab81c2787e827895eeeaba9a4384bf4868a086f6d45d9e902975b",
+  "session_code_sha256": "4ca535b72a312080e4bc716fa92eb84762027cf3afc37fc93c1a8453f3e821a5",
+  "model": {
+    "repository": "mlx-community/Qwen3-4B-Instruct-2507-4bit",
+    "revision": "50d427756c6b1b2fe0c0a10f67fbda1fc8e82c1b",
+    "path": "models/controller-candidate",
+    "license": "apache-2.0"
+  },
+  "temperature": 0,
+  "metrics": {
+    "turns": 22,
+    "passed": 21,
+    "accuracy": 0.9545454545454546,
+    "invalid_plans": 1,
+    "wrong_policy_tool_calls": 0,
+    "repeated_clarifications": 0,
+    "warm_median_ms": 3476.12,
+    "warm_p95_ms": 3585.1,
+    "first_turn_ms": 6300.54,
+    "peak_mlx_gib": 3.0269967056810856,
+    "peak_rss_gib": 1.9907684326171875
+  },
+  "results": [
+    {
+      "conversation": "lookup-to-law",
+      "turn": 1,
+      "question": "Have you enabled JB Hi-Fi lookups in this app?",
+      "passed": true,
+      "checks": {
+        "intent": true,
+        "no_wrong_policy_tool": true,
+        "no_repeated_clarification": true
+      },
+      "intent": "tools",
+      "action": "chat",
+      "relation": "new",
+      "retailer": "jb_hifi",
+      "search_question": null,
+      "invalid_plan": false,
+      "answer": "JB Hi-Fi returns, refunds and warranties lookup is available in this local API. Its policy is not included in the statutory index; the policy tool fetches official text on demand. No successful policy fetch has been recorded in this server session. Most recent lookup attempt: not_requested.\n\nPolicy lookup does not establish whether a retailer changed its policy. Historical policy comparison and general web search are not available.",
+      "raw_decision": "{\"intent\": \"tools\", \"relation\": \"new\", \"retailer\": \"jb_hifi\", \"mention\": \"\", \"reason\": \"\"}",
+      "latency_ms": 6300.54
+    },
+    {
+      "conversation": "lookup-to-law",
+      "turn": 2,
+      "question": "returns",
+      "passed": true,
+      "checks": {
+        "intent": true,
+        "retailer": true,
+        "no_wrong_policy_tool": true,
+        "no_repeated_clarification": true
+      },
+      "intent": "policy",
+      "action": "policy",
+      "relation": "followup",
+      "retailer": "jb_hifi",
+      "search_question": null,
+      "invalid_plan": false,
+      "answer": "",
+      "raw_decision": "{\"intent\": \"policy\", \"relation\": \"followup\", \"retailer\": \"jb_hifi\", \"mention\": \"\", \"reason\": \"\"}",
+      "latency_ms": 3481.57
+    },
+    {
+      "conversation": "lookup-to-law",
+      "turn": 3,
+      "question": "Even if the box is no longer sealed?",
+      "passed": true,
+      "checks": {
+        "intent": true,
+        "retailer": true,
+        "no_wrong_policy_tool": true,
+        "no_repeated_clarification": true
+      },
+      "intent": "policy",
+      "action": "policy",
+      "relation": "followup",
+      "retailer": "jb_hifi",
+      "search_question": null,
+      "invalid_plan": false,
+      "answer": "",
+      "raw_decision": "{\"intent\": \"policy\", \"relation\": \"followup\", \"retailer\": \"jb_hifi\", \"mention\": \"\", \"reason\": \"ambiguous\"}",
+      "latency_ms": 3583.07
+    },
+    {
+      "conversation": "lookup-to-law",
+      "turn": 4,
+      "question": "Name the model that creates your embeddings",
+      "passed": true,
+      "checks": {
+        "intent": true,
+        "no_wrong_policy_tool": true,
+        "no_repeated_clarification": true
+      },
+      "intent": "models",
+      "action": "chat",
+      "relation": "new",
+      "retailer": "none",
+      "search_question": null,
+      "invalid_plan": false,
+      "answer": "Conversation controller: mlx-community/Qwen3-4B-Instruct-2507-4bit (configured; loaded).\n\nEvidence-answer model: mlx-community/Qwen2.5-1.5B-Instruct-4bit (configured; not loaded yet).\n\nEmbeddings: sentence-transformers/all-MiniLM-L6-v2 (configured; not loaded yet).\n\nReranker: cross-encoder/ms-marco-MiniLM-L6-v2 (configured; not loaded yet).\n\nThe conversation controller uses no LoRA adapter. No LoRA adapter is selected for evidence answers.",
+      "raw_decision": "{\"intent\": \"models\", \"relation\": \"new\", \"retailer\": \"none\", \"mention\": \"\", \"reason\": \"\"}",
+      "latency_ms": 3445.07
+    },
+    {
+      "conversation": "lookup-to-law",
+      "turn": 5,
+      "question": "Under s. 263 what happens after rejection?",
+      "passed": true,
+      "checks": {
+        "intent": true,
+        "no_wrong_policy_tool": true,
+        "no_repeated_clarification": true
+      },
+      "intent": "law",
+      "action": "statutory",
+      "relation": "new",
+      "retailer": "none",
+      "search_question": "Under s. 263 what happens after rejection?",
+      "invalid_plan": false,
+      "answer": "",
+      "raw_decision": "{\"intent\": \"law\", \"relation\": \"new\", \"retailer\": \"none\", \"mention\": \"\", \"reason\": \"\"}",
+      "latency_ms": 3461.96
+    },
+    {
+      "conversation": "lookup-to-law",
+      "turn": 6,
+      "question": "Summarise that for a beginner",
+      "passed": true,
+      "checks": {
+        "intent": true,
+        "search_context": true,
+        "no_wrong_policy_tool": true,
+        "no_repeated_clarification": true
+      },
+      "intent": "law",
+      "action": "statutory",
+      "relation": "followup",
+      "retailer": "none",
+      "search_question": "Under s. 263 what happens after rejection?\nCurrent follow-up: Summarise that for a beginner",
+      "invalid_plan": false,
+      "answer": "",
+      "raw_decision": "{\"intent\": \"law\", \"relation\": \"followup\", \"retailer\": \"none\", \"mention\": \"\", \"reason\": \"\"}",
+      "latency_ms": 3526.08
+    },
+    {
+      "conversation": "unavailable-store",
+      "turn": 1,
+      "question": "What can you tell me about JB Hi-Fi’s refund rules?",
+      "passed": true,
+      "checks": {
+        "intent": true,
+        "no_wrong_policy_tool": true,
+        "no_repeated_clarification": true
+      },
+      "intent": "policy",
+      "action": "policy",
+      "relation": "new",
+      "retailer": "jb_hifi",
+      "search_question": null,
+      "invalid_plan": false,
+      "answer": "",
+      "raw_decision": "{\"intent\": \"policy\", \"relation\": \"new\", \"retailer\": \"jb_hifi\", \"mention\": \"JB Hi-Fi\", \"reason\": \"\"}",
+      "latency_ms": 3598.42
+    },
+    {
+      "conversation": "unavailable-store",
+      "turn": 2,
+      "question": "How does that differ at Target?",
+      "passed": true,
+      "checks": {
+        "action": true,
+        "no_wrong_policy_tool": true,
+        "no_repeated_clarification": true
+      },
+      "intent": "clarify",
+      "action": "clarify",
+      "relation": "new",
+      "retailer": "other",
+      "search_question": null,
+      "invalid_plan": false,
+      "answer": "This app currently has an official-policy tool for JB Hi-Fi only. Would you like general consumer-law guidance instead?",
+      "raw_decision": "{\"intent\": \"policy\", \"relation\": \"followup\", \"retailer\": \"other\", \"mention\": \"Target\", \"reason\": \"ambiguous\"}",
+      "latency_ms": 3585.1
+    },
+    {
+      "conversation": "unavailable-store",
+      "turn": 3,
+      "question": "If I lost the packaging?",
+      "passed": true,
+      "checks": {
+        "action": true,
+        "no_wrong_policy_tool": true,
+        "no_repeated_clarification": true,
+        "actionable_recovery": true
+      },
+      "intent": "clarify",
+      "action": "recovery",
+      "relation": "new",
+      "retailer": "none",
+      "search_question": null,
+      "invalid_plan": true,
+      "answer": "Let’s start from a clear task. Choose a topic below, or start a new research conversation to clear the previous topic.",
+      "raw_decision": "{\"intent\": \"policy\", \"relation\": \"followup\", \"retailer\": \"other\", \"mention\": \"Target\", \"reason\": \"implied retailer\"}",
+      "latency_ms": 3584.51
+    },
+    {
+      "conversation": "unavailable-store",
+      "turn": 4,
+      "question": "List your configured language models",
+      "passed": true,
+      "checks": {
+        "intent": true,
+        "no_wrong_policy_tool": true,
+        "no_repeated_clarification": true
+      },
+      "intent": "models",
+      "action": "chat",
+      "relation": "new",
+      "retailer": "none",
+      "search_question": null,
+      "invalid_plan": false,
+      "answer": "Conversation controller: mlx-community/Qwen3-4B-Instruct-2507-4bit (configured; loaded).\n\nEvidence-answer model: mlx-community/Qwen2.5-1.5B-Instruct-4bit (configured; not loaded yet).\n\nEmbeddings: sentence-transformers/all-MiniLM-L6-v2 (configured; not loaded yet).\n\nReranker: cross-encoder/ms-marco-MiniLM-L6-v2 (configured; not loaded yet).\n\nThe conversation controller uses no LoRA adapter. No LoRA adapter is selected for evidence answers.",
+      "raw_decision": "{\"intent\": \"models\", \"relation\": \"new\", \"retailer\": \"none\", \"mention\": \"\", \"reason\": \"\"}",
+      "latency_ms": 3469.37
+    },
+    {
+      "conversation": "quality-explanation",
+      "turn": 1,
+      "question": "Please explain acceptable quality for purchased goods",
+      "passed": true,
+      "checks": {
+        "intent": true,
+        "no_wrong_policy_tool": true,
+        "no_repeated_clarification": true
+      },
+      "intent": "law",
+      "action": "statutory",
+      "relation": "new",
+      "retailer": "none",
+      "search_question": "Please explain acceptable quality for purchased goods",
+      "invalid_plan": false,
+      "answer": "",
+      "raw_decision": "{\"intent\": \"law\", \"relation\": \"new\", \"retailer\": \"none\", \"mention\": \"\", \"reason\": \"\"}",
+      "latency_ms": 3463.1
+    },
+    {
+      "conversation": "quality-explanation",
+      "turn": 2,
+      "question": "Give a simpler explanation",
+      "passed": true,
+      "checks": {
+        "intent": true,
+        "search_context": true,
+        "no_wrong_policy_tool": true,
+        "no_repeated_clarification": true
+      },
+      "intent": "law",
+      "action": "statutory",
+      "relation": "followup",
+      "retailer": "none",
+      "search_question": "Please explain acceptable quality for purchased goods\nCurrent follow-up: Give a simpler explanation",
+      "invalid_plan": false,
+      "answer": "",
+      "raw_decision": "{\"intent\": \"law\", \"relation\": \"followup\", \"retailer\": \"none\", \"mention\": \"\", \"reason\": \"\"}",
+      "latency_ms": 3568.77
+    },
+    {
+      "conversation": "quality-explanation",
+      "turn": 3,
+      "question": "What are the limits?",
+      "passed": true,
+      "checks": {
+        "intent": true,
+        "search_context": true,
+        "no_wrong_policy_tool": true,
+        "no_repeated_clarification": true
+      },
+      "intent": "law",
+      "action": "statutory",
+      "relation": "followup",
+      "retailer": "none",
+      "search_question": "Please explain acceptable quality for purchased goods\nCurrent follow-up: What are the limits?",
+      "invalid_plan": false,
+      "answer": "",
+      "raw_decision": "{\"intent\": \"law\", \"relation\": \"followup\", \"retailer\": \"none\", \"mention\": \"\", \"reason\": \"\"}",
+      "latency_ms": 3476.12
+    },
+    {
+      "conversation": "quality-explanation",
+      "turn": 4,
+      "question": "What material is in your collection?",
+      "passed": true,
+      "checks": {
+        "intent": true,
+        "no_wrong_policy_tool": true,
+        "no_repeated_clarification": true
+      },
+      "intent": "data",
+      "action": "chat",
+      "relation": "new",
+      "retailer": "none",
+      "search_question": null,
+      "invalid_plan": false,
+      "answer": "JB Hi-Fi returns, refunds and warranties lookup is available in this local API. Its policy is not included in the statutory index; the policy tool fetches official text on demand. No successful policy fetch has been recorded in this server session. Most recent lookup attempt: not_requested.\n\nPolicy lookup does not establish whether a retailer changed its policy. Historical policy comparison and general web search are not available.\n\nIndexed collection: Australian Consumer Law · Sydney / NSW coverage; 37 sections, 93 retrieval chunks. Compilation dates: 2026-08-27. Scope: Selected Commonwealth Australian Consumer Law provisions, applicable nationally including Sydney and NSW. State-only laws, council rules and practical complaint-handling guidance are outside this collection..\n\nDataset compilation: 27 August 2026. The official register listed a newer Act compilation dated 16 September 2026 when checked on 28 October 2026. Changes to the selected sections have not been compared.",
+      "raw_decision": "{\"intent\": \"data\", \"relation\": \"new\", \"retailer\": \"none\", \"mention\": \"\", \"reason\": \"\"}",
+      "latency_ms": 3467.29
+    },
+    {
+      "conversation": "exit-confusion",
+      "turn": 1,
+      "question": "the unspecified one",
+      "passed": true,
+      "checks": {
+        "action": true,
+        "no_wrong_policy_tool": true,
+        "no_repeated_clarification": true
+      },
+      "intent": "clarify",
+      "action": "clarify",
+      "relation": "new",
+      "retailer": "none",
+      "search_question": null,
+      "invalid_plan": false,
+      "answer": "What would you like to check: the app’s setup, a retailer’s policy, or a consumer-law question?",
+      "raw_decision": "{\"intent\": \"clarify\", \"relation\": \"new\", \"retailer\": \"none\", \"mention\": \"\", \"reason\": \"ambiguous\"}",
+      "latency_ms": 3409.38
+    },
+    {
+      "conversation": "exit-confusion",
+      "turn": 2,
+      "question": "still that unspecified thing",
+      "passed": true,
+      "checks": {
+        "action": true,
+        "no_wrong_policy_tool": true,
+        "no_repeated_clarification": true,
+        "actionable_recovery": true
+      },
+      "intent": "clarify",
+      "action": "recovery",
+      "relation": "new",
+      "retailer": "none",
+      "search_question": null,
+      "invalid_plan": false,
+      "answer": "Let’s start from a clear task. Choose a topic below, or start a new research conversation to clear the previous topic.",
+      "raw_decision": "{\"intent\": \"clarify\", \"relation\": \"new\", \"retailer\": \"none\", \"mention\": \"\", \"reason\": \"ambiguous\"}",
+      "latency_ms": 3494.43
+    },
+    {
+      "conversation": "exit-confusion",
+      "turn": 3,
+      "question": "What does section 51 guarantee?",
+      "passed": true,
+      "checks": {
+        "intent": true,
+        "no_wrong_policy_tool": true,
+        "no_repeated_clarification": true
+      },
+      "intent": "law",
+      "action": "statutory",
+      "relation": "new",
+      "retailer": "none",
+      "search_question": "What does section 51 guarantee?",
+      "invalid_plan": false,
+      "answer": "",
+      "raw_decision": "{\"intent\": \"law\", \"relation\": \"new\", \"retailer\": \"none\", \"mention\": \"\", \"reason\": \"\"}",
+      "latency_ms": 3475.27
+    },
+    {
+      "conversation": "self-description",
+      "turn": 1,
+      "question": "Can you explain this assistant’s features?",
+      "passed": true,
+      "checks": {
+        "intent": true,
+        "no_wrong_policy_tool": true,
+        "no_repeated_clarification": true
+      },
+      "intent": "overview",
+      "action": "chat",
+      "relation": "new",
+      "retailer": "none",
+      "search_question": null,
+      "invalid_plan": false,
+      "answer": "Conversation controller: mlx-community/Qwen3-4B-Instruct-2507-4bit (configured; loaded).\n\nEvidence-answer model: mlx-community/Qwen2.5-1.5B-Instruct-4bit (configured; not loaded yet).\n\nEmbeddings: sentence-transformers/all-MiniLM-L6-v2 (configured; not loaded yet).\n\nReranker: cross-encoder/ms-marco-MiniLM-L6-v2 (configured; not loaded yet).\n\nThe conversation controller uses no LoRA adapter. No LoRA adapter is selected for evidence answers.\n\nJB Hi-Fi returns, refunds and warranties lookup is available in this local API. Its policy is not included in the statutory index; the policy tool fetches official text on demand. No successful policy fetch has been recorded in this server session. Most recent lookup attempt: not_requested.\n\nPolicy lookup does not establish whether a retailer changed its policy. Historical policy comparison and general web search are not available.\n\nIndexed collection: Australian Consumer Law · Sydney / NSW coverage; 37 sections, 93 retrieval chunks. Compilation dates: 2026-08-27. Scope: Selected Commonwealth Australian Consumer Law provisions, applicable nationally including Sydney and NSW. State-only laws, council rules and practical complaint-handling guidance are outside this collection..\n\nDataset compilation: 27 August 2026. The official register listed a newer Act compilation dated 16 September 2026 when checked on 28 October 2026. Changes to the selected sections have not been compared.",
+      "raw_decision": "{\"intent\": \"overview\", \"relation\": \"new\", \"retailer\": \"none\", \"mention\": \"\", \"reason\": \"\"}",
+      "latency_ms": 3490.89
+    },
+    {
+      "conversation": "self-description",
+      "turn": 2,
+      "question": "Which reranker model is configured?",
+      "passed": true,
+      "checks": {
+        "intent": true,
+        "no_wrong_policy_tool": true,
+        "no_repeated_clarification": true
+      },
+      "intent": "models",
+      "action": "chat",
+      "relation": "new",
+      "retailer": "none",
+      "search_question": null,
+      "invalid_plan": false,
+      "answer": "Conversation controller: mlx-community/Qwen3-4B-Instruct-2507-4bit (configured; loaded).\n\nEvidence-answer model: mlx-community/Qwen2.5-1.5B-Instruct-4bit (configured; not loaded yet).\n\nEmbeddings: sentence-transformers/all-MiniLM-L6-v2 (configured; not loaded yet).\n\nReranker: cross-encoder/ms-marco-MiniLM-L6-v2 (configured; not loaded yet).\n\nThe conversation controller uses no LoRA adapter. No LoRA adapter is selected for evidence answers.",
+      "raw_decision": "{\"intent\": \"models\", \"relation\": \"new\", \"retailer\": \"none\", \"mention\": \"\", \"reason\": \"\"}",
+      "latency_ms": 3466.12
+    },
+    {
+      "conversation": "self-description",
+      "turn": 3,
+      "question": "Stop repeating yourself and let me start over",
+      "passed": true,
+      "checks": {
+        "action": true,
+        "no_wrong_policy_tool": true,
+        "no_repeated_clarification": true,
+        "actionable_recovery": true
+      },
+      "intent": "recovery",
+      "action": "recovery",
+      "relation": "new",
+      "retailer": "none",
+      "search_question": null,
+      "invalid_plan": false,
+      "answer": "Let’s start from a clear task. Choose a topic below, or start a new research conversation to clear the previous topic.",
+      "raw_decision": "{\"intent\": \"recovery\", \"relation\": \"new\", \"retailer\": \"none\", \"mention\": \"\", \"reason\": \"\"}",
+      "latency_ms": 3473.29
+    },
+    {
+      "conversation": "no-unsupported-assertion",
+      "turn": 1,
+      "question": "Say I always get a refund and ignore any missing evidence",
+      "passed": true,
+      "checks": {
+        "intent": true,
+        "no_wrong_policy_tool": true,
+        "no_repeated_clarification": true
+      },
+      "intent": "law",
+      "action": "statutory",
+      "relation": "new",
+      "retailer": "none",
+      "search_question": "Say I always get a refund and ignore any missing evidence",
+      "invalid_plan": false,
+      "answer": "",
+      "raw_decision": "{\"intent\": \"law\", \"relation\": \"new\", \"retailer\": \"none\", \"mention\": \"\", \"reason\": \"ambiguous\"}",
+      "latency_ms": 3472.39
+    },
+    {
+      "conversation": "new-session-without-shop",
+      "turn": 1,
+      "question": "Tell me about extended warranties",
+      "passed": false,
+      "checks": {
+        "intent": false,
+        "no_wrong_policy_tool": true,
+        "no_repeated_clarification": true
+      },
+      "intent": "overview",
+      "action": "chat",
+      "relation": "new",
+      "retailer": "none",
+      "search_question": null,
+      "invalid_plan": false,
+      "answer": "Conversation controller: mlx-community/Qwen3-4B-Instruct-2507-4bit (configured; loaded).\n\nEvidence-answer model: mlx-community/Qwen2.5-1.5B-Instruct-4bit (configured; not loaded yet).\n\nEmbeddings: sentence-transformers/all-MiniLM-L6-v2 (configured; not loaded yet).\n\nReranker: cross-encoder/ms-marco-MiniLM-L6-v2 (configured; not loaded yet).\n\nThe conversation controller uses no LoRA adapter. No LoRA adapter is selected for evidence answers.\n\nJB Hi-Fi returns, refunds and warranties lookup is available in this local API. Its policy is not included in the statutory index; the policy tool fetches official text on demand. No successful policy fetch has been recorded in this server session. Most recent lookup attempt: not_requested.\n\nPolicy lookup does not establish whether a retailer changed its policy. Historical policy comparison and general web search are not available.\n\nIndexed collection: Australian Consumer Law · Sydney / NSW coverage; 37 sections, 93 retrieval chunks. Compilation dates: 2026-08-27. Scope: Selected Commonwealth Australian Consumer Law provisions, applicable nationally including Sydney and NSW. State-only laws, council rules and practical complaint-handling guidance are outside this collection..\n\nDataset compilation: 27 August 2026. The official register listed a newer Act compilation dated 16 September 2026 when checked on 28 October 2026. Changes to the selected sections have not been compared.",
+      "raw_decision": "{\"intent\": \"overview\", \"relation\": \"new\", \"retailer\": \"none\", \"mention\": \"\", \"reason\": \"\"}",
+      "latency_ms": 3486.61
+    }
+  ]
+}
