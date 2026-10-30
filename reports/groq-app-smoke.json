@@ -1,0 +1,296 @@
+{
+  "kind": "live Groq API integration smoke; structural checks and expected source presence, not independent factual verification",
+  "model": {
+    "repository": "qwen/qwen3.8-27b",
+    "revision": "provider-managed",
+    "provider": "groq"
+  },
+  "expected_cases": 7,
+  "passed": 7,
+  "complete": true,
+  "results": [
+    {
+      "question": "Which models power this assistant?",
+      "passed": true,
+      "checks": {
+        "provider": true,
+        "route": true,
+        "citation_structure": true,
+        "mode": true,
+        "no_lora": true
+      },
+      "answer": "Conversation controller: qwen/qwen3.8-27b (configured; hosted API; provider-managed model).\n\nEvidence-answer model: qwen/qwen3.8-27b (configured; hosted API; provider-managed model).\n\nEmbeddings: sentence-transformers/all-MiniLM-L6-v2 (configured; not loaded yet).\n\nReranker: cross-encoder/ms-marco-MiniLM-L6-v2 (configured; not loaded yet).\n\nThe conversation controller uses no LoRA adapter. No LoRA adapter is selected for evidence answers.",
+      "mode": "conversation",
+      "abstained": false,
+      "sources": [],
+      "trace": {
+        "retrieval_ms": 0,
+        "controller_ms": 320.1,
+        "response_strategy": "runtime_facts",
+        "generator": "Runtime configuration renderer",
+        "history_turns_used": 0,
+        "controller_valid": true,
+        "fact_group": "MODELS",
+        "session_turn": 1,
+        "inference_provider": "groq",
+        "controller_model": "qwen/qwen3.8-27b",
+        "active_retailer": "none",
+        "pending_clarification": ""
+      }
+    },
+    {
+      "question": "What does the supplier guarantee about the right to sell goods?",
+      "passed": true,
+      "checks": {
+        "provider": true,
+        "route": true,
+        "citation_structure": true,
+        "mode": true,
+        "no_lora": true,
+        "expected_evidence": true,
+        "hosted_generation": true
+      },
+      "answer": "Under section 51 of the Australian Consumer Law, a supplier guarantees that they will have the right to dispose of the property in the goods when that property is to pass to the consumer [1]. This guarantee applies when a person supplies goods to a consumer [1].\n\nHowever, this guarantee does not apply if the supply is a \"supply of limited title,\" where the intention to transfer only the title the supplier or another person may have appears from the contract or is inferred from the circumstances [1]. Additionally, the section does not apply if the supply is by way of hire or lease [1].",
+      "mode": "rag",
+      "abstained": false,
+      "sources": [
+        {
+          "id": "acl-s51",
+          "url": "https://www.legislation.gov.au/C2004A00109/2026-08-27/text"
+        },
+        {
+          "id": "acl-s56",
+          "url": "https://www.legislation.gov.au/C2004A00109/2026-08-27/text"
+        },
+        {
+          "id": "acl-s59",
+          "url": "https://www.legislation.gov.au/C2004A00109/2026-08-27/text"
+        }
+      ],
+      "trace": {
+        "retrieval_ms": 3672.1337910275906,
+        "retrieval_query": "What does the supplier guarantee about the right to sell goods?",
+        "history_turns_used": 0,
+        "history_used_for_retrieval": false,
+        "topic_state_used": false,
+        "answer_style": "concise",
+        "response_strategy": "generated",
+        "retriever": "hybrid",
+        "reranker": "cross-encoder/ms-marco-MiniLM-L6-v2",
+        "generator": "qwen/qwen3.8-27b",
+        "adapter": false,
+        "prompt_tokens": 716,
+        "generated_tokens": 122,
+        "tokens_per_second": 365.54,
+        "controller_ms": 360.13,
+        "controller_action": "statutory",
+        "session_turn": 2,
+        "inference_provider": "groq",
+        "controller_model": "qwen/qwen3.8-27b",
+        "active_retailer": "none",
+        "pending_clarification": ""
+      }
+    },
+    {
+      "question": "i still want to undersatnd it but in normal language sumarise it for mr",
+      "passed": true,
+      "checks": {
+        "provider": true,
+        "route": true,
+        "citation_structure": true,
+        "mode": true,
+        "no_lora": true,
+        "expected_evidence": true
+      },
+      "answer": "In everyday language, the seller must have the legal right to sell you the goods when ownership passes to you. [1]\n\nThere is an exception when the deal makes clear, through the contract or its circumstances, that only whatever ownership rights the seller or another person has are being transferred. This particular guarantee also does not apply to hiring or leasing goods. [1]",
+      "mode": "plain-language",
+      "abstained": false,
+      "sources": [
+        {
+          "id": "acl-s51",
+          "url": "https://www.legislation.gov.au/C2004A00109/2026-08-27/text"
+        }
+      ],
+      "trace": {
+        "retrieval_ms": 446.9964581076056,
+        "retrieval_query": "What does the supplier guarantee about the right to sell goods?\nCurrent follow-up: i still want to undersatnd it but in normal language sumarise it for mr",
+        "history_turns_used": 2,
+        "history_used_for_retrieval": true,
+        "topic_state_used": true,
+        "answer_style": "concise",
+        "response_strategy": "prepared_summary",
+        "retriever": "hybrid",
+        "reranker": "cross-encoder/ms-marco-MiniLM-L6-v2",
+        "generator": null,
+        "adapter": false,
+        "controller_ms": 318.37,
+        "controller_action": "statutory",
+        "session_turn": 3,
+        "inference_provider": "groq",
+        "controller_model": "qwen/qwen3.8-27b",
+        "active_retailer": "none",
+        "pending_clarification": ""
+      }
+    },
+    {
+      "question": "Which models are you using?",
+      "passed": true,
+      "checks": {
+        "provider": true,
+        "route": true,
+        "citation_structure": true,
+        "mode": true,
+        "no_lora": true
+      },
+      "answer": "Conversation controller: qwen/qwen3.8-27b (configured; hosted API; provider-managed model).\n\nEvidence-answer model: qwen/qwen3.8-27b (configured; hosted API; provider-managed model).\n\nEmbeddings: sentence-transformers/all-MiniLM-L6-v2 (configured; loaded).\n\nReranker: cross-encoder/ms-marco-MiniLM-L6-v2 (configured; loaded).\n\nThe conversation controller uses no LoRA adapter. No LoRA adapter is selected for evidence answers.",
+      "mode": "conversation",
+      "abstained": false,
+      "sources": [],
+      "trace": {
+        "retrieval_ms": 0,
+        "controller_ms": 315.64,
+        "response_strategy": "runtime_facts",
+        "generator": "Runtime configuration renderer",
+        "history_turns_used": 3,
+        "controller_valid": true,
+        "fact_group": "MODELS",
+        "session_turn": 4,
+        "inference_provider": "groq",
+        "controller_model": "qwen/qwen3.8-27b",
+        "active_retailer": "none",
+        "pending_clarification": ""
+      }
+    },
+    {
+      "question": "What is the current NCAT application fee in Sydney?",
+      "passed": true,
+      "checks": {
+        "provider": true,
+        "route": true,
+        "citation_structure": true,
+        "mode": true,
+        "no_lora": true
+      },
+      "answer": "I don't have enough evidence in the indexed documents to answer this question.",
+      "mode": "rag",
+      "abstained": true,
+      "sources": [],
+      "trace": {
+        "retrieval_ms": 453.6057501100004,
+        "retrieval_query": "What is the current NCAT application fee in Sydney?",
+        "history_turns_used": 0,
+        "history_used_for_retrieval": false,
+        "topic_state_used": false,
+        "answer_style": "concise",
+        "response_strategy": "retrieval",
+        "retriever": "hybrid",
+        "reranker": "cross-encoder/ms-marco-MiniLM-L6-v2",
+        "generator": null,
+        "adapter": false,
+        "controller_ms": 326.25,
+        "controller_action": "statutory",
+        "session_turn": 5,
+        "inference_provider": "groq",
+        "controller_model": "qwen/qwen3.8-27b",
+        "active_retailer": "none",
+        "pending_clarification": ""
+      }
+    },
+    {
+      "question": "What are JB Hi-Fi's return terms?",
+      "passed": true,
+      "checks": {
+        "provider": true,
+        "route": true,
+        "citation_structure": true,
+        "mode": true,
+        "no_lora": true,
+        "official_policy_fetched": true
+      },
+      "answer": "JB Hi-Fi treats faulty products and change-of-mind returns differently. Here is the relevant policy context.\n\nWho this covers: This Guide applies to goods purchased directly from JB Hi-Fi. This Guide does not apply to goods purchased via the JB Hi-Fi website from third-party (Marketplace) sellers. [1]\n\nFaulty products: Our goods come with guarantees that cannot be excluded under the Australian Consumer Law. You are entitled to a replacement or refund for a major failure and for compensation for any other reasonably foreseeable loss or damage. You are also entitled to have the goods repaired or replaced if the goods fail to be of acceptable quality and failure does not amount to a major failure. [2]\n\nChange of mind — JB Hi-Fi Refund and Warranty Policies: Unused & Unopened, packaging in good condition (product not faulty) - eg change of mind. | 100% Refund | 30 Days | Exclude Commercial Sales [3]\n\nChange of mind — CDs, DVDs, Games and Computer Software: Unused & Unopened, packaging in good condition (product not faulty) - eg change of mind. | 100% Refund | 90 Days | No refund allowed for PC Games or Computer Software [4]\n\nStarting a return: You will be required to provide proof of purchase from JB HI-FI. [5]\n\nIs the item faulty, or have you changed your mind? What product is it, when did you buy it, has it been opened, and was the seller JB Hi-Fi directly or a Marketplace seller?",
+      "mode": "retailer-policy",
+      "abstained": false,
+      "sources": [
+        {
+          "id": "jb-policy-0",
+          "url": "https://www.jbhifi.com.au/pages/help-and-support/360053005194-refunds-warrant"
+        },
+        {
+          "id": "jb-policy-1",
+          "url": "https://www.jbhifi.com.au/pages/help-and-support/360053005194-refunds-warrant"
+        },
+        {
+          "id": "jb-policy-2",
+          "url": "https://www.jbhifi.com.au/pages/help-and-support/360053005194-refunds-warrant"
+        },
+        {
+          "id": "jb-policy-3",
+          "url": "https://www.jbhifi.com.au/pages/help-and-support/360053005194-refunds-warrant"
+        },
+        {
+          "id": "jb-policy-4",
+          "url": "https://www.jbhifi.com.au/pages/help-and-support/360053005194-refunds-warrant"
+        }
+      ],
+      "trace": {
+        "retrieval_ms": 159.81,
+        "response_strategy": "official_policy",
+        "generator": "None — official policy excerpts",
+        "reranker": "Not used",
+        "history_turns_used": 0,
+        "controller_ms": 405.89,
+        "controller_action": "policy",
+        "session_turn": 6,
+        "inference_provider": "groq",
+        "controller_model": "qwen/qwen3.8-27b",
+        "active_retailer": "jb_hifi",
+        "pending_clarification": ""
+      }
+    },
+    {
+      "question": "What does section 54 say about acceptable quality?",
+      "passed": true,
+      "checks": {
+        "provider": true,
+        "route": true,
+        "citation_structure": true,
+        "mode": true,
+        "no_lora": true,
+        "expected_evidence": true,
+        "hosted_generation": true
+      },
+      "answer": "Section 54 of the Australian Consumer Law guarantees that goods supplied to a consumer in trade or commerce, excluding sales by auction, are of acceptable quality [1]. Goods meet this standard if a reasonable consumer, fully aware of the goods' state and condition including hidden defects, would regard them as acceptable in terms of fitness for common purposes, appearance, finish, freedom from defects, safety, and durability [1]. This assessment considers factors such as the nature of the goods, price, packaging statements, supplier representations, and other relevant circumstances [1].\n\nThe guarantee does not apply if the specific reasons why the goods are not of acceptable quality were drawn to the consumer's attention before they agreed to the supply [1]. For goods displayed for sale or hire, these reasons are considered disclosed if they appear on a transparent written notice displayed with the items [1]. Additionally, goods do not fail to be of acceptable quality if the consumer caused the unacceptable quality, failed to take reasonable preventive steps, or if the goods were damaged by abnormal use [1]. The guarantee also does not apply if the consumer examined the goods before agreeing to the supply and that examination should reasonably have revealed the lack of acceptable quality [1].",
+      "mode": "rag",
+      "abstained": false,
+      "sources": [
+        {
+          "id": "acl-s54",
+          "url": "https://www.legislation.gov.au/C2004A00109/2026-08-27/text"
+        }
+      ],
+      "trace": {
+        "retrieval_ms": 158.39737514033914,
+        "retrieval_query": "What does section 54 say about acceptable quality?",
+        "history_turns_used": 0,
+        "history_used_for_retrieval": false,
+        "topic_state_used": false,
+        "answer_style": "concise",
+        "response_strategy": "generated",
+        "retriever": "hybrid",
+        "reranker": "cross-encoder/ms-marco-MiniLM-L6-v2",
+        "generator": "qwen/qwen3.8-27b",
+        "adapter": false,
+        "prompt_tokens": 704,
+        "generated_tokens": 243,
+        "tokens_per_second": 388.56,
+        "controller_ms": 314.74,
+        "controller_action": "statutory",
+        "session_turn": 7,
+        "inference_provider": "groq",
+        "controller_model": "qwen/qwen3.8-27b",
+        "active_retailer": "none",
+        "pending_clarification": ""
+      }
+    }
+  ]
+}

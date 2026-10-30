@@ -1,5 +1,9 @@
 # Australian Regulatory AI Assistant
 
+Version **0.3.0** adds optional Groq-hosted inference and evaluated conversation
+routing. The public GitHub Pages application remains a browser retrieval demo;
+the model-backed Python API runs separately.
+
 A local, model-backed research assistant with hybrid retrieval, reranking, cited
 MLX answers, a measured LoRA experiment, and a dark chatbot interface. The active corpus contains **37 statutory sections**, indexed
 as **93 passages**, from Schedule 2 of the Competition and Consumer Act 2010.
@@ -32,13 +36,15 @@ peak MLX allocation was 1.94 GB. The 60-step training run took 49.6 seconds with
 ## Run the model-backed app on your Mac
 
 Tested with Python 3.13, macOS 15.6.1, Apple M3 Pro and 18 GB unified memory.
-Model downloads total approximately 1 GB. No paid API or API key is needed.
+Model downloads including the separate controller total approximately 3.34 GB.
+The default local profile needs no paid API or API key.
 
 ```sh
 python3.13 -m venv .venv
 source .venv/bin/activate
 python -m pip install -r requirements-macos.lock
 python scripts/download_models.py
+python scripts/download_controller.py
 python -m reg_assistant.cli index --backend hybrid --output data/index-hybrid.json
 python scripts/train_lora.py --smoke
 python scripts/train_lora.py
@@ -53,6 +59,26 @@ Open **http://127.0.0.1:8000/Australian-Regulatory-AI-Assistant/**. The local se
 selects hybrid retrieval and the trained adapter automatically. Use `serve
 --base-model` to compare the unadapted model. The server binds to loopback and
 processes one question at a time; it is a local research service.
+
+For optional hosted inference, store `GROQ_API_KEY` in the server environment or
+an ignored root `.env` file (see `.env.example`), then run:
+
+```sh
+python -m reg_assistant.cli serve --provider groq
+```
+
+This profile uses the Groq-hosted model selected in `configs/groq.json` for both
+routing and evidence answers. It sends questions, bounded conversation context
+and retrieved evidence to Groq. Embeddings and reranking remain local. It does
+not load the local language models or your LoRA adapter; existing retrieval,
+session and structural citation checks still apply. The UI labels this profile
+as Groq. API limits/errors remain visible; there is no silent local fallback.
+Free-tier availability and quotas are provider-controlled. This command still
+runs the Python server on your Mac; it does not deploy a public backend.
+
+[Groq validation results and limits](reports/groq-validation.md): 32/32 development
+routing checks, 22/22 conversation regression turns and 7/7 full-path API checks.
+These checks do not establish legal factual accuracy.
 
 The trained adapter and model weights stay outside Git. Anyone cloning the repo
 can reproduce them with the commands above. Existing adapters are protected from
@@ -265,3 +291,7 @@ Reproduce the new-workflow comparison in separate processes:
 The saved pre-fix run identifies its archived local source by hash; its versioned replay module is `eval/baselines/controller_before.py`. It is historical evidence, not the current controller. Do not infer broad intent accuracy or legal safety from these small, hand-authored conversation checks. MLX allocation measures the controller process, not the complete serving stack or total Mac memory.
 
 Vector storage and S3 are later phases. A vector backend should preserve retrieval/citation and version-filtering contracts; S3 would hold versioned source and evaluation artifacts, with manifests/checksums linking them to the index. No cloud resources are needed for this conversation fix. Multi-process/cloud serving will also require shared, authenticated session storage rather than this local process's in-memory sessions.
+
+## Next routing-boundary evaluation suite
+
+[Routing-boundary fixtures](eval/routing-boundary/README.md) add 64 synthetic question turns: 32 development and 32 reserved hold-out. They contrast consumer-law requests with app-information questions, and include supported/unsupported retailer boundaries and multi-turn switches. These are newly prepared routing labels, not legal gold answers or a new model score. The controller and existing 22-turn regression set are unchanged. Validate integrity without model inference using `.venv/bin/python scripts/validate_routing_boundary.py`. Reserve the hold-out split until after development tuning.

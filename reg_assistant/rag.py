@@ -280,7 +280,7 @@ class RAGPipeline:
                           "response_strategy": "prepared_summary" if prepared_summary else "source_quotes" if source_followup and evidence else "generated" if generated else "retrieval",
                           "retriever": self.retriever.index["backend"],
                           "reranker": model_manifest()["reranker"]["repository"],
-                          "generator": model_manifest()["generator"]["repository"] if generated else None,
+                          "generator": getattr(self.generator, "model_id", model_manifest()["generator"]["repository"]) if generated else None,
                           "adapter": bool(getattr(self.generator, "adapter", None)) if generated else False,
                           **(getattr(self.generator, "last_stats", {}) if generated else {})}}
 

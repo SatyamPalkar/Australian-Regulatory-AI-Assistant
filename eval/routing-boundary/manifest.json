@@ -1,0 +1,37 @@
+{
+  "version": 1,
+  "purpose": "Consumer-law versus app-information semantic routing boundary; no legal answer labels",
+  "status": "Development baseline measured with unchanged controller; reserved holdout not evaluated; routing tuning not applied",
+  "files": {
+    "dev": {
+      "path": "dev.jsonl",
+      "sha256": "7712df34377c084e6b7ccd36e9a85b96efad2c3f1ee805a6ecb7db18caf2bedc",
+      "conversations": 28,
+      "turns": 32,
+      "categories": {
+        "consumer_law": 14,
+        "app_information": 12,
+        "retailer_policy": 3,
+        "unsupported_retailer": 3
+      }
+    },
+    "holdout": {
+      "path": "holdout.jsonl",
+      "sha256": "8c2934bcfd6f45f1c8a9edc63ad5fd6364c4f3a872d6a78e6777814a438260b1",
+      "conversations": 28,
+      "turns": 32,
+      "categories": {
+        "consumer_law": 12,
+        "app_information": 14,
+        "retailer_policy": 3,
+        "unsupported_retailer": 3
+      }
+    }
+  },
+  "regression_set": "../controller-conversations-verification-v2.jsonl",
+  "regression_sha256": "d80b9e51de7623ac0d1eac5fe687c6668847e835e93bc8d015b6ec2d5a6e0cb2",
+  "holdout_policy": "Reserve holdout for evaluation after development tuning; do not copy its questions into prompts. If used for diagnosis, record it as consumed and create a new reserved set.",
+  "authorship": "Project-authored synthetic scenarios; intent labels have not been independently reviewed; declared scenario families stay within one split; no guarantee of absence from model pretraining",
+  "answerability_note": "Expected law intent requires evidence retrieval and a coverage check; it does not assert that the current 37-section corpus supports an answer.",
+  "development_baseline_report": "../../reports/routing-boundary-baseline-dev.json"
+}

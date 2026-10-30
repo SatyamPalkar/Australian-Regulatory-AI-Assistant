@@ -1,0 +1,9 @@
+{
+  "provider": "groq",
+  "model": "qwen/qwen3.8-27b",
+  "reasoning_effort": "none",
+  "temperature": 0,
+  "controller_max_tokens": 220,
+  "answer_max_tokens": 512,
+  "timeout_seconds": 30
+}

@@ -13,11 +13,16 @@ def runtime_snapshot(*, corpus=None, manifest=None, controller=None, pipeline=No
     generator = getattr(pipeline, "generator", None)
     retriever = getattr(pipeline, "retriever", None)
     selected_adapter = getattr(generator, "adapter", adapter)
-    models = {role: {"repository": spec["repository"], "revision": spec["revision"], "loaded": False}
+    models = {role: {"repository": spec["repository"], "revision": spec["revision"], "loaded": False,
+                     "provider": spec.get("provider", "local")}
               for role, spec in manifest.items()}
     spec = getattr(controller, "model_spec", None) or manifest["generator"]
     models["controller"] = {"repository": spec["repository"], "revision": spec["revision"], "loaded": getattr(controller, "model", None) is not None,
-                            "adapter": False}
+                            "adapter": False, "provider": getattr(controller, "provider", "local")}
+    for role, instance in [("controller", controller), ("generator", generator)]:
+        client = getattr(instance, "client", None)
+        if client is not None:
+            models[role]["requests_completed"] = client.completed_requests
     models["generator"]["loaded"] = getattr(generator, "model", None) is not None
     models["embedding"]["loaded"] = getattr(retriever, "encoder", None) is not None
     models["reranker"]["loaded"] = getattr(retriever, "reranker", None) is not None
@@ -31,7 +36,7 @@ def runtime_snapshot(*, corpus=None, manifest=None, controller=None, pipeline=No
     dates = sorted({s["version_date"] for s in corpus["sources"] if s.get("version_date")})
     section_count, chunk_count = len(corpus["sources"]), len(corpus["chunks"])
     return {"deployment": "local Python API", "models": models, "answer_adapter": adapter_info,
-            "conversation": "Local instruction model; up to three recent turns plus bounded topic state; session expires after one hour; no disk persistence",
+            "conversation": "Instruction model; up to three recent turns plus bounded topic state; session expires after one hour; no disk persistence",
             "corpus": {"label": corpus["collection"]["label"], "section_count": section_count,
                        "chunk_count": chunk_count, "version_dates": dates,
                        "scope": corpus["collection"]["scope"],
@@ -55,7 +60,9 @@ def render_runtime_facts(facts, group="OVERVIEW"):
                  "embedding": "Embeddings", "reranker": "Reranker"}
         for role, label in names.items():
             spec = facts["models"][role]
-            paragraphs.append(f"{label}: {spec['repository']} (configured; {'loaded' if spec['loaded'] else 'not loaded yet'}).")
+            state = ("hosted API; provider-managed model" if spec.get("provider") == "groq"
+                     else 'loaded' if spec['loaded'] else 'not loaded yet')
+            paragraphs.append(f"{label}: {spec['repository']} (configured; {state}).")
         adapter = facts["answer_adapter"]
         if not adapter["selected"]:
             detail = "No LoRA adapter is selected for evidence answers."

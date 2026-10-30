@@ -1,5 +1,50 @@
 # Running and deploying the web application
 
+## Optional Groq-hosted inference
+
+Keep the credential only in the server's `GROQ_API_KEY` environment variable or
+the ignored project-root `.env`. `.env.example` contains no working credential.
+Run `python -m reg_assistant.cli serve --provider groq` after building the UI and
+hybrid index as below. The default without this flag remains local MLX inference.
+
+`configs/groq.json` selects `qwen/qwen3.8-27b` with reasoning disabled and
+temperature zero. Both controller and answer generator use this hosted model.
+Provider aliases can change; the immutable local MLX revision and custom LoRA
+are not reproduced by this profile. Embeddings and reranking still use the
+downloaded local models. Model facts/status and the UI identify the provider;
+historical experiment results continue to describe the original local models.
+
+Questions, bounded context and retrieved evidence leave the machine for Groq.
+The browser receives no API credential. Authentication failures, timeouts,
+truncated responses and quota errors fail explicitly; quota errors return HTTP
+429 and do not automatically retry, switch models or run local inference.
+Citation checks verify reference structure, not factual entailment.
+
+Evaluate routing independently, using synthetic fixtures and paced requests:
+
+```sh
+python scripts/evaluate_controller.py --provider groq --cases eval/routing-boundary/dev.jsonl --output reports/groq-routing-boundary-dev.json
+python scripts/evaluate_controller.py --provider groq --cases eval/controller-conversations-verification-v2.jsonl --output reports/groq-controller-regression.json
+```
+
+The reserved routing holdout is not used for this integration. Report latency
+includes deliberate request pacing and cannot be compared directly to local
+inference latency. Hosted inference does not host the Python API or deploy the
+portfolio. Keep the server bound to loopback until public hosting is configured.
+
+With a Groq-backed server running on port 8001, test the complete API path and
+check desktop/mobile provider labels separately:
+
+```sh
+python scripts/check_groq_app.py --origin http://127.0.0.1:8001 --pause 35
+cd site
+QA_UI_ONLY=1 QA_BASE_URL=http://127.0.0.1:8001/Australian-Regulatory-AI-Assistant/ node scripts/browser-qa.mjs
+```
+
+The live smoke test makes hosted requests and one official retailer-policy
+lookup. It covers citations, source presence, simplification, app facts,
+unsupported questions and topic changes; it does not certify legal accuracy.
+
 ## Local model-backed application
 
 The Python API serves the built React application and runs real hybrid retrieval,

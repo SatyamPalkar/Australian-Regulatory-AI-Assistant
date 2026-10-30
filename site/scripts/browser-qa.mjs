@@ -8,6 +8,7 @@ import assert from "node:assert/strict";
 const base = process.env.QA_BASE_URL || "http://127.0.0.1:8787";
 const staticMode = process.env.QA_STATIC_MODE === "1";
 const ragMode = process.env.QA_RAG_MODE === "1";
+const uiOnly = process.env.QA_UI_ONLY === "1";
 const chrome = process.env.CHROME_PATH || "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
 const profile = await mkdtemp(path.join(tmpdir(), "regulatory-qa-"));
 const browser = spawn(chrome, ["--headless=new", "--disable-gpu", "--no-first-run", "--no-default-browser-check", "--remote-debugging-port=9224", `--user-data-dir=${profile}`, "about:blank"], { stdio: "ignore" });
@@ -61,12 +62,29 @@ try {
   const activeEvaluation = staticMode ? (await import("../lib/evaluation.json", { with: { type: "json" } })).default : await (await fetch(new URL("/api/evaluation", base))).json();
   assert.ok(await evaluate("document.body.innerText.includes('Complex rules.')"));
   await screenshot("desktop");
+  if (uiOnly) {
+    if (activeCorpus.inference_provider === "groq") {
+      assert.ok(await evaluate("document.body.innerText.includes('Groq AI · Hybrid RAG')"), "Hosted provider is labelled");
+      assert.ok(await evaluate("document.body.innerText.includes('Questions, conversation context and retrieved evidence are sent to Groq')"), "Hosted data flow is disclosed");
+    }
+    await command("Emulation.setDeviceMetricsOverride", { width: 390, height: 844, deviceScaleFactor: 1, mobile: true });
+    await sleep(300);
+    assert.ok(await evaluate("document.documentElement.scrollWidth <= window.innerWidth"), "No mobile horizontal overflow");
+    await screenshot("mobile");
+    assert.deepEqual(errors, [], "No browser runtime exceptions");
+    console.log("Browser UI QA passed: provider label, data-flow notice, desktop and mobile. No model questions submitted.");
+  } else {
   await clickText("Consumer guarantees");
   await waitFor("document.querySelectorAll('.evidence-passage').length > 0");
   if (ragMode) {
     assert.ok(await evaluate("document.querySelector('.generated-answer')?.textContent.length > 20"), "Real generated answer is visible");
     assert.ok(await evaluate("Boolean(document.querySelector('.inline-citation'))"), "Generated answer includes interactive citations");
-    assert.ok(await evaluate("document.querySelector('.generation-trace')?.textContent.includes('Qwen')"), "Model trace is inspectable");
+    assert.ok(await evaluate(`document.querySelector('.generation-trace')?.textContent.includes(${JSON.stringify(activeCorpus.models.generator.repository)})`), "Configured model trace is inspectable");
+    if (activeCorpus.inference_provider === "groq") {
+      assert.ok(await evaluate("document.body.innerText.includes('Groq AI · Hybrid RAG')"), "Hosted provider is labelled");
+      assert.ok(await evaluate("document.body.innerText.includes('Questions, conversation context and retrieved evidence are sent to Groq')"), "Hosted data flow is disclosed");
+      assert.ok(await evaluate("!document.querySelector('.generation-trace')?.textContent.includes('peak MLX allocation')"), "Hosted inference does not claim local MLX memory");
+    }
   }
   assert.ok(await evaluate("document.querySelector('.evidence-passage').textContent.includes('acceptable quality')"));
   await screenshot("conversation");
@@ -141,6 +159,7 @@ try {
   }
   assert.deepEqual(errors, [], "No browser runtime exceptions");
   console.log(`Browser QA passed (${staticMode ? "static GitHub Pages" : ragMode ? "local MLX RAG" : "Worker API"}): desktop, cited answer, source dialog, library search, evaluation, reset, unsupported question, mobile layout; screenshots in outputs/.`);
+  }
 } finally {
   socket?.close(); browser.kill("SIGTERM");
 }

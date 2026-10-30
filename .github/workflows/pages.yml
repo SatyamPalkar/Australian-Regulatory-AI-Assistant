@@ -30,6 +30,7 @@ jobs:
           cache-dependency-path: site/package-lock.json
       - name: Verify Python pipeline and exported corpus
         run: |
+          python3 -m pip install -e '.[api]'
           python3 -m unittest discover -s tests -v
           python3 scripts/export_site_data.py
           git diff --exit-code -- site/lib/corpus.json site/lib/parity-fixtures.json site/lib/evaluation.json
