@@ -1,0 +1,25 @@
+services:
+  - type: web
+    name: australian-regulatory-api
+    runtime: python
+    plan: free
+    region: singapore
+    buildCommand: pip install -r requirements-render.txt
+    startCommand: uvicorn reg_assistant.deployment:create_render_app --factory --host 0.0.0.0 --port $PORT --workers 1 --no-access-log
+    healthCheckPath: /api/health
+    autoDeployTrigger: checksPass
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.13.5
+      - key: PYTHONDONTWRITEBYTECODE
+        value: "1"
+      - key: GROQ_API_KEY
+        sync: false
+      - key: REGULATORY_ALLOWED_ORIGINS
+        value: https://satyampalkar.github.io
+      - key: REGULATORY_REQUESTS_PER_MINUTE
+        value: "8"
+      - key: REGULATORY_CLIENT_REQUESTS_PER_MINUTE
+        value: "3"
+      - key: REGULATORY_REQUESTS_PER_DAY
+        value: "40"

@@ -1,5 +1,88 @@
 # Running and deploying the web application
 
+## Render free demo (Groq + lightweight retrieval)
+
+Use the repository-root `render.yaml` as a Render Blueprint:
+[Deploy this repository on Render](https://render.com/deploy?repo=https://github.com/SatyamPalkar/Australian-Regulatory-AI-Assistant).
+It specifies the **Free** compute plan, one Python worker and `/api/health`.
+Enter `GROQ_API_KEY` directly in Render's environment settings when prompted.
+Never commit it or put it in a GitHub Actions variable. The Python version is
+3.13.5, matching the tested local API environment.
+
+If using the dashboard's **New Web Service → Public Git Repository** form:
+
+| Field | Value |
+| --- | --- |
+| Repository | `https://github.com/SatyamPalkar/Australian-Regulatory-AI-Assistant` |
+| Branch | `main` |
+| Root directory | Leave empty: this Git repository already contains the app at its root |
+| Runtime | Python 3 |
+| Compute plan | **Free — $0/month, 512 MB** |
+| Build command | `pip install -r requirements-render.txt` |
+| Start command | `uvicorn reg_assistant.deployment:create_render_app --factory --host 0.0.0.0 --port $PORT --workers 1 --no-access-log` |
+| Health check | `/api/health` |
+| Environment | `GROQ_API_KEY` as a secret; `PYTHON_VERSION=3.13.5` |
+
+The default allowed browser origin is `https://satyampalkar.github.io`.
+`REGULATORY_ALLOWED_ORIGINS` can supply comma-separated HTTPS origins without
+paths. The API key must be present in Render's environment before startup.
+No MLX, Torch, embedding weights, reranker, adapters or hybrid index are needed
+for this profile. The tracked statutory documents supply TF-IDF retrieval.
+This is explicitly a **different retrieval profile** from the local hybrid
+experiments. The interface and model facts label the disabled embeddings and
+reranker. Existing structural citation checks, source quotations, prepared
+summaries and official-retailer lookup remain available.
+
+### Connect the public GitHub Pages interface
+
+After Render reports **Live**, check `<Render service URL>/api/health` and
+`/api/status`; status must identify `groq` and `tfidf`. Then:
+
+1. In this GitHub repository, open **Settings → Secrets and variables → Actions →
+   Variables**. Add the repository variable `REGULATORY_API_BASE` with the exact
+   HTTPS Render origin, such as `https://your-service.onrender.com` (no `/api`
+   suffix, credentials or query string). This URL is public configuration.
+2. Run **Actions → Deploy chatbot to GitHub Pages → Run workflow**. The workflow
+   passes the public URL as `VITE_REGULATORY_API_BASE` during the frontend build.
+3. Open the project from the portfolio. It should show **Groq AI · Lightweight
+   RAG**, not Browser retrieval demo. A failed API request remains an error;
+   it does not silently become a browser-only answer.
+
+Without that variable, Pages intentionally stays in browser-only mode. Changing
+only the portfolio description does not connect the API. The mode panel also
+lets an individual visitor explicitly connect a server without a rebuild.
+Do not set `GROQ_API_KEY` or a `VITE_*` API-key variable in GitHub or the frontend.
+
+### Public-demo limits
+
+The single worker allows one active model task, buffers at most 16 KiB per ask,
+requires JSON and limits requests before calling Groq. Defaults are 8 attempts
+per minute globally, 3 per minute per server-observed client address, and 40
+attempts per UTC day. Configure these using `REGULATORY_REQUESTS_PER_MINUTE`,
+`REGULATORY_CLIENT_REQUESTS_PER_MINUTE` and `REGULATORY_REQUESTS_PER_DAY`.
+Quota responses return 429 with `Retry-After` and appropriate CORS headers.
+
+These are in-memory prototype limits, reset by restarts, not authentication or
+a guaranteed spending cap. CORS is not authentication either. Multiple visitors
+may share an observed proxy address; forwarded headers are not trusted by this
+limiter. Keep one worker/instance, retain Groq's own usage controls, and add
+durable abuse protection before scaling. Request bodies and IP addresses are
+not written to application access logs by the provided start command.
+
+Render's free service sleeps after inactivity; cold starts delay the first
+request. Groq quotas also apply. This setup avoids using your Mac as a public
+server, once the Render service and frontend connection are both live.
+
+Run the integration checks against the deployed service:
+
+```sh
+python scripts/check_groq_app.py --origin https://your-service.onrender.com --pause 25 --output reports/render-lightweight-smoke.json
+```
+
+For local testing only, export `GROQ_API_KEY` into the process environment and
+run the same factory on loopback. The factory deliberately requires the key in
+the environment rather than silently reading a packaged `.env` file.
+
 ## Optional Groq-hosted inference
 
 Keep the credential only in the server's `GROQ_API_KEY` environment variable or

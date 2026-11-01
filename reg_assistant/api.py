@@ -32,9 +32,13 @@ class Question(BaseModel):
     conversation_id: Optional[UUID] = None
 
 
-def create_app(pipeline=None, index_path=None, adapter=None, answer_style="concise", policy_fetcher=None, controller=None, provider="local"):
+def create_app(pipeline=None, index_path=None, adapter=None, answer_style="concise", policy_fetcher=None, controller=None, provider="local", retrieval_backend="hybrid", allowed_origins=None):
     if provider not in {"local", "groq"}:
         raise ValueError("Unknown inference provider")
+    if retrieval_backend not in {"hybrid", "tfidf"}:
+        raise ValueError("Unknown retrieval backend")
+    if retrieval_backend == "tfidf" and provider != "groq":
+        raise ValueError("The lightweight hosted profile requires Groq")
     hosted_client = None
     if provider == "groq":
         from .groq_backend import GroqClient, GroqController, GroqGenerator
@@ -52,7 +56,7 @@ def create_app(pipeline=None, index_path=None, adapter=None, answer_style="conci
                 hosted_client.close()
 
     app = FastAPI(title="Australian Regulatory RAG", version=__version__, lifespan=lifespan)
-    app.add_middleware(CORSMiddleware, allow_origins=["https://satyampalkar.github.io",
+    app.add_middleware(CORSMiddleware, allow_origins=allowed_origins if allowed_origins is not None else ["https://satyampalkar.github.io",
                        "http://127.0.0.1:4174", "http://localhost:4174"],
                        allow_methods=["GET", "POST"], allow_headers=["Content-Type"])
     lock = threading.Lock()
@@ -70,7 +74,8 @@ def create_app(pipeline=None, index_path=None, adapter=None, answer_style="conci
 
     def runtime_facts():
         return capabilities(corpus=corpus, manifest=active_manifest(), controller=controller,
-                            pipeline=state["pipeline"], adapter=adapter, policy_state=state["policy_state"])
+                            pipeline=state["pipeline"], adapter=adapter, policy_state=state["policy_state"],
+                            retrieval_backend=retrieval_backend)
 
     if isinstance(controller, LocalController):
         controller.runtime_facts = runtime_facts
@@ -83,7 +88,9 @@ def create_app(pipeline=None, index_path=None, adapter=None, answer_style="conci
 
     @app.get("/api/status")
     def status():
-        return {"mode": "rag", "backend": "hybrid", "sources": corpus["sources"],
+        return {"mode": "rag", "backend": retrieval_backend, "sources": corpus["sources"],
+                "retrieval_notice": ("Lightweight TF-IDF retrieval; embeddings and cross-encoder reranking are disabled in this free demo."
+                                     if retrieval_backend == "tfidf" else "Hybrid lexical/dense retrieval with cross-encoder reranking."),
                 "corpus_sha256": corpus["corpus_sha256"], "collection": corpus["collection"],
                 "section_count": len(corpus["sources"]), "chunk_count": len(corpus["chunks"]),
                 "law_count": 1, "version_dates": sorted({s["version_date"] for s in corpus["sources"]}),
@@ -136,6 +143,7 @@ def create_app(pipeline=None, index_path=None, adapter=None, answer_style="conci
                                                       pending_clarification=topic_state.pending_clarification)
                 if provider == "groq" and result["trace"].get("generator") == "Local controller decision; no free-form factual generation":
                     result["trace"]["generator"] = "Groq controller decision; no free-form factual generation"
+                result["trace"]["retrieval_backend"] = retrieval_backend
                 return result
 
             controller_ms = (time.perf_counter() - started) * 1000
@@ -150,7 +158,10 @@ def create_app(pipeline=None, index_path=None, adapter=None, answer_style="conci
                 result["trace"].update(controller_ms=round(controller_ms, 2), controller_action="policy")
                 return finish(result)
             if state["pipeline"] is None:
-                if provider == "groq":
+                if retrieval_backend == "tfidf":
+                    from .lexical import load_lexical_pipeline
+                    state["pipeline"] = load_lexical_pipeline(hosted_generator)
+                elif provider == "groq":
                     state["pipeline"] = load_pipeline(index_path, extractive=True, answer_style=answer_style)
                     state["pipeline"].generator = hosted_generator
                 else:
@@ -176,6 +187,9 @@ def create_app(pipeline=None, index_path=None, adapter=None, answer_style="conci
 
     @app.get("/")
     def home():
+        if provider == "groq" and retrieval_backend == "tfidf" and not static.exists():
+            return {"service": "Australian Regulatory AI API", "profile": "Groq + lightweight TF-IDF",
+                    "health": "/api/health", "interface": "https://satyampalkar.github.io/Australian-Regulatory-AI-Assistant/"}
         from fastapi.responses import RedirectResponse
         return RedirectResponse(f"{BASE_PATH}/")
 

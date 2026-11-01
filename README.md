@@ -4,6 +4,12 @@ Version **0.3.0** adds optional Groq-hosted inference and evaluated conversation
 routing. The public GitHub Pages application remains a browser retrieval demo;
 the model-backed Python API runs separately.
 
+[Render free-tier setup](DEPLOYMENT.md#render-free-demo-groq--lightweight-retrieval)
+is provided in `render.yaml`. It uses Groq with clearly labelled TF-IDF retrieval
+and no local ML dependencies. The original hybrid/LoRA profile remains available
+locally. Deploying the API and setting the frontend's public backend URL are both
+required to give portfolio visitors generated answers.
+
 A local, model-backed research assistant with hybrid retrieval, reranking, cited
 MLX answers, a measured LoRA experiment, and a dark chatbot interface. The active corpus contains **37 statutory sections**, indexed
 as **93 passages**, from Schedule 2 of the Competition and Consumer Act 2010.

@@ -1,0 +1,5 @@
+# CPU-only lightweight profile. No Torch, MLX, embeddings or reranker downloads.
+fastapi==0.162.0
+uvicorn==0.54.0
+httpx==0.28.1
+-e .

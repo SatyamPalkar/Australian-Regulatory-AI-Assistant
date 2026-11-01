@@ -1,6 +1,16 @@
 import { fileURLToPath } from "node:url";
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
+import { validateEndpoint } from "./github-pages/api-client";
+
+if (process.env.VITE_REGULATORY_API_BASE) {
+  try {
+    if (!validateEndpoint(process.env.VITE_REGULATORY_API_BASE).startsWith("https://")) throw new Error();
+  } catch {
+    // A mistyped variable might contain a credential. Never print its value.
+    throw new Error("VITE_REGULATORY_API_BASE must be a public HTTPS origin without credentials, paths or query strings");
+  }
+}
 
 const repository = process.env.GITHUB_REPOSITORY?.split("/")[1] || "Australian-Regulatory-AI-Assistant";
 const base = process.env.PAGES_BASE_PATH || `/${repository}/`;

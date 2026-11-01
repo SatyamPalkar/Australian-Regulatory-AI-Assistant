@@ -4,7 +4,7 @@ from pathlib import Path
 
 
 def runtime_snapshot(*, corpus=None, manifest=None, controller=None, pipeline=None,
-                     adapter=None, policy_state=None):
+                     adapter=None, policy_state=None, retrieval_backend="hybrid"):
     from .rag import ROOT, model_manifest
     from .retailer import POLICY_URL
     manifest = model_manifest() if manifest is None else manifest
@@ -26,6 +26,9 @@ def runtime_snapshot(*, corpus=None, manifest=None, controller=None, pipeline=No
     models["generator"]["loaded"] = getattr(generator, "model", None) is not None
     models["embedding"]["loaded"] = getattr(retriever, "encoder", None) is not None
     models["reranker"]["loaded"] = getattr(retriever, "reranker", None) is not None
+    if retrieval_backend == "tfidf":
+        for role in ["embedding", "reranker"]:
+            models[role]["enabled"] = False
     adapter_path = Path(selected_adapter) if selected_adapter else None
     if adapter_path and not adapter_path.is_absolute():
         adapter_path = ROOT / adapter_path
@@ -35,7 +38,8 @@ def runtime_snapshot(*, corpus=None, manifest=None, controller=None, pipeline=No
                     "loaded": bool(selected_adapter and models["generator"]["loaded"])}
     dates = sorted({s["version_date"] for s in corpus["sources"] if s.get("version_date")})
     section_count, chunk_count = len(corpus["sources"]), len(corpus["chunks"])
-    return {"deployment": "local Python API", "models": models, "answer_adapter": adapter_info,
+    return {"deployment": "Python API", "models": models, "answer_adapter": adapter_info,
+            "retrieval_backend": retrieval_backend,
             "conversation": "Instruction model; up to three recent turns plus bounded topic state; session expires after one hour; no disk persistence",
             "corpus": {"label": corpus["collection"]["label"], "section_count": section_count,
                        "chunk_count": chunk_count, "version_dates": dates,
@@ -60,7 +64,8 @@ def render_runtime_facts(facts, group="OVERVIEW"):
                  "embedding": "Embeddings", "reranker": "Reranker"}
         for role, label in names.items():
             spec = facts["models"][role]
-            state = ("hosted API; provider-managed model" if spec.get("provider") == "groq"
+            state = ("disabled in lightweight retrieval profile" if spec.get("enabled") is False else
+                     "hosted API; provider-managed model" if spec.get("provider") == "groq"
                      else 'loaded' if spec['loaded'] else 'not loaded yet')
             paragraphs.append(f"{label}: {spec['repository']} (configured; {state}).")
         adapter = facts["answer_adapter"]

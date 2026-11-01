@@ -50,6 +50,8 @@ jobs:
         uses: actions/configure-pages@v5
       - name: Build static chatbot
         working-directory: site
+        env:
+          VITE_REGULATORY_API_BASE: ${{ vars.REGULATORY_API_BASE }}
         run: npm run build:pages
       - name: Upload static application
         uses: actions/upload-pages-artifact@v4
