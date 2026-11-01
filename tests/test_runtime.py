@@ -21,6 +21,17 @@ def corpus():
 
 
 class RuntimeTests(unittest.TestCase):
+    def test_tool_capabilities_report_the_configured_inference_provider(self):
+        config = manifest()
+        config["generator"].update(repository="example/hosted-answer-model", provider="groq")
+        facts = runtime_snapshot(corpus=corpus(), manifest=config)
+        text = render_runtime_facts(facts, "TOOLS")
+        self.assertIn("example/hosted-answer-model via Groq-hosted inference", text)
+        config["generator"].update(repository="example/local-answer-model", provider="local")
+        text = render_runtime_facts(runtime_snapshot(corpus=corpus(), manifest=config), "TOOLS")
+        self.assertIn("example/local-answer-model via local inference", text)
+        self.assertNotIn("Groq-hosted", text)
+
     def test_snapshot_reads_names_counts_and_load_states_without_loading_models(self):
         facts = runtime_snapshot(corpus=corpus(), manifest=manifest())
         self.assertEqual(facts["models"]["controller"]["repository"], "example/generator-test")

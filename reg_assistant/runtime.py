@@ -76,9 +76,13 @@ def render_runtime_facts(facts, group="OVERVIEW"):
             detail = f"Evidence-answer LoRA adapter: {adapter['name']} ({state})."
         paragraphs.append("The conversation controller uses no LoRA adapter. " + detail)
     if group in {"TOOLS", "DATA", "OVERVIEW"}:
+        if group == "TOOLS":
+            generator = facts["models"]["generator"]
+            provider = "Groq-hosted inference" if generator.get("provider") == "groq" else "local inference"
+            paragraphs.append(f"Configured evidence-answer capability: {generator['repository']} via {provider}.")
         for tool in facts["policy_tools"]:
             state = "available" if tool["available"] else "unavailable"
-            text = f"{tool['retailer']} {tool['scope']} lookup is {state} in this local API."
+            text = f"{tool['retailer']} {tool['scope']} lookup is {state} in this API."
             text += " Its policy is " + ("included" if tool["indexed_in_statutory_corpus"] else "not included") + " in the statutory index; the policy tool fetches official text on demand."
             if tool["last_successful_fetch"]:
                 text += f" Last successful policy fetch in this server session: {tool['last_successful_fetch']}."
