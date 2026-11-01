@@ -143,6 +143,8 @@ def create_app(pipeline=None, index_path=None, adapter=None, answer_style="conci
                                                       pending_clarification=topic_state.pending_clarification)
                 if provider == "groq" and result["trace"].get("generator") == "Local controller decision; no free-form factual generation":
                     result["trace"]["generator"] = "Groq controller decision; no free-form factual generation"
+                if provider == "groq" and result["trace"].get("response_strategy") == "runtime_facts":
+                    result["scope_note"] = "App configuration reported by the running API. Configured, loaded and policy-fetched states are shown separately."
                 result["trace"]["retrieval_backend"] = retrieval_backend
                 return result
 

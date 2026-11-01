@@ -1,8 +1,9 @@
 # Australian Regulatory AI Assistant
 
 Version **0.3.0** adds optional Groq-hosted inference and evaluated conversation
-routing. The public GitHub Pages application remains a browser retrieval demo;
-the model-backed Python API runs separately.
+routing. The public GitHub Pages interface now connects to a Render-hosted
+Groq API with lightweight TF-IDF retrieval. The local hybrid/LoRA research
+profile remains separate.
 
 [Render free-tier setup](DEPLOYMENT.md#render-free-demo-groq--lightweight-retrieval)
 is provided in `render.yaml`. It uses Groq with clearly labelled TF-IDF retrieval
@@ -15,8 +16,11 @@ MLX answers, a measured LoRA experiment, and a dark chatbot interface. The activ
 as **93 passages**, from Schedule 2 of the Competition and Consumer Act 2010.
 
 [Open the GitHub Pages application](https://satyampalkar.github.io/Australian-Regulatory-AI-Assistant/).
-The public Pages version searches the bundled corpus entirely in your browser and
-shows the saved model experiment. Run the local API for actual LLM generation.
+The public Pages interface selects the [Render-backed Groq API](https://australian-regulatory-api.onrender.com)
+for generated answers, with TF-IDF retrieval explicitly labelled as the free
+profile. Browser-only retrieval remains selectable through Change mode. Render
+can sleep when idle, so the first request may take longer. The saved model
+experiments below describe the separate local hybrid/LoRA stack.
 
 ## Measured on an M3 Pro
 
