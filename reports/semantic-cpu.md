@@ -31,3 +31,6 @@ The pinned model and generated index are ignored build artifacts. Their hashes,
 the corpus fingerprint, vector dimensions/norms and chunk order are checked.
 The existing citation-format validator still runs after hosted generation;
 structurally valid citations do not prove factual support.
+
+The free Render service subsequently passed all [seven live integration checks](render-semantic-deployed-smoke.json), with `semantic_cpu` in every response trace.
+Status confirmed the embedding model was enabled and loaded after a real query.

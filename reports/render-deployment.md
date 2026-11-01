@@ -2,25 +2,31 @@
 
 The free Render service is live at
 [australian-regulatory-api.onrender.com](https://australian-regulatory-api.onrender.com).
-Its health endpoint returned `ok`; status identifies Groq inference, TF-IDF
-retrieval, 37 statutory sections and no LoRA adapter. The Groq credential is a
-Render server-side environment value, not a GitHub/frontend secret or variable.
+Status identifies Groq inference and `semantic_cpu` retrieval. The embedding
+model was verified enabled and loaded after a real statutory request. There are
+37 statutory sections in 93 chunks, no cross-encoder reranker and no LoRA adapter.
+The credential remains a server-side Render environment value.
 
-The public GitHub Actions repository variable `REGULATORY_API_BASE` contains
-only the HTTPS service origin. The subsequent Pages workflow
-[completed successfully](https://github.com/SatyamPalkar/Australian-Regulatory-AI-Assistant/actions/runs/41282718294).
-The public interface now shows **Groq AI · Lightweight RAG**. A browser test of
-the previously reported `is groq added` question returned model configuration
-through the Groq conversation route instead of statutory abstention.
+The public [GitHub Pages interface](https://satyampalkar.github.io/Australian-Regulatory-AI-Assistant/)
+shows **Groq AI · Semantic RAG** and labels CPU semantic embeddings + TF-IDF.
+The portfolio description matches this profile. GitHub CI and Pages deployment
+succeeded for implementation commit `c2499a1`. The automated suite has 126 Python
+and 39 web tests, all passing.
 
-[Seven deployed API integration checks](render-deployed-smoke.json) passed,
-including a cited statutory answer, plain-language follow-up, runtime facts,
-unsupported current-fee question, official JB Hi-Fi policy lookup and a switch
-back to consumer law. These checks assess routes, source presence and reference
-structure; they do not independently establish legal correctness.
+[Seven deployed semantic API checks](render-semantic-deployed-smoke.json) passed:
+model facts, cited title guarantee, typo-heavy plain-language follow-up, model
+facts after a topic switch, unsupported current fee, official JB Hi-Fi policy
+lookup, and a switch back to section 54. Every response trace identified
+`semantic_cpu`. These checks establish routes, expected source presence and
+citation structure, not independent legal correctness.
 
-This is the user-selected free profile. Embeddings and cross-encoder reranking
-are disabled. The original local hybrid/MLX/LoRA experiments remain available
-and their historical metrics do not describe this cloud retrieval profile.
-Render can sleep on inactivity and Groq/demo request budgets apply. The Mac is
-not needed to serve visitors.
+The [CPU retrieval development report](semantic-cpu.md) describes the 20/20
+existing development checks, local memory measurements and additional paraphrase
+misses. Local process memory is not a measurement of Render container memory.
+The deployed service handled all seven checks without an observed memory failure.
+
+The original local hybrid/MLX/LoRA experiments remain separate. Their historical
+metrics do not describe this cloud profile. The initial TF-IDF-only rollout is
+preserved in [its earlier smoke report](render-deployed-smoke.json). Render can
+sleep when idle; Groq and demo request budgets apply. The Mac is not the public
+server.
