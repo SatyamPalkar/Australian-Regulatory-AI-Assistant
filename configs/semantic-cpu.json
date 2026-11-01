@@ -1,0 +1,14 @@
+{
+  "repository": "sentence-transformers/all-MiniLM-L6-v2",
+  "revision": "1110a243fdf4706b3f48f1d95db1a4f5529b4d41",
+  "license": "apache-2.0",
+  "runtime": "ONNX Runtime CPU, uint8 weights, masked mean pooling, L2 normalization",
+  "path": "models/embedding-onnx",
+  "dimensions": 384,
+  "max_length": 256,
+  "semantic_min_score": 0.5,
+  "files": {
+    "model.onnx": {"source": "onnx/model_quint8_avx2.onnx", "sha256": "b941bf19f1f1283680f449fa6a7336bb5600bdcd5f84d10ddc5cd72218a0fd21"},
+    "tokenizer.json": {"source": "tokenizer.json", "sha256": "be50c3628f2bf5bb5e3a7f17b1f74611b2561a3a27eeab05e5aa30f411572037"}
+  }
+}

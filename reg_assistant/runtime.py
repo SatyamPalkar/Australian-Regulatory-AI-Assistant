@@ -29,6 +29,10 @@ def runtime_snapshot(*, corpus=None, manifest=None, controller=None, pipeline=No
     if retrieval_backend == "tfidf":
         for role in ["embedding", "reranker"]:
             models[role]["enabled"] = False
+    elif retrieval_backend == "semantic_cpu":
+        models["embedding"]["enabled"] = True
+        models["embedding"]["runtime"] = manifest["embedding"].get("runtime")
+        models["reranker"]["enabled"] = False
     adapter_path = Path(selected_adapter) if selected_adapter else None
     if adapter_path and not adapter_path.is_absolute():
         adapter_path = ROOT / adapter_path
@@ -67,7 +71,8 @@ def render_runtime_facts(facts, group="OVERVIEW"):
             state = ("disabled in lightweight retrieval profile" if spec.get("enabled") is False else
                      "hosted API; provider-managed model" if spec.get("provider") == "groq"
                      else 'loaded' if spec['loaded'] else 'not loaded yet')
-            paragraphs.append(f"{label}: {spec['repository']} (configured; {state}).")
+            runtime = f"; {spec['runtime']}" if spec.get("runtime") else ""
+            paragraphs.append(f"{label}: {spec['repository']} (configured; {state}{runtime}).")
         adapter = facts["answer_adapter"]
         if not adapter["selected"]:
             detail = "No LoRA adapter is selected for evidence answers."

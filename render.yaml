@@ -4,7 +4,7 @@ services:
     runtime: python
     plan: free
     region: singapore
-    buildCommand: pip install -r requirements-render.txt
+    buildCommand: pip install -r requirements-render.txt && python scripts/prepare_semantic_cpu.py
     startCommand: uvicorn reg_assistant.deployment:create_render_app --factory --host 0.0.0.0 --port $PORT --workers 1 --no-access-log
     healthCheckPath: /api/health
     autoDeployTrigger: checksPass

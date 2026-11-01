@@ -2,12 +2,12 @@
 
 Version **0.3.0** adds optional Groq-hosted inference and evaluated conversation
 routing. The public GitHub Pages interface now connects to a Render-hosted
-Groq API with lightweight TF-IDF retrieval. The local hybrid/LoRA research
+Groq API with CPU semantic embeddings and TF-IDF rank fusion. The local hybrid/LoRA research
 profile remains separate.
 
 [Render free-tier setup](DEPLOYMENT.md#render-free-demo-groq--lightweight-retrieval)
-is provided in `render.yaml`. It uses Groq with clearly labelled TF-IDF retrieval
-and no local ML dependencies. The original hybrid/LoRA profile remains available
+is provided in `render.yaml`. It uses Groq with quantized ONNX MiniLM embeddings
+and TF-IDF rank fusion; PyTorch, reranking and LoRA are excluded from this cloud profile. The original hybrid/LoRA profile remains available
 locally. Deploying the API and setting the frontend's public backend URL are both
 required to give portfolio visitors generated answers.
 
@@ -17,7 +17,7 @@ as **93 passages**, from Schedule 2 of the Competition and Consumer Act 2010.
 
 [Open the GitHub Pages application](https://satyampalkar.github.io/Australian-Regulatory-AI-Assistant/).
 The public Pages interface selects the [Render-backed Groq API](https://australian-regulatory-api.onrender.com)
-for generated answers, with TF-IDF retrieval explicitly labelled as the free
+for generated answers, with semantic + lexical retrieval labelled as the free
 profile. Browser-only retrieval remains selectable through Change mode. Render
 can sleep when idle, so the first request may take longer. The saved model
 experiments below describe the separate local hybrid/LoRA stack.

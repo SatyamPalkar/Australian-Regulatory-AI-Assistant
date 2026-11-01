@@ -37,7 +37,7 @@ class DeploymentTests(unittest.TestCase):
                 self.app(**env)
 
     def test_health_status_and_truthful_lightweight_model_facts(self):
-        with TestClient(self.app()) as client:
+        with TestClient(self.app(REGULATORY_RETRIEVAL_PROFILE="tfidf")) as client:
             self.assertEqual(client.get("/api/health").status_code, 200)
             status = client.get("/api/status").json()
             self.assertEqual(status["backend"], "tfidf")

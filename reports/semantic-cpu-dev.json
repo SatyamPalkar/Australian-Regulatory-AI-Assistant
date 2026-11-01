@@ -1,0 +1,239 @@
+{
+  "kind": "Observed development retrieval regression; not held-out accuracy or factual-answer evaluation",
+  "platform": "macOS-15.6.1-arm64-arm-64bit-Mach-O",
+  "embedding": {
+    "repository": "sentence-transformers/all-MiniLM-L6-v2",
+    "revision": "1110a243fdf4706b3f48f1d95db1a4f5529b4d41",
+    "license": "apache-2.0",
+    "runtime": "ONNX Runtime CPU, uint8 weights, masked mean pooling, L2 normalization",
+    "path": "models/embedding-onnx",
+    "dimensions": 384,
+    "max_length": 256,
+    "semantic_min_score": 0.5,
+    "files": {
+      "model.onnx": {
+        "source": "onnx/model_quint8_avx2.onnx",
+        "sha256": "b941bf19f1f1283680f449fa6a7336bb5600bdcd5f84d10ddc5cd72218a0fd21"
+      },
+      "tokenizer.json": {
+        "source": "tokenizer.json",
+        "sha256": "be50c3628f2bf5bb5e3a7f17b1f74611b2561a3a27eeab05e5aa30f411572037"
+      }
+    }
+  },
+  "reranker": null,
+  "cases": 20,
+  "passed": 20,
+  "median_retrieval_ms": 4.93,
+  "peak_process_rss_mib": 128.7,
+  "heavy_imports": [],
+  "memory_limit_note": "Local process RSS is not a measurement of Render's Linux container memory.",
+  "results": [
+    {
+      "suite": "consumer-law-dev.jsonl",
+      "id": "quality",
+      "passed": true,
+      "expected_sources": [
+        "acl-s54"
+      ],
+      "retrieved_sources": [
+        "acl-s54"
+      ]
+    },
+    {
+      "suite": "consumer-law-dev.jsonl",
+      "id": "care-skill",
+      "passed": true,
+      "expected_sources": [
+        "acl-s60"
+      ],
+      "retrieved_sources": [
+        "acl-s267",
+        "acl-s60",
+        "acl-s62"
+      ]
+    },
+    {
+      "suite": "consumer-law-dev.jsonl",
+      "id": "purpose",
+      "passed": true,
+      "expected_sources": [
+        "acl-s55"
+      ],
+      "retrieved_sources": [
+        "acl-s55"
+      ]
+    },
+    {
+      "suite": "consumer-law-dev.jsonl",
+      "id": "misleading",
+      "passed": true,
+      "expected_sources": [
+        "acl-s18"
+      ],
+      "retrieved_sources": [
+        "acl-s18"
+      ]
+    },
+    {
+      "suite": "consumer-law-dev.jsonl",
+      "id": "unfair-terms",
+      "passed": true,
+      "expected_sources": [
+        "acl-s24"
+      ],
+      "retrieved_sources": [
+        "acl-s24"
+      ]
+    },
+    {
+      "suite": "consumer-law-dev.jsonl",
+      "id": "major-goods",
+      "passed": true,
+      "expected_sources": [
+        "acl-s260"
+      ],
+      "retrieved_sources": [
+        "acl-s260",
+        "acl-s267",
+        "acl-s268"
+      ]
+    },
+    {
+      "suite": "consumer-law-dev.jsonl",
+      "id": "supplier-remedy",
+      "passed": true,
+      "expected_sources": [
+        "acl-s261"
+      ],
+      "retrieved_sources": [
+        "acl-s259",
+        "acl-s261",
+        "acl-s267"
+      ]
+    },
+    {
+      "suite": "consumer-law-dev.jsonl",
+      "id": "reject-goods",
+      "passed": true,
+      "expected_sources": [
+        "acl-s263"
+      ],
+      "retrieved_sources": [
+        "acl-s261",
+        "acl-s263",
+        "acl-s270"
+      ]
+    },
+    {
+      "suite": "consumer-law-dev.jsonl",
+      "id": "exclusions",
+      "passed": true,
+      "expected_sources": [
+        "acl-s64"
+      ],
+      "retrieved_sources": [
+        "acl-s23",
+        "acl-s25",
+        "acl-s64"
+      ]
+    },
+    {
+      "suite": "consumer-law-dev.jsonl",
+      "id": "visa",
+      "passed": true,
+      "expected_sources": [],
+      "retrieved_sources": []
+    },
+    {
+      "suite": "consumer-law-dev.jsonl",
+      "id": "ncat-fees",
+      "passed": true,
+      "expected_sources": [],
+      "retrieved_sources": []
+    },
+    {
+      "suite": "consumer-law-dev.jsonl",
+      "id": "office-hours",
+      "passed": true,
+      "expected_sources": [],
+      "retrieved_sources": []
+    },
+    {
+      "suite": "product-warranty-dev.jsonl",
+      "id": "electronics-original",
+      "passed": true,
+      "expected_sources": [
+        "acl-s59"
+      ],
+      "retrieved_sources": [
+        "acl-s271",
+        "acl-s53",
+        "acl-s59"
+      ]
+    },
+    {
+      "suite": "product-warranty-dev.jsonl",
+      "id": "electronics-variant",
+      "passed": true,
+      "expected_sources": [
+        "acl-s59"
+      ],
+      "retrieved_sources": [
+        "acl-s271",
+        "acl-s58",
+        "acl-s59"
+      ]
+    },
+    {
+      "suite": "product-warranty-dev.jsonl",
+      "id": "laptop-general",
+      "passed": true,
+      "expected_sources": [
+        "acl-s59"
+      ],
+      "retrieved_sources": [
+        "acl-s271",
+        "acl-s58",
+        "acl-s59"
+      ]
+    },
+    {
+      "suite": "product-warranty-dev.jsonl",
+      "id": "brand-duration",
+      "passed": true,
+      "expected_sources": [],
+      "retrieved_sources": []
+    },
+    {
+      "suite": "product-warranty-dev.jsonl",
+      "id": "brand-current",
+      "passed": true,
+      "expected_sources": [],
+      "retrieved_sources": []
+    },
+    {
+      "suite": "product-warranty-dev.jsonl",
+      "id": "warranty-ncat-fee",
+      "passed": true,
+      "expected_sources": [],
+      "retrieved_sources": []
+    },
+    {
+      "suite": "product-warranty-dev.jsonl",
+      "id": "visa",
+      "passed": true,
+      "expected_sources": [],
+      "retrieved_sources": []
+    },
+    {
+      "suite": "product-warranty-dev.jsonl",
+      "id": "ncat-fee",
+      "passed": true,
+      "expected_sources": [],
+      "retrieved_sources": []
+    }
+  ],
+  "local_api_peak_process_rss_mib": 169.27,
+  "local_api_benchmark_note": "Real CPU retriever and FastAPI TestClient; stub controller/generator, no hosted requests. macOS RSS, not Linux container memory."
+}

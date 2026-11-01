@@ -213,7 +213,7 @@ class RAGPipeline:
         rewritten = statutory_search_query(question) != question
         best_logit = max((h.get("rerank_logit", -math.inf) for h in hits), default=-math.inf)
         for hit in hits:
-            if hit["score"] < self.min_score or hit["id"] in seen:
+            if not hit.get("eligible", True) or hit["score"] < self.min_score or hit["id"] in seen:
                 continue
             # A vocabulary rewrite can admit loosely related provisions. Keep its
             # evidence close to the strongest match, rather than mixing legal rules.

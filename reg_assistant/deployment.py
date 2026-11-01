@@ -106,6 +106,9 @@ def create_render_app():
     budget = RequestBudget(per_minute=positive_integer("REGULATORY_REQUESTS_PER_MINUTE", 8),
                            per_day=positive_integer("REGULATORY_REQUESTS_PER_DAY", 40),
                            per_client=positive_integer("REGULATORY_CLIENT_REQUESTS_PER_MINUTE", 3))
-    app = create_app(provider="groq", retrieval_backend="tfidf", allowed_origins=origins)
+    profile = os.environ.get("REGULATORY_RETRIEVAL_PROFILE", "semantic_cpu")
+    if profile not in {"semantic_cpu", "tfidf"}:
+        raise ValueError("REGULATORY_RETRIEVAL_PROFILE must be semantic_cpu or tfidf")
+    app = create_app(provider="groq", retrieval_backend=profile, allowed_origins=origins)
     app.add_middleware(PublicRequestGuard, budget=budget, origins=origins)
     return app

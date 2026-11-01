@@ -35,9 +35,9 @@ class Question(BaseModel):
 def create_app(pipeline=None, index_path=None, adapter=None, answer_style="concise", policy_fetcher=None, controller=None, provider="local", retrieval_backend="hybrid", allowed_origins=None):
     if provider not in {"local", "groq"}:
         raise ValueError("Unknown inference provider")
-    if retrieval_backend not in {"hybrid", "tfidf"}:
+    if retrieval_backend not in {"hybrid", "tfidf", "semantic_cpu"}:
         raise ValueError("Unknown retrieval backend")
-    if retrieval_backend == "tfidf" and provider != "groq":
+    if retrieval_backend in {"tfidf", "semantic_cpu"} and provider != "groq":
         raise ValueError("The lightweight hosted profile requires Groq")
     hosted_client = None
     if provider == "groq":
@@ -67,6 +67,10 @@ def create_app(pipeline=None, index_path=None, adapter=None, answer_style="conci
 
     def active_manifest():
         manifest = model_manifest()
+        if retrieval_backend == "semantic_cpu":
+            from .semantic_cpu import configuration
+            spec = configuration()
+            manifest["embedding"] = {key: spec[key] for key in ("repository", "revision", "runtime", "license")}
         if hosted_client is not None:
             manifest["generator"] = {"repository": hosted_client.model_id,
                                      "revision": "provider-managed", "provider": "groq"}
@@ -90,7 +94,9 @@ def create_app(pipeline=None, index_path=None, adapter=None, answer_style="conci
     def status():
         return {"mode": "rag", "backend": retrieval_backend, "sources": corpus["sources"],
                 "retrieval_notice": ("Lightweight TF-IDF retrieval; embeddings and cross-encoder reranking are disabled in this free demo."
-                                     if retrieval_backend == "tfidf" else "Hybrid lexical/dense retrieval with cross-encoder reranking."),
+                                     if retrieval_backend == "tfidf" else
+                                     "CPU semantic embeddings + TF-IDF rank fusion; quantized MiniLM, no cross-encoder reranker."
+                                     if retrieval_backend == "semantic_cpu" else "Hybrid lexical/dense retrieval with cross-encoder reranking."),
                 "corpus_sha256": corpus["corpus_sha256"], "collection": corpus["collection"],
                 "section_count": len(corpus["sources"]), "chunk_count": len(corpus["chunks"]),
                 "law_count": 1, "version_dates": sorted({s["version_date"] for s in corpus["sources"]}),
@@ -160,7 +166,10 @@ def create_app(pipeline=None, index_path=None, adapter=None, answer_style="conci
                 result["trace"].update(controller_ms=round(controller_ms, 2), controller_action="policy")
                 return finish(result)
             if state["pipeline"] is None:
-                if retrieval_backend == "tfidf":
+                if retrieval_backend == "semantic_cpu":
+                    from .semantic_cpu import load_semantic_cpu_pipeline
+                    state["pipeline"] = load_semantic_cpu_pipeline(hosted_generator)
+                elif retrieval_backend == "tfidf":
                     from .lexical import load_lexical_pipeline
                     state["pipeline"] = load_lexical_pipeline(hosted_generator)
                 elif provider == "groq":
@@ -189,8 +198,8 @@ def create_app(pipeline=None, index_path=None, adapter=None, answer_style="conci
 
     @app.get("/")
     def home():
-        if provider == "groq" and retrieval_backend == "tfidf" and not static.exists():
-            return {"service": "Australian Regulatory AI API", "profile": "Groq + lightweight TF-IDF",
+        if provider == "groq" and retrieval_backend in {"tfidf", "semantic_cpu"} and not static.exists():
+            return {"service": "Australian Regulatory AI API", "profile": "Groq + " + retrieval_backend,
                     "health": "/api/health", "interface": "https://satyampalkar.github.io/Australian-Regulatory-AI-Assistant/"}
         from fastapi.responses import RedirectResponse
         return RedirectResponse(f"{BASE_PATH}/")

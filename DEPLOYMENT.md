@@ -18,7 +18,7 @@ If using the dashboard's **New Web Service → Public Git Repository** form:
 | Root directory | Leave empty: this Git repository already contains the app at its root |
 | Runtime | Python 3 |
 | Compute plan | **Free — $0/month, 512 MB** |
-| Build command | `pip install -r requirements-render.txt` |
+| Build command | `pip install -r requirements-render.txt && python scripts/prepare_semantic_cpu.py` |
 | Start command | `uvicorn reg_assistant.deployment:create_render_app --factory --host 0.0.0.0 --port $PORT --workers 1 --no-access-log` |
 | Health check | `/api/health` |
 | Environment | `GROQ_API_KEY` as a secret; `PYTHON_VERSION=3.13.5` |
@@ -26,17 +26,27 @@ If using the dashboard's **New Web Service → Public Git Repository** form:
 The default allowed browser origin is `https://satyampalkar.github.io`.
 `REGULATORY_ALLOWED_ORIGINS` can supply comma-separated HTTPS origins without
 paths. The API key must be present in Render's environment before startup.
-No MLX, Torch, embedding weights, reranker, adapters or hybrid index are needed
-for this profile. The tracked statutory documents supply TF-IDF retrieval.
-This is explicitly a **different retrieval profile** from the local hybrid
-experiments. The interface and model facts label the disabled embeddings and
-reranker. Existing structural citation checks, source quotations, prepared
-summaries and official-retailer lookup remain available.
+The free profile uses a pinned 23 MB quantized MiniLM ONNX model for 384-dimensional
+embeddings, fused with TF-IDF using reciprocal ranks. Both corpus chunks and
+queries use the same encoder, masked mean pooling and normalization. The build
+verifies asset hashes and embeds all 93 chunks; requests never download models.
+The index is bound to the corpus, chunk order and embedding configuration.
+A missing or stale index fails explicitly rather than silently using lexical search.
+
+No MLX, Torch, cross-encoder or LoRA adapter is loaded. This remains a different
+retrieval profile from the local hybrid/reranker experiments. Existing structural
+citation checks, source quotations, prepared summaries and retailer lookup remain.
+Semantic cosine >= 0.50 is a development-tuned relevance gate, not a probability
+of factual support. The generator must still assess support and cite its answer.
+
+To roll back explicitly, set `REGULATORY_RETRIEVAL_PROFILE=tfidf` and redeploy.
+The default is `semantic_cpu`. Changing tracked `render.yaml` does not update
+manually created services: update their dashboard build command as well.
 
 ### Connect the public GitHub Pages interface
 
 After Render reports **Live**, check `<Render service URL>/api/health` and
-`/api/status`; status must identify `groq` and `tfidf`. Then:
+`/api/status`; status must identify `groq` and `semantic_cpu`. Then:
 
 1. In this GitHub repository, open **Settings → Secrets and variables → Actions →
    Variables**. Add the repository variable `REGULATORY_API_BASE` with the exact
@@ -44,7 +54,7 @@ After Render reports **Live**, check `<Render service URL>/api/health` and
    suffix, credentials or query string). This URL is public configuration.
 2. Run **Actions → Deploy chatbot to GitHub Pages → Run workflow**. The workflow
    passes the public URL as `VITE_REGULATORY_API_BASE` during the frontend build.
-3. Open the project from the portfolio. It should show **Groq AI · Lightweight
+3. Open the project from the portfolio. It should show **Groq AI · Semantic
    RAG**, not Browser retrieval demo. A failed API request remains an error;
    it does not silently become a browser-only answer.
 

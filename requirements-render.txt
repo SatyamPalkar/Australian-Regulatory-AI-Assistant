@@ -1,5 +1,8 @@
-# CPU-only lightweight profile. No Torch, MLX, embeddings or reranker downloads.
+# CPU semantic profile. No Torch, MLX or cross-encoder.
 fastapi==0.162.0
 uvicorn==0.54.0
 httpx==0.28.1
+onnxruntime==1.31.1
+tokenizers==0.23.3
+numpy==2.5.4
 -e .
